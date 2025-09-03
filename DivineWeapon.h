@@ -5,15 +5,15 @@
 
 class DivineWeapon : public Equipment {
 private:
-    int growthLevel;  // Éñ½£³É³¤µÈ¼¶£¨ËæÍæ¼ÒµÈ¼¶ÌáÉı£©
+    int growthLevel;  // ç¥å‰‘æˆé•¿ç­‰çº§ï¼ˆéšç©å®¶ç­‰çº§æå‡ï¼‰
 
 public:
-    DivineWeapon();  // ³õÊ¼Éñ½££¨¿ª³¡×Ô´ø£©
+    DivineWeapon();  // åˆå§‹ç¥å‰‘ï¼ˆå¼€åœºè‡ªå¸¦ï¼‰
     DivineWeapon* clone() const override;
-    // Éñ½£³É³¤£¨ËæÍæ¼ÒµÈ¼¶ÌáÉı¹¥»÷Á¦£©
+    // ç¥å‰‘æˆé•¿ï¼ˆéšç©å®¶ç­‰çº§æå‡æ”»å‡»åŠ›ï¼‰
     void grow(int playerLevel);
 
-    // ½âËø¼¼ÄÜ£¨¸ù¾İ³É³¤µÈ¼¶½âËø¶ÔÓ¦¼¼ÄÜ£©
+    // è§£é”æŠ€èƒ½ï¼ˆæ ¹æ®æˆé•¿ç­‰çº§è§£é”å¯¹åº”æŠ€èƒ½ï¼‰
     bool unlockSkill(int playerLevel, SkillType& skillType);
 };
 

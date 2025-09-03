@@ -8,12 +8,12 @@
 
 class EvilGeneral : public CommonEnemy {
 private:
-    EvilType evilType;         // ¶ñÄîÀàĞÍ
-    std::string territory;     // ÁìµØ£¨ÈçºÚê×È¨Êàµî£©
-    std::vector<Item*> drops;  // µôÂäÎïÆ·
+    EvilType evilType;         // æ¶å¿µç±»å‹
+    std::string territory;     // é¢†åœ°ï¼ˆå¦‚é»‘æ›œæƒæ¢æ®¿ï¼‰
+    std::vector<Item*> drops;  // æ‰è½ç‰©å“
 
 public:
-    // ÉùÃ÷¹¹Ôìº¯Êı£¬²ÎÊıÁĞ±íÓëÊµÏÖÆ¥Åä
+    // å£°æ˜æ„é€ å‡½æ•°ï¼Œå‚æ•°åˆ—è¡¨ä¸å®ç°åŒ¹é…
     EvilGeneral(std::string name, EvilType type, std::string territory, int level);
 };
 

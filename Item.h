@@ -3,12 +3,12 @@
 #define ITEM_H
 #include <string>
 
-// ÎïÆ·ÀàĞÍ
+// ç‰©å“ç±»å‹
 enum class ItemType {
-    HEALTH_POTION,  // ÉúÃüÒ©Ë®
-    ENERGY_POTION,  // ÄÜÁ¿Ò©Ë®
-    QUEST_ITEM,     // ÈÎÎñÎïÆ·£¨ÈçºÚê×¾§³¾£©
-    MISC            // ÆäËû£¨Èç½ÌÑµ£©
+    HEALTH_POTION,  // ç”Ÿå‘½è¯æ°´
+    ENERGY_POTION,  // èƒ½é‡è¯æ°´
+    QUEST_ITEM,     // ä»»åŠ¡ç‰©å“ï¼ˆå¦‚é»‘æ›œæ™¶å°˜ï¼‰
+    MISC            // å…¶ä»–ï¼ˆå¦‚æ•™è®­ï¼‰
 };
 
 class Item {
@@ -17,7 +17,7 @@ protected:
     std::string name;
     ItemType type;
     std::string description;
-    int price;       // ¼Û¸ñ£¨-1±íÊ¾²»¿É½»Ò×£©
+    int price;       // ä»·æ ¼ï¼ˆ-1è¡¨ç¤ºä¸å¯äº¤æ˜“ï¼‰
 
 public:
     Item(int id,std::string name, ItemType type, std::string desc, int price = -1);
@@ -28,7 +28,7 @@ public:
     std::string getDescription() const;
     int getPrice() const;
 
-    // ÎïÆ·Ê¹ÓÃĞ§¹û£¨´¿Ğéº¯Êı£¬×ÓÀàÊµÏÖ£©
+    // ç‰©å“ä½¿ç”¨æ•ˆæœï¼ˆçº¯è™šå‡½æ•°ï¼Œå­ç±»å®ç°ï¼‰
     virtual std::string use() = 0;
     virtual Item* clone() const = 0;
 };

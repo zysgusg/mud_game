@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #ifndef GAMEDATA_H
 #define GAMEDATA_H
 

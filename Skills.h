@@ -4,17 +4,17 @@
 #include "GameData.h"
 #include <string>
 
-// ¼¼ÄÜÄ¿±êÀàĞÍ
+// æŠ€èƒ½ç›®æ ‡ç±»å‹
 enum class SkillTarget {
-    ENEMY,  // Ä¿±êÎªµĞÈË
-    SELF    // Ä¿±êÎª×Ô¼º
+    ENEMY,  // ç›®æ ‡ä¸ºæ•Œäºº
+    SELF    // ç›®æ ‡ä¸ºè‡ªå·±
 };
 
-// ¼¼ÄÜÉËº¦ÀàĞÍ
+// æŠ€èƒ½ä¼¤å®³ç±»å‹
 enum class DamageType {
-    PHYSICAL,  // ÎïÀíÉËº¦
-    MAGICAL,   // Ä§·¨ÉËº¦
-    BUFF       // ÔöÒæĞ§¹û£¨ÎŞÉËº¦£©
+    PHYSICAL,  // ç‰©ç†ä¼¤å®³
+    MAGICAL,   // é­”æ³•ä¼¤å®³
+    BUFF       // å¢ç›Šæ•ˆæœï¼ˆæ— ä¼¤å®³ï¼‰
 };
 
 class Skill {
@@ -22,10 +22,10 @@ private:
     SkillType type;
     std::string name;
     std::string description;
-    int unlockLevel;  // ½âËøµÈ¼¶
+    int unlockLevel;  // è§£é”ç­‰çº§
     SkillTarget target;
     DamageType damageType;
-    int power;        // ¼¼ÄÜÍşÁ¦£¨ÉËº¦/¼Ó³ÉÖµ£©
+    int power;        // æŠ€èƒ½å¨åŠ›ï¼ˆä¼¤å®³/åŠ æˆå€¼ï¼‰
 
 public:
     Skill(SkillType type, std::string name, std::string desc, int unlockLv,

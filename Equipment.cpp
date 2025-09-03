@@ -14,8 +14,8 @@ Equipment* Equipment::clone() const
 {
     return new Equipment(*this);
 }
-// ×°±¸Ê¹ÓÃĞ§¹ûÃèÊö
+// è£…å¤‡ä½¿ç”¨æ•ˆæœæè¿°
 std::string Equipment::use() {
-    return "´©´÷" + name + "£¬»ñµÃ" + std::to_string(atkBonus) + "¹¥»÷Á¦ºÍ" +
-        std::to_string(defBonus) + "·ÀÓùÁ¦£¬ÌØÊâĞ§¹û£º" + specialEffect;
+    return "ç©¿æˆ´" + name + "ï¼Œè·å¾—" + std::to_string(atkBonus) + "æ”»å‡»åŠ›å’Œ" +
+        std::to_string(defBonus) + "é˜²å¾¡åŠ›ï¼Œç‰¹æ®Šæ•ˆæœï¼š" + specialEffect;
 }

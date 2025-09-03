@@ -9,33 +9,33 @@
 
 class Player : public Attribute {
 private:
-    DivineWeapon* divineSword;                  // ÁùÊ¥²Ã¶ñÉñ½££¨Î¨Ò»ÉñÆ÷£©
-    std::map<EquipmentPart, Equipment*> setParts; // ÁùÊÄÊ¥»Ô¾ÈÊêÌ××°²¿¼ş
-    std::vector<Skill*> skills;                 // ÒÑ½âËø¼¼ÄÜ
+    DivineWeapon* divineSword;                  // å…­åœ£è£æ¶ç¥å‰‘ï¼ˆå”¯ä¸€ç¥å™¨ï¼‰
+    std::map<EquipmentPart, Equipment*> setParts; // å…­èª“åœ£è¾‰æ•‘èµå¥—è£…éƒ¨ä»¶
+    std::vector<Skill*> skills;                 // å·²è§£é”æŠ€èƒ½
 public:
-    Player(std::string name = "°²ÌØÍõ×Ó");
+    Player(std::string name = "å®‰ç‰¹ç‹å­");
     ~Player();
     int extraActionTurns;
-    // ÉñÆ÷Óë×°±¸¹ÜÀí
-    void equipSetPart(Equipment* part);         // ×°±¸Ì××°²¿¼ş
+    // ç¥å™¨ä¸è£…å¤‡ç®¡ç†
+    void equipSetPart(Equipment* part);         // è£…å¤‡å¥—è£…éƒ¨ä»¶
     DivineWeapon* getDivineSword() const;
-    bool hasAllSetParts() const;                // ¼ì²éÊÇ·ñ¼¯ÆëÌ××°
+    bool hasAllSetParts() const;                // æ£€æŸ¥æ˜¯å¦é›†é½å¥—è£…
     std::map<EquipmentPart, Equipment*> getAllEquippedItems() const;
 
-    // ¼¼ÄÜ¹ÜÀí
-    void unlockSkill(SkillType type);           // ½âËø¼¼ÄÜ
+    // æŠ€èƒ½ç®¡ç†
+    void unlockSkill(SkillType type);           // è§£é”æŠ€èƒ½
     std::vector<Skill*> getSkills() const;
     Skill* getSkill(SkillType type) const;
 
-    // ÈÎÎñ¹ÜÀí
-    std::map<std::string, bool> taskProgress;   // ÈÎÎñ½ø¶È£¨ÈÎÎñID->ÊÇ·ñÍê³É£©
+    // ä»»åŠ¡ç®¡ç†
+    std::map<std::string, bool> taskProgress;   // ä»»åŠ¡è¿›åº¦ï¼ˆä»»åŠ¡ID->æ˜¯å¦å®Œæˆï¼‰
     void updateTaskProgress(std::string taskID, bool completed);
     bool isTaskCompleted(std::string taskID) const;
 
-    // ´æµµ·â×°£¨½«Íæ¼Ò×´Ì¬×ª»»Îª¿É´æ´¢¸ñÊ½£©
+    // å­˜æ¡£å°è£…ï¼ˆå°†ç©å®¶çŠ¶æ€è½¬æ¢ä¸ºå¯å­˜å‚¨æ ¼å¼ï¼‰
     std::string serialize() const;
-    void deserialize(const std::string& data);  // ´Ó´æµµ»Ö¸´×´Ì¬
-    //ÎïÆ·¹ÜÀí
+    void deserialize(const std::string& data);  // ä»å­˜æ¡£æ¢å¤çŠ¶æ€
+    //ç‰©å“ç®¡ç†
     std::map<std::string, int> inventory;
     void addItem(const Item& item, int quantity = 1);
     bool useItem(const std::string& itemName);

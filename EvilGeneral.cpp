@@ -3,8 +3,8 @@
 
 EvilGeneral::EvilGeneral(std::string name, EvilType type, std::string territory, int level)
     :Attribute(name, level), evilType(type), territory(territory) {
-    // Í¨¹ı»ùÀàsetterÉèÖÃÊôĞÔ£¨Ô­Ö±½Ó·ÃÎÊË½ÓĞ³ÉÔ±´íÎó£©
-    maxHp = 200 + level * 20; // Ôö¼ÓºÏÀíµÄ×î´óÉúÃüÖµ
+    // é€šè¿‡åŸºç±»setterè®¾ç½®å±æ€§
+    maxHp = 200 + level * 20; // å¢åŠ åˆç†çš„æœ€å¤§ç”Ÿå‘½å€¼
     setHP(maxHp);
     setHP(getMaxHP());
     setATK(50 + level * 5);
@@ -12,7 +12,7 @@ EvilGeneral::EvilGeneral(std::string name, EvilType type, std::string territory,
     setSpeed(10 + level * 2);
     setCritRate(0.1f + level * 0.01f);
 }
-    // Ìí¼ÓµôÂäÎïÆ·£¨Ê¾Àı£ºÊÈÈ¨½«¾üµôÂäºÚê×¾§³¾£©
+    // æ·»åŠ æ‰è½ç‰©å“ï¼ˆç¤ºä¾‹ï¼šå—œæƒå°†å†›æ‰è½é»‘æ›œæ™¶å°˜ï¼‰
 
 
-// Õ½¶·AI£ºËæ»úÑ¡Ôñ¹¥»÷»ò¼¼ÄÜ
+// æˆ˜æ–—AIï¼šéšæœºé€‰æ‹©æ”»å‡»æˆ–æŠ€èƒ½

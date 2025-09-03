@@ -2,7 +2,7 @@
 #include <sstream>
 
 Player::Player(std::string name) : Attribute(name) {
-    // ³õÊ¼»¯Éñ½££¨¿ª³¡×Ô´ø£©
+    // åˆå§‹åŒ–ç¥å‰‘ï¼ˆå¼€åœºè‡ªå¸¦ï¼‰
     divineSword = new DivineWeapon();
     this->extraActionTurns = 0;
 }
@@ -17,31 +17,31 @@ Player::~Player() {
     }
 }
 
-// ×°±¸Ì××°²¿¼ş
+// è£…å¤‡å¥—è£…éƒ¨ä»¶
 void Player::equipSetPart(Equipment* part) {
     if (!part) return;
     EquipmentPart p = part->getPart();
-    // ÈôÒÑÓĞ¸Ã²¿Î»×°±¸£¬ÏÈÉ¾³ı¾É×°±¸
+    // è‹¥å·²æœ‰è¯¥éƒ¨ä½è£…å¤‡ï¼Œå…ˆåˆ é™¤æ—§è£…å¤‡
     if (setParts.count(p)) {
         delete setParts[p];
     }
     setParts[p] = part;
 
-    // ×°±¸¼Ó³ÉÉúĞ§
+    // è£…å¤‡åŠ æˆç”Ÿæ•ˆ
     setATK(getATK() + part->getAtkBonus());
     setDEF(getDEF() + part->getDefBonus());
 }
 
-// »ñÈ¡Éñ½£
+// è·å–ç¥å‰‘
 DivineWeapon* Player::getDivineSword() const { return divineSword; }
 
-// ¼ì²éÊÇ·ñ¼¯ÆëÌ××°£¨6¸ö²¿¼ş£©
+// æ£€æŸ¥æ˜¯å¦é›†é½å¥—è£…ï¼ˆ6ä¸ªéƒ¨ä»¶ï¼‰
 bool Player::hasAllSetParts() const {
     return setParts.size() == 6;
 }
 
 std::map<EquipmentPart, Equipment*> Player::getAllEquippedItems() const {
-    std::map<EquipmentPart, Equipment*> allItems = setParts; // ¸´ÖÆËùÓĞÌ××°²¿¼ş
+    std::map<EquipmentPart, Equipment*> allItems = setParts; // å¤åˆ¶æ‰€æœ‰å¥—è£…éƒ¨ä»¶
 
     if (divineSword != nullptr) {
         allItems[divineSword->getPart()] = divineSword;
@@ -49,27 +49,27 @@ std::map<EquipmentPart, Equipment*> Player::getAllEquippedItems() const {
 
     return allItems;
 }
-// ½âËø¼¼ÄÜ
+// è§£é”æŠ€èƒ½
 void Player::unlockSkill(SkillType type) {
-    // ¸ù¾İ¼¼ÄÜÀàĞÍ´´½¨¼¼ÄÜ£¨Ê¾Àı£ºÊ¥½çÁÑÏ¶Õ¶ÔÚ1¼¶½âËø£©
+    // æ ¹æ®æŠ€èƒ½ç±»å‹åˆ›å»ºæŠ€èƒ½ï¼ˆç¤ºä¾‹ï¼šåœ£ç•Œè£‚éš™æ–©åœ¨1çº§è§£é”ï¼‰
     switch (type) {
     case SkillType::HOLY_RIFT_SLASH:
-        skills.push_back(new Skill(type, "Ê¥½çÁÑÏ¶Õ¶", "ÎïÀíÉËº¦¼¼ÄÜ", 1,
+        skills.push_back(new Skill(type, "åœ£ç•Œè£‚éš™æ–©", "ç‰©ç†ä¼¤å®³æŠ€èƒ½", 1,
             SkillTarget::ENEMY, DamageType::PHYSICAL, 20));
         break;
     case SkillType::GOLDEN_TREE_VOW:
-        skills.push_back(new Skill(type, "»Æ½ğÊ÷Ö®ÊÄ", "¼ÓÑª¼Ó¹¥ÔöÒæ", 5,
+        skills.push_back(new Skill(type, "é»„é‡‘æ ‘ä¹‹èª“", "åŠ è¡€åŠ æ”»å¢ç›Š", 5,
             SkillTarget::SELF, DamageType::BUFF, 10));
         break;
-        // ÆäËû¼¼ÄÜÀàËÆ£¬°´µÈ¼¶½âËø
+        // å…¶ä»–æŠ€èƒ½ç±»ä¼¼ï¼ŒæŒ‰ç­‰çº§è§£é”
     default: break;
     }
 }
 
-// »ñÈ¡¼¼ÄÜÁĞ±í
+// è·å–æŠ€èƒ½åˆ—è¡¨
 std::vector<Skill*> Player::getSkills() const { return skills; }
 
-// »ñÈ¡Ö¸¶¨¼¼ÄÜ
+// è·å–æŒ‡å®šæŠ€èƒ½
 Skill* Player::getSkill(SkillType type) const {
     for (auto skill : skills) {
         if (skill->getType() == type) return skill;
@@ -77,12 +77,12 @@ Skill* Player::getSkill(SkillType type) const {
     return nullptr;
 }
 
-// ¸üĞÂÈÎÎñ½ø¶È
+// æ›´æ–°ä»»åŠ¡è¿›åº¦
 void Player::updateTaskProgress(std::string taskID, bool completed) {
     taskProgress[taskID] = completed;
 }
 
-// ¼ì²éÈÎÎñÊÇ·ñÍê³É
+// æ£€æŸ¥ä»»åŠ¡æ˜¯å¦å®Œæˆ
 bool Player::isTaskCompleted(std::string taskID) const {
     auto it = taskProgress.find(taskID);
     return (it != taskProgress.end()) && it->second;

@@ -1,10 +1,10 @@
 #include "CommonEnemy.h"
 
 CommonEnemy::CommonEnemy(EnemyType type, int level) : Attribute("", level) {
-    // ¸ù¾İĞ¡¹ÖÀàĞÍ³õÊ¼»¯ÊôĞÔ
+    // æ ¹æ®å°æ€ªç±»å‹åˆå§‹åŒ–å±æ€§
     switch (type) {
     case EnemyType::CORRUPT_WOLF:
-        name = "Ê´¹Ç¶ñÀÇ";
+        name = "èš€éª¨æ¶ç‹¼";
         maxHp = 50 + level * 10;
         atk = 8 + level * 2;
         def = 3 + level;
@@ -13,7 +13,7 @@ CommonEnemy::CommonEnemy(EnemyType type, int level) : Attribute("", level) {
         goldReward = 10 + level * 5;
         break;
     case EnemyType::GOBLIN:
-        name = "¸ç²¼ÁÖ";
+        name = "å“¥å¸ƒæ—";
         maxHp = 30 + level * 8;
         atk = 6 + level;
         def = 2 + level;
@@ -21,9 +21,9 @@ CommonEnemy::CommonEnemy(EnemyType type, int level) : Attribute("", level) {
         expReward = 30 + level * 5;
         goldReward = 5 + level * 2;
         break;
-        // ÆäËûĞ¡¹ÖÀàĞÍÀàËÆ³õÊ¼»¯
+        // å…¶ä»–å°æ€ªç±»å‹ç±»ä¼¼åˆå§‹åŒ–
     default:
-        name = "Î´Öª¶ñÊŞ";
+        name = "æœªçŸ¥æ¶å…½";
         maxHp = 40;
         atk = 5;
         def = 2;
@@ -32,7 +32,7 @@ CommonEnemy::CommonEnemy(EnemyType type, int level) : Attribute("", level) {
         goldReward = 8;
         break;
     }
-    hp = maxHp; // ³õÊ¼ÉúÃüÖµÎª×î´óÖµ
+    hp = maxHp; // åˆå§‹ç”Ÿå‘½å€¼ä¸ºæœ€å¤§å€¼
 }
 
 EnemyType CommonEnemy::getType() const { return type; }

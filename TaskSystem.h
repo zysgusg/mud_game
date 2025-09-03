@@ -4,16 +4,16 @@
 
 #include <string>
 #include <vector>
-#include <functional> // TaskÀàÊ¹ÓÃÁËstd::function£¬ĞèÒª´ËÍ·ÎÄ¼ş
+#include <functional> // Taskç±»ä½¿ç”¨äº†std::functionï¼Œéœ€è¦æ­¤å¤´æ–‡ä»¶
 #include "Player.h"
-#include "Item.h"   // TaskÀàÊ¹ÓÃÁËItem*£¬ĞèÒª´ËÍ·ÎÄ¼ş
+#include "Item.h"   // Taskç±»ä½¿ç”¨äº†Item*ï¼Œéœ€è¦æ­¤å¤´æ–‡ä»¶
 
-// ÈÎÎñ×´Ì¬
+// ä»»åŠ¡çŠ¶æ€
 enum class TaskStatus {
     UNACCEPTED, ACCEPTED, COMPLETED, REWARDED
 };
 
-// --- Task ÀàµÄÉùÃ÷Ã»ÓĞ±ä»¯ ---
+// --- Task ç±»çš„å£°æ˜æ²¡æœ‰å˜åŒ– ---
 class Task {
 private:
     std::string id;
@@ -40,30 +40,30 @@ public:
     std::string getDescription() const;
     TaskStatus getStatus() const;
     int getRequiredLevel() const;
-    // ĞÂÔöGetter£¬·½±ãTaskSystem»ñÈ¡½±ÀøĞÅÏ¢ÓÃÓÚÏÔÊ¾
+    // æ–°å¢Getterï¼Œæ–¹ä¾¿TaskSystemè·å–å¥–åŠ±ä¿¡æ¯ç”¨äºæ˜¾ç¤º
     int getExpReward() const;
     int getGoldReward() const;
 };
 
 
-// ÏòÇ°ÉùÃ÷UIManagerÀà£¬±ÜÃâÔÚÍ·ÎÄ¼şÖĞÒıÈëÕû¸öUIManager.h
+// å‘å‰å£°æ˜UIManagerç±»ï¼Œé¿å…åœ¨å¤´æ–‡ä»¶ä¸­å¼•å…¥æ•´ä¸ªUIManager.h
 class UIManager;
 
-// --- TaskSystem ÀàµÄÉùÃ÷ÒÑĞŞÕı ---
+// --- TaskSystem ç±»çš„å£°æ˜å·²ä¿®æ­£ ---
 class TaskSystem {
 private:
     std::vector<Task*> allTasks;
-    UIManager& ui; // ĞÂÔö£ºUIManagerµÄÒıÓÃ³ÉÔ±
+    UIManager& ui; // æ–°å¢ï¼šUIManagerçš„å¼•ç”¨æˆå‘˜
 
 public:
-    TaskSystem(UIManager& uiManager); // ĞÂÔö£º¹¹Ôìº¯ÊıÉùÃ÷
+    TaskSystem(UIManager& uiManager); // æ–°å¢ï¼šæ„é€ å‡½æ•°å£°æ˜
     ~TaskSystem();
 
-    void initializeTasks(); // ĞÂÔö£º³õÊ¼»¯º¯ÊıÉùÃ÷
+    void initializeTasks(); // æ–°å¢ï¼šåˆå§‹åŒ–å‡½æ•°å£°æ˜
     void addTask(Task* task);
-    void acceptTask(Player* player, std::string taskId); // ĞÂÔö£º½ÓÈ¡ÈÎÎñº¯Êı
-    void update(Player* player); // ĞÂÔö£º¸üĞÂ/¼ì²éÈÎÎñ½ø¶Èº¯Êı
-    void submitTask(Player* player, std::string taskId); // ĞÂÔö£ºÌá½»ÈÎÎñº¯Êı
+    void acceptTask(Player* player, std::string taskId); // æ–°å¢ï¼šæ¥å–ä»»åŠ¡å‡½æ•°
+    void update(Player* player); // æ–°å¢ï¼šæ›´æ–°/æ£€æŸ¥ä»»åŠ¡è¿›åº¦å‡½æ•°
+    void submitTask(Player* player, std::string taskId); // æ–°å¢ï¼šæäº¤ä»»åŠ¡å‡½æ•°
 
     std::vector<Task*> getAvailableTasks(Player* player) const;
     std::vector<Task*> getAcceptedTasks() const;

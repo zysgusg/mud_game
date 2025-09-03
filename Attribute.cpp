@@ -5,11 +5,11 @@
 Attribute::Attribute(std::string name, int level)
     : name(name), level(level), hp(100), maxHp(100), atk(10), def(5), speed(5),
     exp(0), expToNextLevel(100), gold(0), critRate(0.05f) {
-    // ��ʼ����������ӣ����ڱ����ж���
+    // 初始化随机数种子（用于暴击判定）
     srand(time(0));
 }
 
-// ���Ի�ȡ
+// 属性获取
 std::string Attribute::getName() const { return name; }
 int Attribute::getLevel() const { return level; }
 int Attribute::getHP() const { return hp; }
@@ -22,15 +22,15 @@ int Attribute::getExpToNextLevel() const { return expToNextLevel; }
 int Attribute::getGold() const { return gold; }
 float Attribute::getCritRate() const { return critRate; }
 
-// �����޸�
+// 属性修改
 
 void Attribute::setMaxHP(int value) {
-    // ��������һЩ�����Լ�飬ȷ������ֵΪ�Ǹ�ֵ
+    // 可以添加一些合理性检查，确保生命值为非负值
     if (value >= 0) {
         maxHp = value;
     }
     else {
-        // ���Ը�����Ҫ������Чֵ���������Ϊ0
+        // 可以根据需要处理无效值，这里简单设为0
         maxHp = 0;
     }
 }
@@ -45,22 +45,22 @@ void Attribute::setGold(int value) { gold = value; }
 void Attribute::setExp(int value) { exp = value; }
 void Attribute::setLevel(int value) { level = value; }
 void Attribute::setExpToNextLevel(int value) { expToNextLevel = value; }
-// �ȼ�����
+// 等级提升
 bool Attribute::levelUp() {
     if (exp < expToNextLevel) return false;
 
-    // �۳���ǰ�ȼ����辭��
+    // 扣除当前等级所需经验
     exp -= expToNextLevel;
     level++;
 
-    // ����������*110%��
+    // 属性提升（*110%）
     maxHp = static_cast<int>(maxHp * LEVEL_UP_ATTR_MULTIPLIER);
-    hp = maxHp; // ��������HP
+    hp = maxHp; // 升级回满HP
     atk = static_cast<int>(atk * LEVEL_UP_ATTR_MULTIPLIER);
     def = static_cast<int>(def * LEVEL_UP_ATTR_MULTIPLIER);
     speed = static_cast<int>(speed * LEVEL_UP_ATTR_MULTIPLIER);
 
-    // ����������������*120%��
+    // 经验条长度提升（*120%）
     expToNextLevel = static_cast<int>(expToNextLevel * LEVEL_UP_EXP_MULTIPLIER);
     return true;
 }

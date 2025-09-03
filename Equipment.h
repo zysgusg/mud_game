@@ -4,23 +4,23 @@
 #include "Item.h"
 #include "GameData.h"
 
-// ÊÄÔ¼ÊôĞÔ£¨¶ÔÓ¦Áù´óÕıÏòÊÄÔ¼£©
+// èª“çº¦å±æ€§ï¼ˆå¯¹åº”å…­å¤§æ­£å‘èª“çº¦ï¼‰
 enum class OathType {
-    FREEDOM,    // ×ÔÓÉÊÄÔ¼£¨ÆÆ¼ÏÖ®¹Ú£©
-    LOYALTY,    // ÖÒ³ÏÊÄÔ¼£¨ÌúÊÄĞØ¼×£©
-    TRUTH,      // ÕæÀíÊÄÔ¼£¨Ã÷Ê¶Ö®½ä£©
-    MERCY,      // Á¯ÃõÊÄÔ¼£¨¸§ÉËÖ®Á´£©
-    HOPE,       // Ï£ÍûÊÄÔ¼£¨³¿êØÅû·ç£©
-    ORDER       // ÖÈĞòÊÄÔ¼£¨´´ÊÀÕ½Ñ¥£©
+    FREEDOM,    // è‡ªç”±èª“çº¦ï¼ˆç ´æ·ä¹‹å† ï¼‰
+    LOYALTY,    // å¿ è¯šèª“çº¦ï¼ˆé“èª“èƒ¸ç”²ï¼‰
+    TRUTH,      // çœŸç†èª“çº¦ï¼ˆæ˜è¯†ä¹‹æˆ’ï¼‰
+    MERCY,      // æ€œæ‚¯èª“çº¦ï¼ˆæŠšä¼¤ä¹‹é“¾ï¼‰
+    HOPE,       // å¸Œæœ›èª“çº¦ï¼ˆæ™¨æ›¦æŠ«é£ï¼‰
+    ORDER       // ç§©åºèª“çº¦ï¼ˆåˆ›ä¸–æˆ˜é´ï¼‰
 };
 
 class Equipment : public Item {
 private:
-    EquipmentPart part;    // ×°±¸²¿Î»
-    OathType oath;         // ÊÄÔ¼ÊôĞÔ
-    int atkBonus;          // ¹¥»÷Á¦¼Ó³É
-    int defBonus;          // ·ÀÓùÁ¦¼Ó³É
-    std::string specialEffect;  // ÌØÊâĞ§¹û£¨ÈçµÖ¿¹¾«Éñ¿ØÖÆ£©
+    EquipmentPart part;    // è£…å¤‡éƒ¨ä½
+    OathType oath;         // èª“çº¦å±æ€§
+    int atkBonus;          // æ”»å‡»åŠ›åŠ æˆ
+    int defBonus;          // é˜²å¾¡åŠ›åŠ æˆ
+    std::string specialEffect;  // ç‰¹æ®Šæ•ˆæœï¼ˆå¦‚æŠµæŠ—ç²¾ç¥æ§åˆ¶ï¼‰
 
 public:
     Equipment(int id,std::string name, EquipmentPart part, OathType oath,
@@ -32,7 +32,7 @@ public:
     int getDefBonus() const;
     std::string getSpecialEffect() const;
 
-    // ×°±¸Ê¹ÓÃ£¨´©´÷Ê±´¥·¢Ğ§¹ûÃèÊö£©
+    // è£…å¤‡ä½¿ç”¨ï¼ˆç©¿æˆ´æ—¶è§¦å‘æ•ˆæœæè¿°ï¼‰
     std::string use() override;
     Equipment* clone() const override;
 };

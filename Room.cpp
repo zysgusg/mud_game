@@ -1,44 +1,44 @@
 #include "Room.h"
 #include <iostream>
 
-// ³õÊ¼»¯¾²Ì¬³ÉÔ±±äÁ¿£¨Ö»ÔÚcppÖĞ³õÊ¼»¯Ò»´Î£©
+// åˆå§‹åŒ–é™æ€æˆå‘˜å˜é‡ï¼ˆåªåœ¨cppä¸­åˆå§‹åŒ–ä¸€æ¬¡ï¼‰
 const std::map<std::string, std::string> Room::DIR_TO_NUM = {
-    {"±±", "1"},   {"¶«±±", "2"}, {"¶«", "3"},  {"¶«ÄÏ", "4"},
-    {"ÄÏ", "5"},   {"Î÷ÄÏ", "6"}, {"Î÷", "7"},  {"Î÷±±", "8"},
-    {"ÉÏ", "9"},   {"ÏÂ", "0"}
+    {"åŒ—", "1"},   {"ä¸œåŒ—", "2"}, {"ä¸œ", "3"},  {"ä¸œå—", "4"},
+    {"å—", "5"},   {"è¥¿å—", "6"}, {"è¥¿", "7"},  {"è¥¿åŒ—", "8"},
+    {"ä¸Š", "9"},   {"ä¸‹", "0"}
 };
 
 const std::map<std::string, std::string> Room::NUM_TO_DIR = {
-    {"1", "±±"},   {"2", "¶«±±"}, {"3", "¶«"},  {"4", "¶«ÄÏ"},
-    {"5", "ÄÏ"},   {"6", "Î÷ÄÏ"}, {"7", "Î÷"},  {"8", "Î÷±±"},
-    {"9", "ÉÏ"},   {"0", "ÏÂ"}
+    {"1", "åŒ—"},   {"2", "ä¸œåŒ—"}, {"3", "ä¸œ"},  {"4", "ä¸œå—"},
+    {"5", "å—"},   {"6", "è¥¿å—"}, {"7", "è¥¿"},  {"8", "è¥¿åŒ—"},
+    {"9", "ä¸Š"},   {"0", "ä¸‹"}
 };
 
-// ¹¹Ôìº¯ÊıÊµÏÖ
+// æ„é€ å‡½æ•°å®ç°
 Room::Room(int id, const std::string& name, const std::string& desc, const std::string& h)
     : roomId(id), roomName(name), description(desc), hint(h) {}
 
-// Ìí¼Ó³ö¿Ú
+// æ·»åŠ å‡ºå£
 void Room::addExit(const std::string& dir, int targetRoomId, const std::string& targetRoomName) {
     exits[dir] = { targetRoomId, targetRoomName };
 }
 
-// Ìí¼ÓNPC
+// æ·»åŠ NPC
 void Room::addNPC(const std::string& npcName) {
     npcs.push_back(npcName);
 }
 
-// Ìí¼ÓÎïÆ·
+// æ·»åŠ ç‰©å“
 void Room::addItem(const std::string& itemName) {
     items.push_back(itemName);
 }
 
-// ÏÔÊ¾·¿¼äĞÅÏ¢
+// æ˜¾ç¤ºæˆ¿é—´ä¿¡æ¯
 void Room::showRoomInfo() const {
-    std::cout << "\033[34m[·¿¼äĞÅÏ¢]\033[0m" << std::endl;
-    std::cout << "Ãû³Æ: " << roomName << " (ID: " << roomId << ")" << std::endl;
-    std::cout << "ÃèÊö: " << description << std::endl;
-    std::cout << "ÌáÊ¾: " << hint << std::endl;
+    std::cout << "\033[34m[æˆ¿é—´ä¿¡æ¯]\033[0m" << std::endl;
+    std::cout << "åç§°: " << roomName << " (ID: " << roomId << ")" << std::endl;
+    std::cout << "æè¿°: " << description << std::endl;
+    std::cout << "æç¤º: " << hint << std::endl;
 
     std::cout << "NPC: ";
     for (size_t i = 0; i < npcs.size(); ++i) {
@@ -47,14 +47,14 @@ void Room::showRoomInfo() const {
     }
     std::cout << std::endl;
 
-    std::cout << "ÎïÆ·: ";
+    std::cout << "ç‰©å“: ";
     for (size_t i = 0; i < items.size(); ++i) {
         std::cout << items[i];
         if (i != items.size() - 1) std::cout << ", ";
     }
     std::cout << std::endl;
 
-    std::cout << "³ö¿Ú: ";
+    std::cout << "å‡ºå£: ";
     for (auto it = exits.begin(); it != exits.end(); ++it) {
         std::cout << it->first << "(" << dirToNumber(it->first) << ")->" << it->second.second;
         if (std::next(it) != exits.end()) std::cout << ", ";

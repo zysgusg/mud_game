@@ -2,28 +2,28 @@
 
 DivineSet::DivineSet() {}
 
-// Ìí¼ÓÌ××°²¿¼ş
+// æ·»åŠ å¥—è£…éƒ¨ä»¶
 void DivineSet::addPart(Equipment* part) {
     if (part) {
         parts[part->getPart()] = part;
     }
 }
 
-// ¼ì²éÊÇ·ñ¼¯Æë£¨6¸ö²¿¼ş£©
+// æ£€æŸ¥æ˜¯å¦é›†é½ï¼ˆ6ä¸ªéƒ¨ä»¶ï¼‰
 bool DivineSet::isComplete() const {
     return parts.size() == 6;
 }
 
-// Ì××°¹²ÃùĞ§¹û£¨¼¯Æëºó½âËø×îÖÕ¼¼ÄÜ£©
+// å¥—è£…å…±é¸£æ•ˆæœï¼ˆé›†é½åè§£é”æœ€ç»ˆæŠ€èƒ½ï¼‰
 std::string DivineSet::getResonanceEffect() const {
-    return isComplete() ? "½âËø×îÖÕ¼¼ÄÜ¡¸ĞÇÉÁÁ÷ºÓÊ¥Áú·ÉÉı¡¤Éñ½çäÎÃğÕ¶¡¤×îÖÕÊ½¡¹£¬È«ÊôĞÔ+20%" : "Î´¼¯ÆëÌ××°£¬ÎŞ¹²ÃùĞ§¹û";
+    return isComplete() ? "è§£é”æœ€ç»ˆæŠ€èƒ½ã€Œæ˜Ÿé—ªæµæ²³åœ£é¾™é£å‡Â·ç¥ç•Œæ¹®ç­æ–©Â·æœ€ç»ˆå¼ã€ï¼Œå…¨å±æ€§+20%" : "æœªé›†é½å¥—è£…ï¼Œæ— å…±é¸£æ•ˆæœ";
 }
 
-// µ¥¸ö²¿¼şĞ§¹û
+// å•ä¸ªéƒ¨ä»¶æ•ˆæœ
 std::string DivineSet::getPartEffect(EquipmentPart part) const {
     auto it = parts.find(part);
     if (it != parts.end()) {
         return it->second->getSpecialEffect();
     }
-    return "¸Ã²¿Î»Î´×°±¸Ì××°²¿¼ş";
+    return "è¯¥éƒ¨ä½æœªè£…å¤‡å¥—è£…éƒ¨ä»¶";
 }

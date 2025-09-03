@@ -4,7 +4,7 @@
 #include "UIManager.h"
 
 // --------------------------------------------------------------------
-// Task ÀàÊµÏÖ
+// Task ç±»å®ç°
 // --------------------------------------------------------------------
 Task::Task(std::string id, std::string name, std::string desc, int level,
     std::function<bool(Player*)> condition, std::vector<Item*> rewards,
@@ -27,23 +27,23 @@ bool Task::checkCompletion(Player* player) {
     return false;
 }
 
-// --- ĞŞÕı£ºcomplete·½·¨ÏÖÔÚÖ»¸ºÔğ·¢·Å½±Àø£¬²»ÔÙ´¦ÀíUIÏÔÊ¾ ---
+// --- ä¿®æ­£ï¼šcompleteæ–¹æ³•ç°åœ¨åªè´Ÿè´£å‘æ”¾å¥–åŠ±ï¼Œä¸å†å¤„ç†UIæ˜¾ç¤º ---
 void Task::complete(Player* player) {
     if (status != TaskStatus::COMPLETED) return;
 
-    // ·¢·Å¾­ÑéºÍ½ğ±Ò½±Àø (¼ÙÉèPlayerÀàÓĞÕâĞ©·½·¨)
+    // å‘æ”¾ç»éªŒå’Œé‡‘å¸å¥–åŠ± (å‡è®¾Playerç±»æœ‰è¿™äº›æ–¹æ³•)
     // player->addExp(expReward);
     // player->addGold(goldReward);
 
-    // ·¢·ÅÎïÆ·½±Àø (¼ÙÉèPlayerÓĞaddItem·½·¨)
+    // å‘æ”¾ç‰©å“å¥–åŠ± (å‡è®¾Playeræœ‰addItemæ–¹æ³•)
     // for (Item* item : rewards) {
     //     player->addItem(item);
     // }
 
-    status = TaskStatus::REWARDED; // ±ê¼ÇÎª½±ÀøÒÑ·¢·Å
+    status = TaskStatus::REWARDED; // æ ‡è®°ä¸ºå¥–åŠ±å·²å‘æ”¾
 }
 
-// Getter º¯Êı
+// Getter å‡½æ•°
 std::string Task::getID() const { return id; }
 std::string Task::getName() const { return name; }
 std::string Task::getDescription() const { return description; }
@@ -53,7 +53,7 @@ int Task::getExpReward() const { return expReward; }
 int Task::getGoldReward() const { return goldReward; }
 
 // --------------------------------------------------------------------
-// TaskSystem ÀàÊµÏÖ
+// TaskSystem ç±»å®ç°
 // --------------------------------------------------------------------
 TaskSystem::TaskSystem(UIManager& uiManager) : ui(uiManager) {}
 
@@ -65,27 +65,27 @@ TaskSystem::~TaskSystem() {
 }
 
 void TaskSystem::initializeTasks() {
-    // ÈÎÎñ1: Ñ°ºÚê×¾§³¾
+    // ä»»åŠ¡1: å¯»é»‘æ›œæ™¶å°˜
     addTask(new Task(
-        "1", "¡¾Ñ°ºÚê×¾§³¾¡¿", "Ç°ÍùÁÑÏ¶·ÏĞæ£¬»÷°ÜÊØÎÀµÄ¡°Ê´¹Ç¶ñÀÇ¡±£¬ÊÕ¼¯ 3 ·İºÚê×¾§³¾¡£", 1,
+        "1", "ã€å¯»é»‘æ›œæ™¶å°˜ã€‘", "å‰å¾€è£‚éš™åºŸå¢Ÿï¼Œå‡»è´¥å®ˆå«çš„â€œèš€éª¨æ¶ç‹¼â€ï¼Œæ”¶é›† 3 ä»½é»‘æ›œæ™¶å°˜ã€‚", 1,
         [](Player* player) -> bool {
-            // Ê¾ÀıÂß¼­: return player->getItemCount("ºÚê×¾§³¾") >= 3; 
+            // ç¤ºä¾‹é€»è¾‘: return player->getItemCount("é»‘æ›œæ™¶å°˜") >= 3; 
             return false;
         },
         {}, 150, 75
     ));
 
-    // ÈÎÎñ2: ½â·âÈıÇ§ÖÒ»ê
+    // ä»»åŠ¡2: è§£å°ä¸‰åƒå¿ é­‚
     addTask(new Task(
-        "2", "¡¾½â·âÈıÇ§ÖÒ»ê¡¿", "ÓÃÍõÑª½â·âÈıÇ§ÖÒ»ê...", 5,
+        "2", "ã€è§£å°ä¸‰åƒå¿ é­‚ã€‘", "ç”¨ç‹è¡€è§£å°ä¸‰åƒå¿ é­‚...", 5,
         [](Player* player) -> bool {
-            // Ê¾ÀıÂß¼­: return player->getStoryFlag("TRIBE_SOULS_UNLEASHED");
+            // ç¤ºä¾‹é€»è¾‘: return player->getStoryFlag("TRIBE_SOULS_UNLEASHED");
             return false;
         },
         {}, 200, 0
     ));
 
-    ui.displayMessage("ÈÎÎñÏµÍ³ÒÑ³õÊ¼»¯¡£", UIManager::Color::GRAY);
+    ui.displayMessage("ä»»åŠ¡ç³»ç»Ÿå·²åˆå§‹åŒ–ã€‚", UIManager::Color::GRAY);
 }
 
 
@@ -107,77 +107,77 @@ Task* TaskSystem::findTask(std::string id) const {
 void TaskSystem::acceptTask(Player* player, std::string taskId) {
     Task* task = findTask(taskId);
     if (!task) {
-        ui.displayMessage("ÎŞĞ§µÄÈÎÎñID¡£", UIManager::Color::RED);
+        ui.displayMessage("æ— æ•ˆçš„ä»»åŠ¡IDã€‚", UIManager::Color::RED);
         return;
     }
     if (task->getStatus() != TaskStatus::UNACCEPTED) {
-        ui.displayMessage("ÄãÒÑ¾­½ÓÈ¡»òÍê³ÉÁËÕâ¸öÈÎÎñ¡£", UIManager::Color::YELLOW);
+        ui.displayMessage("ä½ å·²ç»æ¥å–æˆ–å®Œæˆäº†è¿™ä¸ªä»»åŠ¡ã€‚", UIManager::Color::YELLOW);
         return;
     }
     if (player->getLevel() < task->getRequiredLevel()) {
-        ui.displayMessage("ÄãµÄµÈ¼¶²»×ã£¬ÎŞ·¨½ÓÈ¡Õâ¸öÈÎÎñ¡£", UIManager::Color::RED);
+        ui.displayMessage("ä½ çš„ç­‰çº§ä¸è¶³ï¼Œæ— æ³•æ¥å–è¿™ä¸ªä»»åŠ¡ã€‚", UIManager::Color::RED);
         return;
     }
 
     task->accept();
-    ui.displayMessage("½ÓÈ¡ÁËĞÂÈÎÎñ: " + task->getName(), UIManager::Color::GREEN);
+    ui.displayMessage("æ¥å–äº†æ–°ä»»åŠ¡: " + task->getName(), UIManager::Color::GREEN);
 }
 
 void TaskSystem::update(Player* player) {
     for (auto task : allTasks) {
         if (task->getStatus() == TaskStatus::ACCEPTED) {
             if (task->checkCompletion(player)) {
-                ui.displayMessage("ÈÎÎñ [" + task->getName() + "] ÒÑ´ïµ½Íê³ÉÌõ¼ş£¡", UIManager::Color::CYAN);
+                ui.displayMessage("ä»»åŠ¡ [" + task->getName() + "] å·²è¾¾åˆ°å®Œæˆæ¡ä»¶ï¼", UIManager::Color::CYAN);
             }
         }
     }
 }
 
-// --- ĞŞÕı£ºsubmitTask ÏÖÔÚ¸ºÔğ´¦ÀíUIÏÔÊ¾ ---
+// --- ä¿®æ­£ï¼šsubmitTask ç°åœ¨è´Ÿè´£å¤„ç†UIæ˜¾ç¤º ---
 void TaskSystem::submitTask(Player* player, std::string taskId) {
     Task* task = findTask(taskId);
     if (!task) {
-        ui.displayMessage("ÎŞĞ§µÄÈÎÎñID¡£", UIManager::Color::RED);
+        ui.displayMessage("æ— æ•ˆçš„ä»»åŠ¡IDã€‚", UIManager::Color::RED);
         return;
     }
     if (task->getStatus() == TaskStatus::COMPLETED) {
-        // ÏÈ»ñÈ¡½±ÀøĞÅÏ¢
+        // å…ˆè·å–å¥–åŠ±ä¿¡æ¯
         std::string taskName = task->getName();
         int exp = task->getExpReward();
         int gold = task->getGoldReward();
 
-        // ÔÙÈÃÈÎÎñ·¢·Å½±Àø
+        // å†è®©ä»»åŠ¡å‘æ”¾å¥–åŠ±
         task->complete(player);
 
-        // ×îºóÓÉTaskSystemÀ´ÏÔÊ¾UIĞÅÏ¢
-        ui.displayMessage("ÈÎÎñ [" + taskName + "] Íê³É£¡", UIManager::Color::GREEN);
-        if (exp > 0) ui.displayMessage("»ñµÃ¾­Ñé: " + std::to_string(exp), UIManager::Color::YELLOW);
-        if (gold > 0) ui.displayMessage("»ñµÃ½ğ±Ò: " + std::to_string(gold), UIManager::Color::YELLOW);
+        // æœ€åç”±TaskSystemæ¥æ˜¾ç¤ºUIä¿¡æ¯
+        ui.displayMessage("ä»»åŠ¡ [" + taskName + "] å®Œæˆï¼", UIManager::Color::GREEN);
+        if (exp > 0) ui.displayMessage("è·å¾—ç»éªŒ: " + std::to_string(exp), UIManager::Color::YELLOW);
+        if (gold > 0) ui.displayMessage("è·å¾—é‡‘å¸: " + std::to_string(gold), UIManager::Color::YELLOW);
 
     }
     else if (task->getStatus() == TaskStatus::REWARDED) {
-        ui.displayMessage("ÄãÒÑ¾­ÁìÈ¡¹ıÕâ¸öÈÎÎñµÄ½±ÀøÁË¡£", UIManager::Color::YELLOW);
+        ui.displayMessage("ä½ å·²ç»é¢†å–è¿‡è¿™ä¸ªä»»åŠ¡çš„å¥–åŠ±äº†ã€‚", UIManager::Color::YELLOW);
     }
     else {
-        ui.displayMessage("¸ÃÈÎÎñ»¹Î´´ïµ½Íê³ÉÌõ¼ş¡£", UIManager::Color::YELLOW);
+        ui.displayMessage("è¯¥ä»»åŠ¡è¿˜æœªè¾¾åˆ°å®Œæˆæ¡ä»¶ã€‚", UIManager::Color::YELLOW);
     }
 }
 
 void TaskSystem::showTaskList(Player* player) const {
-    ui.displayMessage("--- ÈÎÎñÁĞ±í ---", UIManager::Color::WHITE);
+    ui.displayMessage("--- ä»»åŠ¡åˆ—è¡¨ ---", UIManager::Color::WHITE);
 
     bool hasAvailable = false;
     for (auto task : allTasks) {
         if (task->getStatus() == TaskStatus::UNACCEPTED && player->getLevel() >= task->getRequiredLevel()) {
             if (!hasAvailable) {
-                ui.displayMessage("¿É½ÓÈ¡ÈÎÎñ£º", UIManager::Color::CYAN);
+                ui.displayMessage("å¯æ¥å–ä»»åŠ¡ï¼š", UIManager::Color::CYAN);
                 hasAvailable = true;
             }
-            std::cout << "[" << task->getID() << "] " << task->getName() << " (µÈ¼¶ÒªÇó: " << task->getRequiredLevel() << ")" << std::endl;
+            std::cout << "[" << task->getID() << "] " << task->getName() << " (ç­‰çº§è¦æ±‚: " << task->getRequiredLevel() << ")" << std::endl;
         }
     }
     if (!hasAvailable) {
-        ui.displayMessage("Ã»ÓĞ¿É½ÓÈ¡µÄÈÎÎñ¡£", UIManager::Color::GRAY);
+        ui.displayMessage("æ²¡æœ‰å¯æ¥å–çš„ä»»åŠ¡ã€‚", UIManager::Color::GRAY);
     }
 
     std::cout << std::endl;
@@ -186,7 +186,7 @@ void TaskSystem::showTaskList(Player* player) const {
     for (auto task : allTasks) {
         if (task->getStatus() == TaskStatus::ACCEPTED) {
             if (!hasAccepted) {
-                ui.displayMessage("½øĞĞÖĞÈÎÎñ£º", UIManager::Color::YELLOW);
+                ui.displayMessage("è¿›è¡Œä¸­ä»»åŠ¡ï¼š", UIManager::Color::YELLOW);
                 hasAccepted = true;
             }
             std::cout << "[" << task->getID() << "] " << task->getName() << std::endl;
@@ -194,12 +194,12 @@ void TaskSystem::showTaskList(Player* player) const {
         }
     }
     if (!hasAccepted) {
-        ui.displayMessage("Ã»ÓĞÕıÔÚ½øĞĞµÄÈÎÎñ¡£", UIManager::Color::GRAY);
+        ui.displayMessage("æ²¡æœ‰æ­£åœ¨è¿›è¡Œçš„ä»»åŠ¡ã€‚", UIManager::Color::GRAY);
     }
     ui.displayMessage("--------------------", UIManager::Color::WHITE);
 }
 
-// --- getAvailableTasks, getAcceptedTasks, getCompletedTasks µÄÊµÏÖ (¿ÉÑ¡£¬µ«±£³ÖÍêÕûĞÔ) ---
+// --- getAvailableTasks, getAcceptedTasks, getCompletedTasks çš„å®ç° (å¯é€‰ï¼Œä½†ä¿æŒå®Œæ•´æ€§) ---
 std::vector<Task*> TaskSystem::getAvailableTasks(Player* player) const {
     std::vector<Task*> result;
     for (auto task : allTasks) {

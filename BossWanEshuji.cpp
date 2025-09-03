@@ -1,8 +1,8 @@
 #include "BossWanEshuji.h"
 
 BossWanEshuji::BossWanEshuji()
-    : EvilGeneral("Íò¶ñÊà»ú", EvilType::POWER_HUNGRY, "»ìãçÖ®ĞÄ", 30), phase(1) {
-    // ³õÊ¼»¯ÊôĞÔ£¨Ô¶³¬ÆÕÍ¨½«¾ü£©
+    : EvilGeneral("ä¸‡æ¶æ¢æœº", EvilType::POWER_HUNGRY, "æ··æ²Œä¹‹å¿ƒ", 30), phase(1) {
+    // åˆå§‹åŒ–å±æ€§ï¼ˆè¿œè¶…æ™®é€šå°†å†›ï¼‰
     setMaxHP(3000);
     setHP(maxHp);
     setATK(200);
@@ -10,10 +10,10 @@ BossWanEshuji::BossWanEshuji()
     setSpeed(30);
     setCritRate(0.2f);
 
-    // ³õÊ¼»¯»ÃÓ°£¨Áù´ó½«¾ü£©
-    illusions.push_back(new EvilGeneral("¶òĞİÀ­»ÃÓ°", EvilType::POWER_HUNGRY, "", 10));
-    illusions.push_back(new EvilGeneral("¿¨À³¶÷»ÃÓ°", EvilType::BETRAYAL, "", 10));
-    // ÆäËû½«¾ü»ÃÓ°...
+    // åˆå§‹åŒ–å¹»å½±ï¼ˆå…­å¤§å°†å†›ï¼‰
+    illusions.push_back(new EvilGeneral("å„ä¼‘æ‹‰å¹»å½±", EvilType::POWER_HUNGRY, "", 10));
+    illusions.push_back(new EvilGeneral("å¡è±æ©å¹»å½±", EvilType::BETRAYAL, "", 10));
+    // å…¶ä»–å°†å†›å¹»å½±...
 }
 
 BossWanEshuji::~BossWanEshuji() {
@@ -22,21 +22,21 @@ BossWanEshuji::~BossWanEshuji() {
     }
 }
 
-// ½øÈëÏÂÒ»½×¶Î£¨ÉúÃüÖµµÍÓÚ33%½øÈë½×¶Î2£¬µÍÓÚ10%½øÈë½×¶Î3£©
+// è¿›å…¥ä¸‹ä¸€é˜¶æ®µï¼ˆç”Ÿå‘½å€¼ä½äº33%è¿›å…¥é˜¶æ®µ2ï¼Œä½äº10%è¿›å…¥é˜¶æ®µ3ï¼‰
 void BossWanEshuji::enterNextPhase() {
     if (phase >= 3) return;
     phase++;
-    // ½×¶ÎÌáÉıÊôĞÔ¼Ó³É
+    // é˜¶æ®µæå‡å±æ€§åŠ æˆ
     setATK(getATK() * 1.2);
     setSpeed(getSpeed() * 1.1);
 }
 
 int BossWanEshuji::getPhase() const { return phase; }
 
-// ÕÙ»½»ÃÓ°£¨½×¶Î1ÕÙ»½2¸ö£¬½×¶Î2ÕÙ»½4¸ö£¬½×¶Î3ÕÙ»½6¸ö£©
+// å¬å”¤å¹»å½±ï¼ˆé˜¶æ®µ1å¬å”¤2ä¸ªï¼Œé˜¶æ®µ2å¬å”¤4ä¸ªï¼Œé˜¶æ®µ3å¬å”¤6ä¸ªï¼‰
 std::vector<EvilGeneral*> BossWanEshuji::summonIllusions() const {
     std::vector<EvilGeneral*> result;
-    int count = phase * 2; // ½×¶Î1=2¸ö£¬½×¶Î2=4¸ö£¬½×¶Î3=6¸ö
+    int count = phase * 2; // é˜¶æ®µ1=2ä¸ªï¼Œé˜¶æ®µ2=4ä¸ªï¼Œé˜¶æ®µ3=6ä¸ª
     for (int i = 0; i < count && i < illusions.size(); i++) {
         result.push_back(illusions[i]);
     }

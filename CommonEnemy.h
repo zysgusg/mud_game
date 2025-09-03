@@ -3,21 +3,21 @@
 #define COMMONENEMY_H
 #include "Attribute.h"
 
-// Ğ¡¹ÖÀàĞÍ£¨»ùÓÚ¾ç±¾ÖĞµÄ¶ñÊŞ£©
+// å°æ€ªç±»å‹ï¼ˆåŸºäºå‰§æœ¬ä¸­çš„æ¶å…½ï¼‰
 enum class EnemyType {
-    CORRUPT_WOLF,   // Ê´¹Ç¶ñÀÇ£¨ÁÑÏ¶·ÏĞæÊØÎÀ£©
-    GOBLIN,         // ¸ç²¼ÁÖ
-    SLIME,          // Ê·À³Ä·
-    MINOTAUR,       // Å£Í·ÈË
-    ZOMBIE,         // ½©Ê¬
-    SKELETON        // ÷¼÷Ã
+    CORRUPT_WOLF,   // èš€éª¨æ¶ç‹¼ï¼ˆè£‚éš™åºŸå¢Ÿå®ˆå«ï¼‰
+    GOBLIN,         // å“¥å¸ƒæ—
+    SLIME,          // å²è±å§†
+    MINOTAUR,       // ç‰›å¤´äºº
+    ZOMBIE,         // åƒµå°¸
+    SKELETON        // éª·é«…
 };
 
 class CommonEnemy : public Attribute {
 private:
     EnemyType type;
-    int expReward;   // »÷°Üºó¾­Ñé½±Àø
-    int goldReward;  // »÷°Üºó½ğ±Ò½±Àø
+    int expReward;   // å‡»è´¥åç»éªŒå¥–åŠ±
+    int goldReward;  // å‡»è´¥åé‡‘å¸å¥–åŠ±
 
 public:
     CommonEnemy(EnemyType type, int level);

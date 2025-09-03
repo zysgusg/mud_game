@@ -6,21 +6,21 @@
 
 class DivineSet {
 private:
-    std::map<EquipmentPart, Equipment*> parts;  // Ì××°²¿¼ş£¨²¿Î»->×°±¸£©
+    std::map<EquipmentPart, Equipment*> parts;  // å¥—è£…éƒ¨ä»¶ï¼ˆéƒ¨ä½->è£…å¤‡ï¼‰
 
 public:
     DivineSet();
 
-    // Ìí¼ÓÌ××°²¿¼ş
+    // æ·»åŠ å¥—è£…éƒ¨ä»¶
     void addPart(Equipment* part);
 
-    // ¼ì²éÊÇ·ñ¼¯ÆëËùÓĞ²¿¼ş
+    // æ£€æŸ¥æ˜¯å¦é›†é½æ‰€æœ‰éƒ¨ä»¶
     bool isComplete() const;
 
-    // »ñÈ¡Ì××°¹²ÃùĞ§¹û£¨¼¯Æëºó´¥·¢£©
+    // è·å–å¥—è£…å…±é¸£æ•ˆæœï¼ˆé›†é½åè§¦å‘ï¼‰
     std::string getResonanceEffect() const;
 
-    // »ñÈ¡µ¥¸ö²¿¼şµÄÌØÊâĞ§¹û
+    // è·å–å•ä¸ªéƒ¨ä»¶çš„ç‰¹æ®Šæ•ˆæœ
     std::string getPartEffect(EquipmentPart part) const;
 };
 

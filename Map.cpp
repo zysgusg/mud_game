@@ -1,240 +1,240 @@
 #include "Map.h"
 #include <iostream>
 
-// ¹¹Ôìº¯Êý
+// æž„é€ å‡½æ•°
 Map::Map() {
     initRooms();
-    currentRoomId = 1; // ³õÊ¼Î»ÖÃ£ºÃÔÎíÉ­ÁÖ
+    currentRoomId = 1; // åˆå§‹ä½ç½®ï¼šè¿·é›¾æ£®æž—
 }
 
-// ³õÊ¼»¯ËùÓÐ·¿¼ä
+// åˆå§‹åŒ–æ‰€æœ‰æˆ¿é—´
 void Map::initRooms() {
-    // ³õÊ¼ÇøÓò
-    Room forest(1, "ÃÔÎíÉ­ÁÖ", "¹ÅÀÏµÄÉ­ÁÖ£¬²ÎÌì´óÊ÷ÕÚÌì±ÎÈÕ£¬ÌÙÂûÑÚ¸Ç×ÅÂ·¾¶",
-        "¶«±±²¿ËÆºõÓÐ»ð¹â£¬»òÐíÊÇ¿ÉÒÔÂä½ÅµÄµØ·½");
-    forest.addExit("¶«±±", 2, "Ìú½³ÆÌ");
+    // åˆå§‹åŒºåŸŸ
+    Room forest(1, "è¿·é›¾æ£®æž—", "å¤è€çš„æ£®æž—ï¼Œå‚å¤©å¤§æ ‘é®å¤©è”½æ—¥ï¼Œè—¤è”“æŽ©ç›–ç€è·¯å¾„",
+        "ä¸œåŒ—éƒ¨ä¼¼ä¹Žæœ‰ç«å…‰ï¼Œæˆ–è®¸æ˜¯å¯ä»¥è½è„šçš„åœ°æ–¹");
+    forest.addExit("ä¸œåŒ—", 2, "é“åŒ é“º");
     rooms.insert({ 1, forest });
 
-    Room blacksmith(2, "ÌúÕèÌú½³ÆÌ", "Â¯»ðÐÜÐÜµÄÌú½³ÆÌ£¬Ç½ÉÏ¹Ò×ÅÍõÊÒ»Õ¼Ç",
-        "¶«±ßÓÐÍ¨ÍùÁÑÏ¶·ÏÐæµÄÐ¡¾¶£¬±±±ßÊÇºÚê×È¨Êàµî");
-    blacksmith.addExit("Î÷ÄÏ", 1, "ÃÔÎíÉ­ÁÖ");
-    blacksmith.addExit("¶«", 3, "ÁÑÏ¶·ÏÐæ");
-    blacksmith.addExit("±±", 4, "ºÚê×È¨Êàµî");
-    blacksmith.addNPC("ÑîË¼î££¨°×·¢Ìú½³£©");
-    blacksmith.addItem("ÆÆ¼ÏÖ®¹ÚÀ¶Í¼");
+    Room blacksmith(2, "é“ç §é“åŒ é“º", "ç‚‰ç«ç†Šç†Šçš„é“åŒ é“ºï¼Œå¢™ä¸ŠæŒ‚ç€çŽ‹å®¤å¾½è®°",
+        "ä¸œè¾¹æœ‰é€šå¾€è£‚éš™åºŸå¢Ÿçš„å°å¾„ï¼ŒåŒ—è¾¹æ˜¯é»‘æ›œæƒæž¢æ®¿");
+    blacksmith.addExit("è¥¿å—", 1, "è¿·é›¾æ£®æž—");
+    blacksmith.addExit("ä¸œ", 3, "è£‚éš™åºŸå¢Ÿ");
+    blacksmith.addExit("åŒ—", 4, "é»‘æ›œæƒæž¢æ®¿");
+    blacksmith.addNPC("æ¨æ€ç¿ï¼ˆç™½å‘é“åŒ ï¼‰");
+    blacksmith.addItem("ç ´æž·ä¹‹å† è“å›¾");
     rooms.insert({ 2, blacksmith });
 
-    Room rift(3, "ÁÑÏ¶·ÏÐæ", "·º×ÅÓÄÀ¶Î¢¹âµÄ¹Å´ú·ÏÐæ£¬µØÃæÉ¢Âä×ÅºÚê×¾§³¾",
-        "ÊÕ¼¯3·ÝºÚê×¾§³¾¿ÉÐÞ¸´×°±¸");
-    rift.addExit("Î÷", 2, "ÌúÕèÌú½³ÆÌ");
-    rift.addExit("¶«±±", 4, "ºÚê×È¨Êàµî");
-    rift.addItem("ºÚê×¾§³¾£¨1/3£©");
+    Room rift(3, "è£‚éš™åºŸå¢Ÿ", "æ³›ç€å¹½è“å¾®å…‰çš„å¤ä»£åºŸå¢Ÿï¼Œåœ°é¢æ•£è½ç€é»‘æ›œæ™¶å°˜",
+        "æ”¶é›†3ä»½é»‘æ›œæ™¶å°˜å¯ä¿®å¤è£…å¤‡");
+    rift.addExit("è¥¿", 2, "é“ç §é“åŒ é“º");
+    rift.addExit("ä¸œåŒ—", 4, "é»‘æ›œæƒæž¢æ®¿");
+    rift.addItem("é»‘æ›œæ™¶å°˜ï¼ˆ1/3ï¼‰");
     rooms.insert({ 3, rift });
 
-    Room obsidian(4, "ºÚê×È¨Êàµî", "ºÚê×Ê¯½¨ÔìµÄºêÎ°µîÌÃ£¬ÖÐÑëÓÐ¾Þ´óÍõ×ù",
-        "»÷°Ü¶òÐÝÀ­ºó¿ÉÏò¶«½øÈë±³ÆõÖ®Ì³");
-    obsidian.addExit("ÄÏ", 2, "ÌúÕèÌú½³ÆÌ");
-    obsidian.addExit("Î÷ÄÏ", 3, "ÁÑÏ¶·ÏÐæ");
-    obsidian.addExit("¶«", 5, "±³ÆõÖ®Ì³");
-    obsidian.addNPC("¶òÐÝÀ­£¨ÊÈÈ¨½«¾ü£©");
+    Room obsidian(4, "é»‘æ›œæƒæž¢æ®¿", "é»‘æ›œçŸ³å»ºé€ çš„å®ä¼Ÿæ®¿å ‚ï¼Œä¸­å¤®æœ‰å·¨å¤§çŽ‹åº§",
+        "å‡»è´¥åŽ„ä¼‘æ‹‰åŽå¯å‘ä¸œè¿›å…¥èƒŒå¥‘ä¹‹å›");
+    obsidian.addExit("å—", 2, "é“ç §é“åŒ é“º");
+    obsidian.addExit("è¥¿å—", 3, "è£‚éš™åºŸå¢Ÿ");
+    obsidian.addExit("ä¸œ", 5, "èƒŒå¥‘ä¹‹å›");
+    obsidian.addNPC("åŽ„ä¼‘æ‹‰ï¼ˆå—œæƒå°†å†›ï¼‰");
     rooms.insert({ 4, obsidian });
 
-    // ±³ÆõÇøÓò
-    Room betrayal(5, "±³ÆõÖ®Ì³", "¿ÌÓÐºìÉ«ÖäÎÄµÄÔ²ÐÎÊ¯Ì³£¬ÖÐÑë´£Á¢×Å¶ÏÖù",
-        "½ú½ò½òÊØÔÚÕâÀï£¬Ëû»òÐíÖªµÀ¿¨À³¶÷µÄÈõµã");
-    betrayal.addExit("Î÷", 4, "ºÚê×È¨Êàµî");
-    betrayal.addExit("¶«±±", 6, "µòÊÄÖ®ÑÂ");
-    betrayal.addNPC("½ú½ò½ò£¨¼Àìë£©");
-    betrayal.addItem("ÌúÊÄÐØ¼×");
+    // èƒŒå¥‘åŒºåŸŸ
+    Room betrayal(5, "èƒŒå¥‘ä¹‹å›", "åˆ»æœ‰çº¢è‰²å’’æ–‡çš„åœ†å½¢çŸ³å›ï¼Œä¸­å¤®çŸ—ç«‹ç€æ–­æŸ±",
+        "æ™‹æ´¥æ´¥å®ˆåœ¨è¿™é‡Œï¼Œä»–æˆ–è®¸çŸ¥é“å¡èŽ±æ©çš„å¼±ç‚¹");
+    betrayal.addExit("è¥¿", 4, "é»‘æ›œæƒæž¢æ®¿");
+    betrayal.addExit("ä¸œåŒ—", 6, "å‡‹èª“ä¹‹å´–");
+    betrayal.addNPC("æ™‹æ´¥æ´¥ï¼ˆç¥­ç¥€ï¼‰");
+    betrayal.addItem("é“èª“èƒ¸ç”²");
     rooms.insert({ 5, betrayal });
 
-    Room cliff(6, "µòÊÄÖ®ÑÂ", "ÁÙº£ÐüÑÂ£¬º£·çºôÐ¥£¬ÑÂ±ßÓÐÆÆËéµÄ´¬º¡",
-        "¶«±ß¶ÏÖùºóÒþ²Ø×ÅÍ¨Íù²¼µÀÌ¨µÄÂ·¾¶");
-    cliff.addExit("Î÷ÄÏ", 5, "±³ÆõÖ®Ì³");
-    cliff.addExit("¶«", 7, "²ÐÔ«¶ÏÖù");
-    cliff.addNPC("¿¨À³¶÷£¨±³ÐÅ½«¾ü£©");
+    Room cliff(6, "å‡‹èª“ä¹‹å´–", "ä¸´æµ·æ‚¬å´–ï¼Œæµ·é£Žå‘¼å•¸ï¼Œå´–è¾¹æœ‰ç ´ç¢Žçš„èˆ¹éª¸",
+        "ä¸œè¾¹æ–­æŸ±åŽéšè—ç€é€šå¾€å¸ƒé“å°çš„è·¯å¾„");
+    cliff.addExit("è¥¿å—", 5, "èƒŒå¥‘ä¹‹å›");
+    cliff.addExit("ä¸œ", 7, "æ®‹åž£æ–­æŸ±");
+    cliff.addNPC("å¡èŽ±æ©ï¼ˆèƒŒä¿¡å°†å†›ï¼‰");
     rooms.insert({ 6, cliff });
 
-    Room pillar(7, "²ÐÔ«¶ÏÖù", "¿ÌÓÐ¹ÅÀÏ¾­ÎÄµÄ¾Þ´ó¶ÏÖù£¬²¿·ÖÑÚÂñÔÚÉ³ÍÁÖÐ",
-        "ÕÅŸj½ÜÊØÔÚÕâÀï£¬Ëû»áÖ¸ÒýÄãÕÒµ½Ã÷Ê¶Ö®½ä");
-    pillar.addExit("Î÷", 6, "µòÊÄÖ®ÑÂ");
-    pillar.addExit("¶«ÄÏ", 8, "²ÐÔ«²¼µÀÌ¨");
-    pillar.addNPC("ÕÅŸj½Ü£¨ÊØÊÄÕß£©");
-    pillar.addItem("Ã÷Ê¶Ö®½ä");
+    Room pillar(7, "æ®‹åž£æ–­æŸ±", "åˆ»æœ‰å¤è€ç»æ–‡çš„å·¨å¤§æ–­æŸ±ï¼Œéƒ¨åˆ†æŽ©åŸ‹åœ¨æ²™åœŸä¸­",
+        "å¼ ç„œæ°å®ˆåœ¨è¿™é‡Œï¼Œä»–ä¼šæŒ‡å¼•ä½ æ‰¾åˆ°æ˜Žè¯†ä¹‹æˆ’");
+    pillar.addExit("è¥¿", 6, "å‡‹èª“ä¹‹å´–");
+    pillar.addExit("ä¸œå—", 8, "æ®‹åž£å¸ƒé“å°");
+    pillar.addNPC("å¼ ç„œæ°ï¼ˆå®ˆèª“è€…ï¼‰");
+    pillar.addItem("æ˜Žè¯†ä¹‹æˆ’");
     rooms.insert({ 7, pillar });
 
-    Room platform(8, "²ÐÔ«²¼µÀÌ¨", "ÁýÕÖÔÚ·ÛÉ«ÃÔÎíÖÐµÄ²¼µÀÌ¨£¬ÓÐÐé¼Ù¸æÊ¾ÅÆ",
-        "Âê¶ûË÷µÄ»ÃÏóÔÚÕâÀï×÷Ëî£¬ÓÃÃ÷Ê¶Ö®½ä¿ÉÆÆ³ý");
-    platform.addExit("Î÷±±", 7, "²ÐÔ«¶ÏÖù");
-    platform.addExit("ÄÏ", 9, "Á¯ÃõÖ®³Ç");
-    platform.addNPC("Âê¶ûË÷£¨Ú¿ÑÔ½«¾ü£©");
+    Room platform(8, "æ®‹åž£å¸ƒé“å°", "ç¬¼ç½©åœ¨ç²‰è‰²è¿·é›¾ä¸­çš„å¸ƒé“å°ï¼Œæœ‰è™šå‡å‘Šç¤ºç‰Œ",
+        "çŽ›å°”ç´¢çš„å¹»è±¡åœ¨è¿™é‡Œä½œç¥Ÿï¼Œç”¨æ˜Žè¯†ä¹‹æˆ’å¯ç ´é™¤");
+    platform.addExit("è¥¿åŒ—", 7, "æ®‹åž£æ–­æŸ±");
+    platform.addExit("å—", 9, "æ€œæ‚¯ä¹‹åŸŽ");
+    platform.addNPC("çŽ›å°”ç´¢ï¼ˆè¯³è¨€å°†å†›ï¼‰");
     rooms.insert({ 8, platform });
 
-    // Á¯ÃõÇøÓò
-    Room mercy(9, "Á¯ÃõÖ®³Ç", "Ôø¾­·±»ªµÄ³ÇÊÐ£¬Èç½ñ¸ÄÎª²Ð¿áµÄ¶·¼¼³¡",
-        "ÖÓÖ¾ì¿³ÇÖ÷ÖªµÀÁ¯ÃõÖ®Á´µÄ²ØÄä´¦");
-    mercy.addExit("±±", 8, "²ÐÔ«²¼µÀÌ¨");
-    mercy.addExit("¶«ÄÏ", 10, "É½½ÅÏÂ");
-    mercy.addExit("¶«", 11, "¼¬ÐÌ¶·¼¼³¡");
-    mercy.addNPC("ÖÓÖ¾ì¿£¨³ÇÖ÷£©");
+    // æ€œæ‚¯åŒºåŸŸ
+    Room mercy(9, "æ€œæ‚¯ä¹‹åŸŽ", "æ›¾ç»ç¹åŽçš„åŸŽå¸‚ï¼Œå¦‚ä»Šæ”¹ä¸ºæ®‹é…·çš„æ–—æŠ€åœº",
+        "é’Ÿå¿—ç‚œåŸŽä¸»çŸ¥é“æ€œæ‚¯ä¹‹é“¾çš„è—åŒ¿å¤„");
+    mercy.addExit("åŒ—", 8, "æ®‹åž£å¸ƒé“å°");
+    mercy.addExit("ä¸œå—", 10, "å±±è„šä¸‹");
+    mercy.addExit("ä¸œ", 11, "æ£˜åˆ‘æ–—æŠ€åœº");
+    mercy.addNPC("é’Ÿå¿—ç‚œï¼ˆåŸŽä¸»ï¼‰");
     rooms.insert({ 9, mercy });
 
-    Room foot(10, "³ÇÍâÉ½½ÅÏÂ", "²¼ÂúÑÒÊ¯µÄÉ½ÆÂ£¬ÓÐÒþ±Î¶´Ñ¨",
-        "¶´Ñ¨Éî´¦²Ø×ÅÁ¯ÃõÖ®Á´");
-    foot.addExit("Î÷±±", 9, "Á¯ÃõÖ®³Ç");
-    foot.addItem("Á¯ÃõÖ®Á´");
+    Room foot(10, "åŸŽå¤–å±±è„šä¸‹", "å¸ƒæ»¡å²©çŸ³çš„å±±å¡ï¼Œæœ‰éšè”½æ´žç©´",
+        "æ´žç©´æ·±å¤„è—ç€æ€œæ‚¯ä¹‹é“¾");
+    foot.addExit("è¥¿åŒ—", 9, "æ€œæ‚¯ä¹‹åŸŽ");
+    foot.addItem("æ€œæ‚¯ä¹‹é“¾");
     rooms.insert({ 10, foot });
 
-    Room arena(11, "¼¬ÐÌ¶·¼¼³¡", "»·ÐÎ¶·¼¼³¡£¬ËÄÖÜÊÇ´ø´ÌµÄÌúË¿Íø",
-        "¿ËÂ³¶ûÈøÔÚÕâÀï½øÐÐ²Ð¿áµÄ½Ç¶·±íÑÝ");
-    arena.addExit("Î÷", 9, "Á¯ÃõÖ®³Ç");
-    arena.addExit("±±", 12, "Ä®ÐÄ³Ç");
-    arena.addNPC("¿ËÂ³¶ûÈø£¨²ÐÅ°½«¾ü£©");
+    Room arena(11, "æ£˜åˆ‘æ–—æŠ€åœº", "çŽ¯å½¢æ–—æŠ€åœºï¼Œå››å‘¨æ˜¯å¸¦åˆºçš„é“ä¸ç½‘",
+        "å…‹é²å°”è¨åœ¨è¿™é‡Œè¿›è¡Œæ®‹é…·çš„è§’æ–—è¡¨æ¼”");
+    arena.addExit("è¥¿", 9, "æ€œæ‚¯ä¹‹åŸŽ");
+    arena.addExit("åŒ—", 12, "æ¼ å¿ƒåŸŽ");
+    arena.addNPC("å…‹é²å°”è¨ï¼ˆæ®‹è™å°†å†›ï¼‰");
     rooms.insert({ 11, arena });
 
-    // Ä®ÐÄÇøÓò
-    Room apathy(12, "Ä®ÐÄ³Ç", "»Ò°×É«µ÷µÄ³ÇÊÐ£¬ÐÐÈËÃæÎÞ±íÇé£¬Ä¿¹â¿Õ¶´",
-        "±±±ßµÄ¾²Ä¬¼âËþÊÇÕâ×ù³ÇÊÐµÄµØ±ê");
-    apathy.addExit("ÄÏ", 11, "¼¬ÐÌ¶·¼¼³¡");
-    apathy.addExit("±±", 13, "¾²Ä¬¼âËþ");
+    // æ¼ å¿ƒåŒºåŸŸ
+    Room apathy(12, "æ¼ å¿ƒåŸŽ", "ç°ç™½è‰²è°ƒçš„åŸŽå¸‚ï¼Œè¡Œäººé¢æ— è¡¨æƒ…ï¼Œç›®å…‰ç©ºæ´ž",
+        "åŒ—è¾¹çš„é™é»˜å°–å¡”æ˜¯è¿™åº§åŸŽå¸‚çš„åœ°æ ‡");
+    apathy.addExit("å—", 11, "æ£˜åˆ‘æ–—æŠ€åœº");
+    apathy.addExit("åŒ—", 13, "é™é»˜å°–å¡”");
     rooms.insert({ 12, apathy });
 
-    Room spire(13, "¾²Ä¬¼âËþ", "ÎÞ´°Ê¯Ëþ£¬¿ÌÓÐ'½ûÖ¹Ðú»©'µÄ·ûÎÄ",
-        "ËþÄÚÓÐÉÏÏÂÁ½ÌõÂ·¾¶£¬Í¨ÍùÃÔ¹¬ºÍËþ¶¥");
-    spire.addExit("ÄÏ", 12, "Ä®ÐÄ³Ç");
-    spire.addExit("ÏÂ", 14, "Ëþµ×ÃÔ¹¬");
-    spire.addExit("ÉÏ", 15, "Ëþ¶¥");
+    Room spire(13, "é™é»˜å°–å¡”", "æ— çª—çŸ³å¡”ï¼Œåˆ»æœ‰'ç¦æ­¢å–§å“—'çš„ç¬¦æ–‡",
+        "å¡”å†…æœ‰ä¸Šä¸‹ä¸¤æ¡è·¯å¾„ï¼Œé€šå¾€è¿·å®«å’Œå¡”é¡¶");
+    spire.addExit("å—", 12, "æ¼ å¿ƒåŸŽ");
+    spire.addExit("ä¸‹", 14, "å¡”åº•è¿·å®«");
+    spire.addExit("ä¸Š", 15, "å¡”é¡¶");
     rooms.insert({ 13, spire });
 
-    Room maze(14, "Ëþµ×ÃÔ¹¬", "¶à²íÂ·µÄÊ¯ÖÆÃÔ¹¬£¬Ç½±Ú»áÇáÎ¢ÒÆ¶¯",
-        "Íõä»«z±»À§ÔÚÕâÀï£¬Ëý³ÖÓÐ³¿êØÅû·ç");
-    maze.addExit("ÉÏ", 13, "¾²Ä¬¼âËþ");
-    maze.addNPC("Íõä»«z£¨Èý¾ü½«Áì£©");
-    maze.addItem("³¿êØÅû·ç");
+    Room maze(14, "å¡”åº•è¿·å®«", "å¤šå²”è·¯çš„çŸ³åˆ¶è¿·å®«ï¼Œå¢™å£ä¼šè½»å¾®ç§»åŠ¨",
+        "çŽ‹æµ çƒè¢«å›°åœ¨è¿™é‡Œï¼Œå¥¹æŒæœ‰æ™¨æ›¦æŠ«é£Ž");
+    maze.addExit("ä¸Š", 13, "é™é»˜å°–å¡”");
+    maze.addNPC("çŽ‹æµ çƒï¼ˆä¸‰å†›å°†é¢†ï¼‰");
+    maze.addItem("æ™¨æ›¦æŠ«é£Ž");
     rooms.insert({ 14, maze });
 
-    Room top(15, "Ëþ¶¥", "¿ªÀ«Æ½Ì¨£¬ÖÐÑëÓÐºÚÉ«¾§Ê¯£¬Ìì¿Õ³ÊÏÖ»Ò°×É«",
-        "ÃðÓû½«¾üÔÚÕâÀïÎüÊÕ×ÅÈËÃÇµÄÇé¸Ð");
-    top.addExit("ÏÂ", 13, "¾²Ä¬¼âËþ");
-    top.addExit("¶«", 16, "ÐéÎÞÖ®³Ç");
-    top.addNPC("ÃðÓû£¨ÃðÓû½«¾ü£©");
+    Room top(15, "å¡”é¡¶", "å¼€é˜”å¹³å°ï¼Œä¸­å¤®æœ‰é»‘è‰²æ™¶çŸ³ï¼Œå¤©ç©ºå‘ˆçŽ°ç°ç™½è‰²",
+        "ç­æ¬²å°†å†›åœ¨è¿™é‡Œå¸æ”¶ç€äººä»¬çš„æƒ…æ„Ÿ");
+    top.addExit("ä¸‹", 13, "é™é»˜å°–å¡”");
+    top.addExit("ä¸œ", 16, "è™šæ— ä¹‹åŸŽ");
+    top.addNPC("ç­æ¬²ï¼ˆç­æ¬²å°†å†›ï¼‰");
     rooms.insert({ 15, top });
 
-    // ÐéÎÞÇøÓò
-    Room voidCity(16, "ÐéÎÞÖ®³Ç", "°ëÌ®ËúµÄ³ÇÊÐ£¬½ÖµÀ¸²¸Ç×ÅºñºñµÄ»Ò³¾",
-        "¶«±ßµÄ¾ÉÍ¼Êé¹Ý»òÐí»¹±£Áô×ÅÒ»Ð©ÖªÊ¶");
-    voidCity.addExit("Î÷", 15, "Ëþ¶¥");
-    voidCity.addExit("¶«", 17, "¾ÉÍ¼Êé¹Ý·ÏÐæ");
+    // è™šæ— åŒºåŸŸ
+    Room voidCity(16, "è™šæ— ä¹‹åŸŽ", "åŠåå¡Œçš„åŸŽå¸‚ï¼Œè¡—é“è¦†ç›–ç€åŽšåŽšçš„ç°å°˜",
+        "ä¸œè¾¹çš„æ—§å›¾ä¹¦é¦†æˆ–è®¸è¿˜ä¿ç•™ç€ä¸€äº›çŸ¥è¯†");
+    voidCity.addExit("è¥¿", 15, "å¡”é¡¶");
+    voidCity.addExit("ä¸œ", 17, "æ—§å›¾ä¹¦é¦†åºŸå¢Ÿ");
     rooms.insert({ 16, voidCity });
 
-    Room library(17, "¾ÉÍ¼Êé¹Ý·ÏÐæ", "ÉÕ»ÙµÄÍ¼Êé¹Ý£¬ÉÙÊýÊéÒ³ÈÔ¿É±æÈÏ",
-        "ÖÜÑóÑ¸ÔÚÕâÀïÑÐ¾¿¹Å´úÎÄÏ×£¬ËûÖªµÀ´´ÊÀÕ½Ñ¥µÄÎ»ÖÃ");
-    library.addExit("Î÷", 16, "ÐéÎÞÖ®³Ç");
-    library.addExit("±±", 18, "ÍöÄî±¤ÀÝ");
-    library.addNPC("ÖÜÑóÑ¸£¨Ê°»ÄÕß£©");
-    library.addItem("´´ÊÀÕ½Ñ¥");
+    Room library(17, "æ—§å›¾ä¹¦é¦†åºŸå¢Ÿ", "çƒ§æ¯çš„å›¾ä¹¦é¦†ï¼Œå°‘æ•°ä¹¦é¡µä»å¯è¾¨è®¤",
+        "å‘¨æ´‹è¿…åœ¨è¿™é‡Œç ”ç©¶å¤ä»£æ–‡çŒ®ï¼Œä»–çŸ¥é“åˆ›ä¸–æˆ˜é´çš„ä½ç½®");
+    library.addExit("è¥¿", 16, "è™šæ— ä¹‹åŸŽ");
+    library.addExit("åŒ—", 18, "äº¡å¿µå ¡åž’");
+    library.addNPC("å‘¨æ´‹è¿…ï¼ˆæ‹¾è’è€…ï¼‰");
+    library.addItem("åˆ›ä¸–æˆ˜é´");
     rooms.insert({ 17, library });
 
-    Room fortress(18, "ÍöÄî±¤ÀÝ", "ºÚÉ«Ê¯¿éÆö³ÉµÄ±¤ÀÝ£¬ÃÖÂþËÀÍöÆøÏ¢",
-        "ÄáºÕ¶û½«¾üµÄºÚ°µÁ¦Á¿ÁýÕÖ×ÅÕâÀï");
-    fortress.addExit("ÄÏ", 17, "¾ÉÍ¼Êé¹Ý·ÏÐæ");
-    fortress.addExit("±±", 19, "»ìãçÖ®ÐÄ");
-    fortress.addNPC("ÄáºÕ¶û£¨ÍöÄî½«¾ü£©");
+    Room fortress(18, "äº¡å¿µå ¡åž’", "é»‘è‰²çŸ³å—ç Œæˆçš„å ¡åž’ï¼Œå¼¥æ¼«æ­»äº¡æ°”æ¯",
+        "å°¼èµ«å°”å°†å†›çš„é»‘æš—åŠ›é‡ç¬¼ç½©ç€è¿™é‡Œ");
+    fortress.addExit("å—", 17, "æ—§å›¾ä¹¦é¦†åºŸå¢Ÿ");
+    fortress.addExit("åŒ—", 19, "æ··æ²Œä¹‹å¿ƒ");
+    fortress.addNPC("å°¼èµ«å°”ï¼ˆäº¡å¿µå°†å†›ï¼‰");
     rooms.insert({ 18, fortress });
 
-    // ×îÖÕÇøÓò
-    Room chaos(19, "»ìãçÖ®ÐÄ", "Ðé¿ÕÖ®µØ£¬Æ¯¸¡×ÅÊ±¿ÕËéÆ¬£¬ÖÐÑëÊÇÄÜÁ¿ºËÐÄ",
-        "Íò¶ñÊà»ú¾ÍÔÚºËÐÄ´¦£¬×¼±¸×îÖÕ¾öÕ½°É");
-    chaos.addExit("ÄÏ", 18, "ÍöÄî±¤ÀÝ");
-    chaos.addNPC("Íò¶ñÊà»ú£¨×îÖÕBOSS£©");
+    // æœ€ç»ˆåŒºåŸŸ
+    Room chaos(19, "æ··æ²Œä¹‹å¿ƒ", "è™šç©ºä¹‹åœ°ï¼Œæ¼‚æµ®ç€æ—¶ç©ºç¢Žç‰‡ï¼Œä¸­å¤®æ˜¯èƒ½é‡æ ¸å¿ƒ",
+        "ä¸‡æ¶æž¢æœºå°±åœ¨æ ¸å¿ƒå¤„ï¼Œå‡†å¤‡æœ€ç»ˆå†³æˆ˜å§");
+    chaos.addExit("å—", 18, "äº¡å¿µå ¡åž’");
+    chaos.addNPC("ä¸‡æ¶æž¢æœºï¼ˆæœ€ç»ˆBOSSï¼‰");
     rooms.insert({ 19, chaos });
 }
 
-// ·ÖÉ¢Ê½È«¾ÖµØÍ¼
+// åˆ†æ•£å¼å…¨å±€åœ°å›¾
 void Map::drawGlobalMap() const {
-    std::cout << "\n\033[35m======================================= °²ÌØ´óÂ½È«¾ÖµØÍ¼ =======================================\033[0m" << std::endl;
+    std::cout << "\n\033[35m======================================= å®‰ç‰¹å¤§é™†å…¨å±€åœ°å›¾ =======================================\033[0m" << std::endl;
 
-    // ¶¥²ã£º»ìãçÖ®Ï¶(19)
-    std::cout << "                                         ©°©¤©¤©¤©¤©¤©´ " << std::endl;
-    std::cout << "                                         ©¦     ©¦ " << std::endl;
-    std::cout << "                                         ©¸©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "                                     " << (currentRoomId == 19 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "»ìãçÖ®Ï¶(19) " << std::endl;
-    std::cout << "                                          ©¦ " << std::endl;
-    std::cout << "                                          ¨‹ " << std::endl;
+    // é¡¶å±‚ï¼šæ··æ²Œä¹‹éš™(19)
+    std::cout << "                                         â”Œâ”€â”€â”€â”€â”€â” " << std::endl;
+    std::cout << "                                         â”‚     â”‚ " << std::endl;
+    std::cout << "                                         â””â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "                                     " << (currentRoomId == 19 ? "\033[31mâ—\033[0m " : "â—‹ ") << "æ··æ²Œä¹‹éš™(19) " << std::endl;
+    std::cout << "                                          â”‚ " << std::endl;
+    std::cout << "                                          â–¼ " << std::endl;
 
-    // ÉÏ²ã£ºÒÅÍü±¤ÀÝ(18) - ÐÇÍ¼Í¼Êé¹Ý(17)
-    std::cout << "                 ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´                        ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´ " << std::endl;
+    // ä¸Šå±‚ï¼šé—å¿˜å ¡åž’(18) - æ˜Ÿå›¾å›¾ä¹¦é¦†(17)
+    std::cout << "                 â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                        â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” " << std::endl;
     std::cout << "                /               \\                      /               \\ " << std::endl;
     std::cout << "               /                 \\                    /                 \\ " << std::endl;
     std::cout << "              /                   \\                  /                   \\ " << std::endl;
     std::cout << "              \\                   /                  \\                   / " << std::endl;
     std::cout << "               \\                 /                    \\                 / " << std::endl;
     std::cout << "                \\               /                      \\               / " << std::endl;
-    std::cout << "                 ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼                        ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "               " << (currentRoomId == 18 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "ÒÅÍü±¤ÀÝ(18)                        " << (currentRoomId == 17 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "ÐÇÍ¼Í¼Êé¹Ý(17) " << std::endl;
-    std::cout << "                         ©¦                                 ©¦ " << std::endl;
-    std::cout << "                         ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "                                          ©¦ " << std::endl;
-    std::cout << "                                          ¨‹ " << std::endl;
-    std::cout << "                                         ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´ " << std::endl;
+    std::cout << "                 â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                        â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "               " << (currentRoomId == 18 ? "\033[31mâ—\033[0m " : "â—‹ ") << "é—å¿˜å ¡åž’(18)                        " << (currentRoomId == 17 ? "\033[31mâ—\033[0m " : "â—‹ ") << "æ˜Ÿå›¾å›¾ä¹¦é¦†(17) " << std::endl;
+    std::cout << "                         â”‚                                 â”‚ " << std::endl;
+    std::cout << "                         â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "                                          â”‚ " << std::endl;
+    std::cout << "                                          â–¼ " << std::endl;
+    std::cout << "                                         â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” " << std::endl;
     std::cout << "                                        /               \\ " << std::endl;
     std::cout << "                                       /                 \\ " << std::endl;
     std::cout << "                                      /                   \\ " << std::endl;
     std::cout << "                                      \\                   / " << std::endl;
     std::cout << "                                       \\                 / " << std::endl;
     std::cout << "                                        \\               / " << std::endl;
-    std::cout << "                                         ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "                                     " << (currentRoomId == 16 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "Ðé¿ÕÖ®³Ç(16) " << std::endl;
-    std::cout << "                                          ©¦ " << std::endl;
-    std::cout << "                                          ¨‹ " << std::endl;
+    std::cout << "                                         â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "                                     " << (currentRoomId == 16 ? "\033[31mâ—\033[0m " : "â—‹ ") << "è™šç©ºä¹‹åŸŽ(16) " << std::endl;
+    std::cout << "                                          â”‚ " << std::endl;
+    std::cout << "                                          â–¼ " << std::endl;
 
-    // ÖÐ²ãÓÒÉÏ£º¶¥¶Ë(15) - Ä®È»¼âËþ(13) - ÃÔ¹¬(14) - ÀäÄ®µî(12)
+    // ä¸­å±‚å³ä¸Šï¼šé¡¶ç«¯(15) - æ¼ ç„¶å°–å¡”(13) - è¿·å®«(14) - å†·æ¼ æ®¿(12)
     std::cout << "                                         O " << std::endl;
     std::cout << "                                        /|\\ " << std::endl;
     std::cout << "                                       / | \\ " << std::endl;
     std::cout << "                                      /  |  \\ " << std::endl;
-    std::cout << "                                     ©°©¤©¤©¤©¤©Ø©¤©¤©¤©¤©´ " << std::endl;
-    std::cout << "                                     ©¦         ©¦ " << std::endl;
-    std::cout << "                                     ©¸©¤©¤©¤©¤©Ð©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "                                       " << (currentRoomId == 15 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "¶¥¶Ë(15) " << std::endl;
-    std::cout << "                                         ©¦ " << std::endl;
-    std::cout << "                                         ¨‹ " << std::endl;
+    std::cout << "                                     â”Œâ”€â”€â”€â”€â”´â”€â”€â”€â”€â” " << std::endl;
+    std::cout << "                                     â”‚         â”‚ " << std::endl;
+    std::cout << "                                     â””â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "                                       " << (currentRoomId == 15 ? "\033[31mâ—\033[0m " : "â—‹ ") << "é¡¶ç«¯(15) " << std::endl;
+    std::cout << "                                         â”‚ " << std::endl;
+    std::cout << "                                         â–¼ " << std::endl;
     std::cout << "                 O                           O " << std::endl;
     std::cout << "                /|\\                         /|\\ " << std::endl;
     std::cout << "               / | \\                       / | \\ " << std::endl;
     std::cout << "              /  |  \\                     /  |  \\ " << std::endl;
-    std::cout << "             ©°©¤©¤©¤©¤©Ø©¤©¤©¤©¤©´                 ©°©¤©¤©¤©¤©Ø©¤©¤©¤©¤©´ " << std::endl;
-    std::cout << "             ©¦         ©¦                 ©¦         ©¦ " << std::endl;
-    std::cout << "             ©¸©¤©¤©¤©¤©Ð©¤©¤©¤©¤©¼                 ©¸©¤©¤©¤©¤©Ð©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "             " << (currentRoomId == 13 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "Ä®È»¼âËþ(13)                 " << (currentRoomId == 14 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "ÃÔ¹¬(14) " << std::endl;
-    std::cout << "                 ©¦                             ©¦ " << std::endl;
-    std::cout << "                 ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "                                          ©¦ " << std::endl;
-    std::cout << "                                          ¨‹ " << std::endl;
-    std::cout << "                                         ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´ " << std::endl;
+    std::cout << "             â”Œâ”€â”€â”€â”€â”´â”€â”€â”€â”€â”                 â”Œâ”€â”€â”€â”€â”´â”€â”€â”€â”€â” " << std::endl;
+    std::cout << "             â”‚         â”‚                 â”‚         â”‚ " << std::endl;
+    std::cout << "             â””â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”˜                 â””â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "             " << (currentRoomId == 13 ? "\033[31mâ—\033[0m " : "â—‹ ") << "æ¼ ç„¶å°–å¡”(13)                 " << (currentRoomId == 14 ? "\033[31mâ—\033[0m " : "â—‹ ") << "è¿·å®«(14) " << std::endl;
+    std::cout << "                 â”‚                             â”‚ " << std::endl;
+    std::cout << "                 â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "                                          â”‚ " << std::endl;
+    std::cout << "                                          â–¼ " << std::endl;
+    std::cout << "                                         â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” " << std::endl;
     std::cout << "                                        /               \\ " << std::endl;
     std::cout << "                                       /                 \\ " << std::endl;
     std::cout << "                                      /                   \\ " << std::endl;
     std::cout << "                                      \\                   / " << std::endl;
     std::cout << "                                       \\                 / " << std::endl;
     std::cout << "                                        \\               / " << std::endl;
-    std::cout << "                                         ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "                                     " << (currentRoomId == 12 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "ÀäÄ®µî(12) " << std::endl;
+    std::cout << "                                         â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "                                     " << (currentRoomId == 12 ? "\033[31mâ—\033[0m " : "â—‹ ") << "å†·æ¼ æ®¿(12) " << std::endl;
 
-    // ÖÐ²ã×óÏÂ£º¾º¼¼³¡(11) - Á¯ÃõÖ®Ìü(9) - É½½Å(10)
+    // ä¸­å±‚å·¦ä¸‹ï¼šç«žæŠ€åœº(11) - æ€œæ‚¯ä¹‹åŽ…(9) - å±±è„š(10)
     std::cout << "\n\n";
-    std::cout << "                                         ©°©¤©¤©¤©¤©¤©´ " << std::endl;
+    std::cout << "                                         â”Œâ”€â”€â”€â”€â”€â” " << std::endl;
     std::cout << "                                        /       \\ " << std::endl;
     std::cout << "                                       /         \\ " << std::endl;
     std::cout << "                                      /           \\ " << std::endl;
     std::cout << "                                     /             \\ " << std::endl;
     std::cout << "                                    /               \\ " << std::endl;
     std::cout << "                                   /                 \\ " << std::endl;
-    std::cout << "                                  ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "                                     " << (currentRoomId == 11 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "¾º¼¼³¡(11) " << std::endl;
-    std::cout << "                                          ©¦ " << std::endl;
-    std::cout << "                                          ¨‹ " << std::endl;
-    std::cout << "                                         ©°©¤©¤©¤©¤©¤©´ " << std::endl;
+    std::cout << "                                  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "                                     " << (currentRoomId == 11 ? "\033[31mâ—\033[0m " : "â—‹ ") << "ç«žæŠ€åœº(11) " << std::endl;
+    std::cout << "                                          â”‚ " << std::endl;
+    std::cout << "                                          â–¼ " << std::endl;
+    std::cout << "                                         â”Œâ”€â”€â”€â”€â”€â” " << std::endl;
     std::cout << "                                        /       \\ " << std::endl;
     std::cout << "                                       /         \\ " << std::endl;
     std::cout << "                                      /           \\ " << std::endl;
@@ -242,22 +242,22 @@ void Map::drawGlobalMap() const {
     std::cout << "                                      \\           / " << std::endl;
     std::cout << "                                       \\         / " << std::endl;
     std::cout << "                                        \\       / " << std::endl;
-    std::cout << "                                         ©¸©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "                                     " << (currentRoomId == 9 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "Á¯ÃõÖ®Ìü(9) " << std::endl;
-    std::cout << "                                          ©¦ " << std::endl;
-    std::cout << "                                          ¨‹ " << std::endl;
-    std::cout << "                                           ©°©¤©¤©¤©¤©¤©´ " << std::endl;
+    std::cout << "                                         â””â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "                                     " << (currentRoomId == 9 ? "\033[31mâ—\033[0m " : "â—‹ ") << "æ€œæ‚¯ä¹‹åŽ…(9) " << std::endl;
+    std::cout << "                                          â”‚ " << std::endl;
+    std::cout << "                                          â–¼ " << std::endl;
+    std::cout << "                                           â”Œâ”€â”€â”€â”€â”€â” " << std::endl;
     std::cout << "                                          /       \\ " << std::endl;
     std::cout << "                                         /         \\ " << std::endl;
     std::cout << "                                        /           \\ " << std::endl;
     std::cout << "                                       /             \\ " << std::endl;
     std::cout << "                                      /               \\ " << std::endl;
-    std::cout << "                                     ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "                                       " << (currentRoomId == 10 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "É½½Å(10) " << std::endl;
+    std::cout << "                                     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "                                       " << (currentRoomId == 10 ? "\033[31mâ—\033[0m " : "â—‹ ") << "å±±è„š(10) " << std::endl;
 
-    // ÖÐÏÂ²ã£ºË«×ÓÆ½Ì¨(8) - Ë«×ÓÊ¯Öù(7) - ÐüÑÂÖ®±ß(6)
+    // ä¸­ä¸‹å±‚ï¼šåŒå­å¹³å°(8) - åŒå­çŸ³æŸ±(7) - æ‚¬å´–ä¹‹è¾¹(6)
     std::cout << "\n\n";
-    std::cout << "                                      ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´ " << std::endl;
+    std::cout << "                                      â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” " << std::endl;
     std::cout << "                                     /               \\ " << std::endl;
     std::cout << "                                    /                 \\ " << std::endl;
     std::cout << "                                   /                   \\ " << std::endl;
@@ -265,11 +265,11 @@ void Map::drawGlobalMap() const {
     std::cout << "                                   \\                   / " << std::endl;
     std::cout << "                                    \\                 / " << std::endl;
     std::cout << "                                     \\               / " << std::endl;
-    std::cout << "                                      ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "                                       " << (currentRoomId == 8 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "Ë«×ÓÆ½Ì¨(8) " << std::endl;
-    std::cout << "                                              ©¦ " << std::endl;
-    std::cout << "                                              ¨‹ " << std::endl;
-    std::cout << "                             ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´ " << std::endl;
+    std::cout << "                                      â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "                                       " << (currentRoomId == 8 ? "\033[31mâ—\033[0m " : "â—‹ ") << "åŒå­å¹³å°(8) " << std::endl;
+    std::cout << "                                              â”‚ " << std::endl;
+    std::cout << "                                              â–¼ " << std::endl;
+    std::cout << "                             â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” " << std::endl;
     std::cout << "                            /               \\ " << std::endl;
     std::cout << "                           /                 \\ " << std::endl;
     std::cout << "                          /                   \\ " << std::endl;
@@ -277,11 +277,11 @@ void Map::drawGlobalMap() const {
     std::cout << "                          \\                   / " << std::endl;
     std::cout << "                           \\                 / " << std::endl;
     std::cout << "                            \\               / " << std::endl;
-    std::cout << "                             ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "                               " << (currentRoomId == 7 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "Ë«×ÓÊ¯Öù(7) " << std::endl;
-    std::cout << "                                              ©¦ " << std::endl;
-    std::cout << "                                              ¨‹ " << std::endl;
-    std::cout << "                    ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´ " << std::endl;
+    std::cout << "                             â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "                               " << (currentRoomId == 7 ? "\033[31mâ—\033[0m " : "â—‹ ") << "åŒå­çŸ³æŸ±(7) " << std::endl;
+    std::cout << "                                              â”‚ " << std::endl;
+    std::cout << "                                              â–¼ " << std::endl;
+    std::cout << "                    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” " << std::endl;
     std::cout << "                   /               \\ " << std::endl;
     std::cout << "                  /                 \\ " << std::endl;
     std::cout << "                 /                   \\ " << std::endl;
@@ -289,128 +289,128 @@ void Map::drawGlobalMap() const {
     std::cout << "                 \\                   / " << std::endl;
     std::cout << "                  \\                 / " << std::endl;
     std::cout << "                   \\               / " << std::endl;
-    std::cout << "                    ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "                     " << (currentRoomId == 6 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "ÐüÑÂÖ®±ß(6) " << std::endl;
+    std::cout << "                    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "                     " << (currentRoomId == 6 ? "\033[31mâ—\033[0m " : "â—‹ ") << "æ‚¬å´–ä¹‹è¾¹(6) " << std::endl;
 
-    // µ×²ã£º±³ÆõÖ®Ì³(5) - ºÚê×Ê¯Ê¥µî(4) - ÁÑÏ¶(3) - Ìú½³ÆÌ(2) - ÃÔÎíÉ­ÁÖ(1)
-    std::cout << "                                              ©¦ " << std::endl;
-    std::cout << "                                              ¨‹ " << std::endl;
-    std::cout << "    ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´                        ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´ " << std::endl;
+    // åº•å±‚ï¼šèƒŒå¥‘ä¹‹å›(5) - é»‘æ›œçŸ³åœ£æ®¿(4) - è£‚éš™(3) - é“åŒ é“º(2) - è¿·é›¾æ£®æž—(1)
+    std::cout << "                                              â”‚ " << std::endl;
+    std::cout << "                                              â–¼ " << std::endl;
+    std::cout << "    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                        â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” " << std::endl;
     std::cout << "   /               \\                       |               | " << std::endl;
     std::cout << "  /                 \\                      |               | " << std::endl;
     std::cout << " /                   \\                     |               | " << std::endl;
     std::cout << "|                     |                    |               | " << std::endl;
     std::cout << " \\                   /                     |               | " << std::endl;
     std::cout << "  \\                 /                      |               | " << std::endl;
-    std::cout << "   \\               /                       ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "    ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼                                   /|\\ " << std::endl;
-    std::cout << "    " << (currentRoomId == 5 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "±³ÆõÖ®Ì³(5)                          " << (currentRoomId == 4 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "ºÚê×Ê¯Ê¥µî(4)        " << std::endl;
+    std::cout << "   \\               /                       â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                                   /|\\ " << std::endl;
+    std::cout << "    " << (currentRoomId == 5 ? "\033[31mâ—\033[0m " : "â—‹ ") << "èƒŒå¥‘ä¹‹å›(5)                          " << (currentRoomId == 4 ? "\033[31mâ—\033[0m " : "â—‹ ") << "é»‘æ›œçŸ³åœ£æ®¿(4)        " << std::endl;
     std::cout << "                                                       /   \\ " << std::endl;
-    std::cout << "         ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´             ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´ " << std::endl;
+    std::cout << "         â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”             â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” " << std::endl;
     std::cout << "         |               |             |               | " << std::endl;
     std::cout << "         |               |             |               | " << std::endl;
     std::cout << "         |               |             |               | " << std::endl;
     std::cout << "         |               |             |               | " << std::endl;
     std::cout << "         |               |             |               | " << std::endl;
     std::cout << "         |               |             |               | " << std::endl;
-    std::cout << "         ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼             ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "             " << (currentRoomId == 3 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "ÁÑÏ¶(3)                       " << (currentRoomId == 2 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "Ìú½³ÆÌ(2) " << std::endl;
-    std::cout << "                                              ©¦ " << std::endl;
-    std::cout << "                                              ¨‹ " << std::endl;
-    std::cout << "                                     ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´ " << std::endl;
+    std::cout << "         â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜             â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "             " << (currentRoomId == 3 ? "\033[31mâ—\033[0m " : "â—‹ ") << "è£‚éš™(3)                       " << (currentRoomId == 2 ? "\033[31mâ—\033[0m " : "â—‹ ") << "é“åŒ é“º(2) " << std::endl;
+    std::cout << "                                              â”‚ " << std::endl;
+    std::cout << "                                              â–¼ " << std::endl;
+    std::cout << "                                     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” " << std::endl;
     std::cout << "                                     |               | " << std::endl;
     std::cout << "                                     |               | " << std::endl;
     std::cout << "                                     |               | " << std::endl;
     std::cout << "                                     |               | " << std::endl;
     std::cout << "                                     |               | " << std::endl;
     std::cout << "                                     |               | " << std::endl;
-    std::cout << "                                     ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-    std::cout << "                                      " << (currentRoomId == 1 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "ÃÔÎíÉ­ÁÖ(1) " << std::endl;
+    std::cout << "                                     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+    std::cout << "                                      " << (currentRoomId == 1 ? "\033[31mâ—\033[0m " : "â—‹ ") << "è¿·é›¾æ£®æž—(1) " << std::endl;
 
-    // µØÍ¼Í¼Àý
-    std::cout << "\n\033[35m========================================= µØÍ¼Í¼Àý =========================================\033[0m" << std::endl;
-    std::cout << "  \033[31m¡ñ\033[0m - µ±Ç°Î»ÖÃ   ¡ð - ¿Éµ½´ï·¿¼ä   ©¦ - ´¹Ö±Â·¾¶   ©¤ - Ë®Æ½Â·¾¶   ¨‹ - ÏÂÐÐÖ¸Ê¾ " << std::endl;
-    std::cout << "  ÐÎ×´ËµÃ÷£º" << std::endl;
-    std::cout << "  ©°©¤©´ ·½¿ò=³õÊ¼ÇøÓò   O/|\\ ÈËÐÎ=ÖÐ²ãÓÒÉÏ   /\\ Ð±½Ç¿ò=ÉÏ²ãÇøÓò" << std::endl;
-    std::cout << "  ·½Ïò¼ü¶ÔÓ¦£º1=±± 2=¶«±± 3=¶« 4=¶«ÄÏ 5=ÄÏ 6=Î÷ÄÏ 7=Î÷ 8=Î÷±± 9=ÉÏ 0=ÏÂ " << std::endl;
+    // åœ°å›¾å›¾ä¾‹
+    std::cout << "\n\033[35m========================================= åœ°å›¾å›¾ä¾‹ =========================================\033[0m" << std::endl;
+    std::cout << "  \033[31mâ—\033[0m - å½“å‰ä½ç½®   â—‹ - å¯åˆ°è¾¾æˆ¿é—´   â”‚ - åž‚ç›´è·¯å¾„   â”€ - æ°´å¹³è·¯å¾„   â–¼ - ä¸‹è¡ŒæŒ‡ç¤º " << std::endl;
+    std::cout << "  å½¢çŠ¶è¯´æ˜Žï¼š" << std::endl;
+    std::cout << "  â”Œâ”€â” æ–¹æ¡†=åˆå§‹åŒºåŸŸ   O/|\\ äººå½¢=ä¸­å±‚å³ä¸Š   /\\ æ–œè§’æ¡†=ä¸Šå±‚åŒºåŸŸ" << std::endl;
+    std::cout << "  æ–¹å‘é”®å¯¹åº”ï¼š1=åŒ— 2=ä¸œåŒ— 3=ä¸œ 4=ä¸œå— 5=å— 6=è¥¿å— 7=è¥¿ 8=è¥¿åŒ— 9=ä¸Š 0=ä¸‹ " << std::endl;
     std::cout << "\033[35m============================================================================================\033[0m" << std::endl;
 }
 
-// »æÖÆ¶¨Î»µØÍ¼£¨±£³ÖÏàÍ¬¹æ·¶£©
+// ç»˜åˆ¶å®šä½åœ°å›¾ï¼ˆä¿æŒç›¸åŒè§„èŒƒï¼‰
 void Map::drawLocationMap() const {
-    std::cout << "\n\033[35m======================================= ÊµÊ±¶¨Î»µØÍ¼ =======================================\033[0m" << std::endl;
+    std::cout << "\n\033[35m======================================= å®žæ—¶å®šä½åœ°å›¾ =======================================\033[0m" << std::endl;
 
-    std::cout << "                                  ÇøÓòËõÂÔÍ¼ " << std::endl;
-    std::cout << "                               ¸ßÁÁÏÔÊ¾µ±Ç°Î»ÖÃ " << std::endl;
+    std::cout << "                                  åŒºåŸŸç¼©ç•¥å›¾ " << std::endl;
+    std::cout << "                               é«˜äº®æ˜¾ç¤ºå½“å‰ä½ç½® " << std::endl;
     std::cout << "  ---------------------------------------------------------------------------------------- " << std::endl;
 
-    if (currentRoomId >= 1 && currentRoomId <= 4) { // ³õÊ¼ÇøÓò
-        std::cout << "                            ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´ " << std::endl;
+    if (currentRoomId >= 1 && currentRoomId <= 4) { // åˆå§‹åŒºåŸŸ
+        std::cout << "                            â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” " << std::endl;
         std::cout << "                            |               | " << std::endl;
         std::cout << "                            |               | " << std::endl;
         std::cout << "                            |               | " << std::endl;
         std::cout << "                            |               | " << std::endl;
         std::cout << "                            |               | " << std::endl;
         std::cout << "                            |               | " << std::endl;
-        std::cout << "                            ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-        std::cout << "                           " << (currentRoomId == 4 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "ºÚê×Ê¯Ê¥µî(4) " << std::endl;
+        std::cout << "                            â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+        std::cout << "                           " << (currentRoomId == 4 ? "\033[31mâ—\033[0m " : "â—‹ ") << "é»‘æ›œçŸ³åœ£æ®¿(4) " << std::endl;
         std::cout << "                           /|              |\\ " << std::endl;
         std::cout << "                          / |              | \\ " << std::endl;
         std::cout << "                         /  |              |  \\ " << std::endl;
-        std::cout << "         ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤+  |              |  +©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´ " << std::endl;
+        std::cout << "         â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€+  |              |  +â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” " << std::endl;
         std::cout << "         |               |  |              |  |               | " << std::endl;
         std::cout << "         |               |  |              |  |               | " << std::endl;
         std::cout << "         |               |  |              |  |               | " << std::endl;
         std::cout << "         |               |  |              |  |               | " << std::endl;
         std::cout << "         |               |  |              |  |               | " << std::endl;
         std::cout << "         |               |  |              |  |               | " << std::endl;
-        std::cout << "         ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼  |              |  ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-        std::cout << "             " << (currentRoomId == 3 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "ÁÑÏ¶(3)                       " << (currentRoomId == 2 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "Ìú½³ÆÌ(2) " << std::endl;
-        std::cout << "                                              ©¦ " << std::endl;
-        std::cout << "                                              ¨‹ " << std::endl;
-        std::cout << "                                     ©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´ " << std::endl;
+        std::cout << "         â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  |              |  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+        std::cout << "             " << (currentRoomId == 3 ? "\033[31mâ—\033[0m " : "â—‹ ") << "è£‚éš™(3)                       " << (currentRoomId == 2 ? "\033[31mâ—\033[0m " : "â—‹ ") << "é“åŒ é“º(2) " << std::endl;
+        std::cout << "                                              â”‚ " << std::endl;
+        std::cout << "                                              â–¼ " << std::endl;
+        std::cout << "                                     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” " << std::endl;
         std::cout << "                                     |               | " << std::endl;
         std::cout << "                                     |               | " << std::endl;
         std::cout << "                                     |               | " << std::endl;
         std::cout << "                                     |               | " << std::endl;
         std::cout << "                                     |               | " << std::endl;
         std::cout << "                                     |               | " << std::endl;
-        std::cout << "                                     ©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼ " << std::endl;
-        std::cout << "                                      " << (currentRoomId == 1 ? "\033[31m¡ñ\033[0m " : "¡ð ") << "ÃÔÎíÉ­ÁÖ(1) " << std::endl;
+        std::cout << "                                     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ " << std::endl;
+        std::cout << "                                      " << (currentRoomId == 1 ? "\033[31mâ—\033[0m " : "â—‹ ") << "è¿·é›¾æ£®æž—(1) " << std::endl;
     }
-    // ÆäËûÇøÓò¶¨Î»µØÍ¼°´ÏàÍ¬¹æ·¶ÊµÏÖ
+    // å…¶ä»–åŒºåŸŸå®šä½åœ°å›¾æŒ‰ç›¸åŒè§„èŒƒå®žçŽ°
 
     std::cout << "  ---------------------------------------------------------------------------------------- " << std::endl;
-    std::cout << "  µ±Ç°Î»ÖÃ£º" << rooms.at(currentRoomId).getRoomName() << "(ID:" << currentRoomId << ")" << std::endl;
-    std::cout << "  ¿ÉÒÆ¶¯·½Ïò£º";
+    std::cout << "  å½“å‰ä½ç½®ï¼š" << rooms.at(currentRoomId).getRoomName() << "(ID:" << currentRoomId << ")" << std::endl;
+    std::cout << "  å¯ç§»åŠ¨æ–¹å‘ï¼š";
     const auto& exits = rooms.at(currentRoomId).getExits();
     for (const auto& exit : exits) {
         std::cout << exit.first << "(" << Room::dirToNumber(exit.first) << ") ";
     }
     std::cout << std::endl;
-    std::cout << "  ÇøÓòÌáÊ¾£º" << rooms.at(currentRoomId).getHint() << std::endl;
+    std::cout << "  åŒºåŸŸæç¤ºï¼š" << rooms.at(currentRoomId).getHint() << std::endl;
     std::cout << "\033[35m============================================================================================\033[0m" << std::endl;
 }
 
 
-// ÏÔÊ¾È«¾ÖµØÍ¼
+// æ˜¾ç¤ºå…¨å±€åœ°å›¾
 void Map::showGlobalMap() {
     drawGlobalMap();
 }
 
-// ÏÔÊ¾¶¨Î»µØÍ¼
+// æ˜¾ç¤ºå®šä½åœ°å›¾
 void Map::showLocationMap() {
     drawLocationMap();
 }
 
-// ÒÆ¶¯·¿¼ä£¨Ö§³Ö·½ÏòÎÄ×Ö»òÊý×Ö£©
+// ç§»åŠ¨æˆ¿é—´ï¼ˆæ”¯æŒæ–¹å‘æ–‡å­—æˆ–æ•°å­—ï¼‰
 bool Map::switchRoom(const std::string& input) {
     std::string dir;
 
     if (input.length() == 1 && isdigit(input[0])) {
         dir = Room::numberToDir(input);
         if (dir.empty()) {
-            std::cout << "\033[33m[ÌáÊ¾] ÎÞÐ§Êý×Ö£¬ÇëÊ¹ÓÃ1-0¶ÔÓ¦·½Ïò\033[0m" << std::endl;
+            std::cout << "\033[33m[æç¤º] æ— æ•ˆæ•°å­—ï¼Œè¯·ä½¿ç”¨1-0å¯¹åº”æ–¹å‘\033[0m" << std::endl;
             return false;
         }
     }
@@ -420,36 +420,36 @@ bool Map::switchRoom(const std::string& input) {
 
     auto currIt = rooms.find(currentRoomId);
     if (currIt == rooms.end()) {
-        std::cerr << "\033[31m[´íÎó] µ±Ç°·¿¼ä²»´æÔÚ\033[0m" << std::endl;
+        std::cerr << "\033[31m[é”™è¯¯] å½“å‰æˆ¿é—´ä¸å­˜åœ¨\033[0m" << std::endl;
         return false;
     }
 
     const auto& exits = currIt->second.getExits();
     auto exitIt = exits.find(dir);
     if (exitIt == exits.end()) {
-        std::cout << "\033[33m[ÌáÊ¾] ÎÞ·¨Ïò" << dir << "·½ÏòÒÆ¶¯£¬Ã»ÓÐÍ¨Â·\033[0m" << std::endl;
+        std::cout << "\033[33m[æç¤º] æ— æ³•å‘" << dir << "æ–¹å‘ç§»åŠ¨ï¼Œæ²¡æœ‰é€šè·¯\033[0m" << std::endl;
         return false;
     }
 
     currentRoomId = exitIt->second.first;
-    std::cout << "\n\033[32m[ÒÆ¶¯³É¹¦] Í¨¹ý" << dir << "·½Ïòµ½´ï£º" << rooms.at(currentRoomId).getRoomName() << "(ID:" << currentRoomId << ")\033[0m" << std::endl;
+    std::cout << "\n\033[32m[ç§»åŠ¨æˆåŠŸ] é€šè¿‡" << dir << "æ–¹å‘åˆ°è¾¾ï¼š" << rooms.at(currentRoomId).getRoomName() << "(ID:" << currentRoomId << ")\033[0m" << std::endl;
     rooms.at(currentRoomId).showRoomInfo();
     return true;
 }
 
-// ÏÔÊ¾³õÊ¼·¿¼äÐÅÏ¢
+// æ˜¾ç¤ºåˆå§‹æˆ¿é—´ä¿¡æ¯
 void Map::showInitialRoom() const {
     rooms.at(1).showRoomInfo();
 }
 
-// ¿ìËÙÌø×ª·¿¼ä
+// å¿«é€Ÿè·³è½¬æˆ¿é—´
 void Map::jumpToRoom(int roomId) {
     if (rooms.find(roomId) != rooms.end()) {
         currentRoomId = roomId;
-        std::cout << "\033[32m[Ìø×ª³É¹¦] ÒÑµ½´ï£º" << rooms.at(roomId).getRoomName() << "(ID:" << roomId << ")\033[0m" << std::endl;
+        std::cout << "\033[32m[è·³è½¬æˆåŠŸ] å·²åˆ°è¾¾ï¼š" << rooms.at(roomId).getRoomName() << "(ID:" << roomId << ")\033[0m" << std::endl;
         rooms.at(roomId).showRoomInfo();
     }
     else {
-        std::cerr << "\033[31m[´íÎó] " << roomId << "ºÅ·¿¼ä²»´æÔÚ\033[0m" << std::endl;
+        std::cerr << "\033[31m[é”™è¯¯] " << roomId << "å·æˆ¿é—´ä¸å­˜åœ¨\033[0m" << std::endl;
     }
 }

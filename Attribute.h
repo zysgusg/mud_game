@@ -6,22 +6,22 @@
 
 class Attribute {
 protected:
-    std::string name;       // ½ÇÉ«Ãû³Æ
-    int level;              // µÈ¼¶
-    int hp;                 // µ±Ç°ÉúÃüÖµ
-    int maxHp;              // ×î´óÉúÃüÖµ
-    int atk;                // ¹¥»÷Á¦
-    int def;                // ·ÀÓùÁ¦
-    int speed;              // ËÙ¶È
-    int exp;                // µ±Ç°¾­ÑéÖµ
-    int expToNextLevel;     // Éı¼¶ËùĞè¾­ÑéÖµ
-    int gold;               // ½ğ±Ò
-    float critRate;         // ±©»÷ÂÊ£¨0-1Ö®¼ä£©
+    std::string name;       // è§’è‰²åç§°
+    int level;              // ç­‰çº§
+    int hp;                 // å½“å‰ç”Ÿå‘½å€¼
+    int maxHp;              // æœ€å¤§ç”Ÿå‘½å€¼
+    int atk;                // æ”»å‡»åŠ›
+    int def;                // é˜²å¾¡åŠ›
+    int speed;              // é€Ÿåº¦
+    int exp;                // å½“å‰ç»éªŒå€¼
+    int expToNextLevel;     // å‡çº§æ‰€éœ€ç»éªŒå€¼
+    int gold;               // é‡‘å¸
+    float critRate;         // æš´å‡»ç‡ï¼ˆ0-1ä¹‹é—´ï¼‰
 
 public:
     Attribute(std::string name, int level = 1);
 
-    // ÊôĞÔ»ñÈ¡
+    // å±æ€§è·å–
     std::string getName() const;
     int getLevel() const;
     int getHP() const;
@@ -34,7 +34,7 @@ public:
     int getGold() const;
     float getCritRate() const;
 
-    // ÊôĞÔĞŞ¸Ä
+    // å±æ€§ä¿®æ”¹
     void setMaxHP(int value);
     void setHP(int value);
     void setATK(int value);
@@ -47,7 +47,7 @@ public:
     void setGold(int value);
     void setExpToNextLevel(int value);
     void setLevel(int value);
-    // µÈ¼¶ÌáÉı£¨»ùÓÚÉè¶¨£ºµÈ¼¶+1£¬ÊôĞÔ*110%£¬¾­ÑéÌõ*120%£©
+    // ç­‰çº§æå‡ï¼ˆåŸºäºè®¾å®šï¼šç­‰çº§+1ï¼Œå±æ€§*110%ï¼Œç»éªŒæ¡*120%ï¼‰
     bool levelUp();
 
     bool isAlive() const;

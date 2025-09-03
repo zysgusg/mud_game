@@ -7,12 +7,12 @@ std::string Item::getName() const { return name; }
 ItemType Item::getType() const { return type; }
 std::string Item::getDescription() const { return description; }
 int Item::getPrice() const { return price; }
-// ¾ßÌåÎïÆ·×ÓÀàÊµÏÖ
-HealthPotion::HealthPotion() :Item(1,"ÉúÃüÒ©Ë®", ItemType::HEALTH_POTION, "»Ø¸´50µãÉúÃüÖµ", 50) {}
-std::string HealthPotion::use() { return "»Ø¸´50µãÉúÃüÖµ"; }
+// å…·ä½“ç‰©å“å­ç±»å®ç°
+HealthPotion::HealthPotion() :Item(1,"ç”Ÿå‘½è¯æ°´", ItemType::HEALTH_POTION, "å›å¤50ç‚¹ç”Ÿå‘½å€¼", 50) {}
+std::string HealthPotion::use() { return "å›å¤50ç‚¹ç”Ÿå‘½å€¼"; }
 
-EnergyPotion::EnergyPotion() : Item(2,"ÄÜÁ¿Ò©Ë®", ItemType::ENERGY_POTION, "ÏÂ¸ö»ØºÏĞĞ¶¯´ÎÊı+1", 100) {}
-std::string EnergyPotion::use() { return "ÏÂ¸ö»ØºÏĞĞ¶¯´ÎÊı+1"; }
+EnergyPotion::EnergyPotion() : Item(2,"èƒ½é‡è¯æ°´", ItemType::ENERGY_POTION, "ä¸‹ä¸ªå›åˆè¡ŒåŠ¨æ¬¡æ•°+1", 100) {}
+std::string EnergyPotion::use() { return "ä¸‹ä¸ªå›åˆè¡ŒåŠ¨æ¬¡æ•°+1"; }
 
 HealthPotion* HealthPotion::clone() const {
     return new HealthPotion(*this);

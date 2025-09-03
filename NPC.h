@@ -5,33 +5,33 @@
 #include <vector>
 #include "TaskSystem.h"
 
-// NPCÀàĞÍ£¨»ùÓÚ¾ç±¾ÖĞµÄ½ÇÉ«£©
+// NPCç±»å‹ï¼ˆåŸºäºå‰§æœ¬ä¸­çš„è§’è‰²ï¼‰
 enum class NPCType {
-    BLACKSMITH,   // Ìú½³£¨ÑîË¼î££©
-    PRIEST,       // ¼Àìë£¨½ú½ò½ò£©
-    GUARDIAN,     // ÊØÊÄÕß£¨ÕÅŸj½Ü£©
-    MAYOR,        // ³ÇÖ÷£¨ÖÓÖ¾ì¿£©
-    GENERAL,      // ½«Áì£¨Íõä»«z£©
-    SCAVENGER     // Ê°»ÄÕß£¨ÖÜÑóÑ¸£©
+    BLACKSMITH,   // é“åŒ ï¼ˆæ¨æ€ç¿ï¼‰
+    PRIEST,       // ç¥­ç¥€ï¼ˆæ™‹æ´¥æ´¥ï¼‰
+    GUARDIAN,     // å®ˆèª“è€…ï¼ˆå¼ ç„œæ°ï¼‰
+    MAYOR,        // åŸä¸»ï¼ˆé’Ÿå¿—ç‚œï¼‰
+    GENERAL,      // å°†é¢†ï¼ˆç‹æµ çƒï¼‰
+    SCAVENGER     // æ‹¾è’è€…ï¼ˆå‘¨æ´‹è¿…ï¼‰
 };
 
 class NPC {
 private:
     std::string name;
     NPCType type;
-    std::vector<std::string> dialogues;         // ¶Ô»°ÄÚÈİ
-    std::string taskID;                         // ¿É·¢·ÅµÄÈÎÎñID
+    std::vector<std::string> dialogues;         // å¯¹è¯å†…å®¹
+    std::string taskID;                         // å¯å‘æ”¾çš„ä»»åŠ¡ID
 
 public:
     NPC(std::string name, NPCType type, std::vector<std::string> dialogues, std::string taskID = "");
 
-    // »ù´¡ĞÅÏ¢
+    // åŸºç¡€ä¿¡æ¯
     std::string getName() const;
     NPCType getType() const;
 
-    // ½»»¥
-    void showDialogue() const;                  // ÏÔÊ¾¶Ô»°
-    std::string getTaskID() const;              // »ñÈ¡¿É·¢·ÅÈÎÎñID
+    // äº¤äº’
+    void showDialogue() const;                  // æ˜¾ç¤ºå¯¹è¯
+    std::string getTaskID() const;              // è·å–å¯å‘æ”¾ä»»åŠ¡ID
 };
 
 #endif // NPC_H

@@ -7,12 +7,12 @@ NPC::NPC(std::string name, NPCType type, std::vector<std::string> dialogues, std
 std::string NPC::getName() const { return name; }
 NPCType NPC::getType() const { return type; }
 
-// 显示对话
+// 鏄剧ず瀵硅瘽
 void NPC::showDialogue() const {
     for (const auto& line : dialogues) {
         std::cout << name << ": " << line << std::endl;
     }
 }
 
-// 获取可发放任务ID
+// 鑾峰彇鍙彂鏀句换鍔D
 std::string NPC::getTaskID() const { return taskID; }

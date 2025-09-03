@@ -1,4 +1,4 @@
-﻿#ifndef MAP_H
+#ifndef MAP_H
 #define MAP_H
 
 #include <unordered_map>

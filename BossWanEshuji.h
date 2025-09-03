@@ -6,18 +6,18 @@
 
 class BossWanEshuji : public EvilGeneral {
 private:
-    int phase;                  // Õ½¶·½×¶Î£¨1-3£©
-    std::vector<EvilGeneral*> illusions;  // ¶ñÄî»ÃÓ°£¨Áù´ó½«¾üµÄÍ¶Ó°£©
+    int phase;                  // æˆ˜æ–—é˜¶æ®µï¼ˆ1-3ï¼‰
+    std::vector<EvilGeneral*> illusions;  // æ¶å¿µå¹»å½±ï¼ˆå…­å¤§å°†å†›çš„æŠ•å½±ï¼‰
 
 public:
     BossWanEshuji();
     ~BossWanEshuji();
 
-    // ¶à½×¶ÎÕ½¶·Âß¼­£¨½×¶ÎÌáÉıÊ±ÊôĞÔ±ä»¯£©
+    // å¤šé˜¶æ®µæˆ˜æ–—é€»è¾‘ï¼ˆé˜¶æ®µæå‡æ—¶å±æ€§å˜åŒ–ï¼‰
     void enterNextPhase();
     int getPhase() const;
 
-    // »ÃÓ°ÕÙ»½£¨Ã¿¸ö½×¶ÎÕÙ»½²»Í¬½«¾ü»ÃÓ°£©
+    // å¹»å½±å¬å”¤ï¼ˆæ¯ä¸ªé˜¶æ®µå¬å”¤ä¸åŒå°†å†›å¹»å½±ï¼‰
     std::vector<EvilGeneral*> summonIllusions() const;
 };
 

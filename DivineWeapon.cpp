@@ -2,25 +2,25 @@
 #include "Skills.h"
 
 DivineWeapon::DivineWeapon()
-    : Equipment("ÁùÊ¥²Ã¶ñÉñ½£", EquipmentPart::RING, OathType::TRUTH,  // ÁÙÊ±²¿Î»£¬Êµ¼ÊÎªÌØÊâÎäÆ÷
-        "¿É³É³¤µÄÉñ½££¬¶Ô¿¹¶ñÄîµÄºËĞÄÎäÆ÷", 10, 0, "ËæµÈ¼¶ÌáÉıÍşÁ¦") {
+    : Equipment("å…­åœ£è£æ¶ç¥å‰‘", EquipmentPart::RING, OathType::TRUTH,  // ä¸´æ—¶éƒ¨ä½ï¼Œå®é™…ä¸ºç‰¹æ®Šæ­¦å™¨
+        "å¯æˆé•¿çš„ç¥å‰‘ï¼Œå¯¹æŠ—æ¶å¿µçš„æ ¸å¿ƒæ­¦å™¨", 10, 0, "éšç­‰çº§æå‡å¨åŠ›") {
     growthLevel = 1;
 }
 
-// Éñ½£³É³¤£¨ËæÍæ¼ÒµÈ¼¶ÌáÉı¹¥»÷Á¦£© ´ıÌí¼Ó
+// ç¥å‰‘æˆé•¿ï¼ˆéšç©å®¶ç­‰çº§æå‡æ”»å‡»åŠ›ï¼‰ å¾…æ·»åŠ 
 void DivineWeapon::grow(int playerLevel) {
-    // ¸ù¾İÍæ¼ÒµÈ¼¶ÌáÉıÎäÆ÷³É³¤µÈ¼¶
+    // æ ¹æ®ç©å®¶ç­‰çº§æå‡æ­¦å™¨æˆé•¿ç­‰çº§
     if (playerLevel % 5 == 0) {
         growthLevel++;
     }
 }
 
-// ½âËø¼¼ÄÜ£¨Èç5¼¶½âËøÊ¥Óü²Ã¾ö£©
+// è§£é”æŠ€èƒ½ï¼ˆå¦‚5çº§è§£é”åœ£ç‹±è£å†³ï¼‰
 bool DivineWeapon::unlockSkill(int playerLevel, SkillType& skillType) {
     if (playerLevel >= 5 && growthLevel >= 2) {
         skillType = SkillType::HOLY_PRISON_JUDGMENT;
         return true;
     }
-    // ÆäËû¼¼ÄÜ½âËøÌõ¼ş...
+    // å…¶ä»–æŠ€èƒ½è§£é”æ¡ä»¶...
     return false;
 }
