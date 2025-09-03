@@ -3,4 +3,4 @@ game_cre.*
 x64/
 save/
 .vscode/
-.exe
+*.exe
