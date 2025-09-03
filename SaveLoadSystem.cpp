@@ -1,16 +1,19 @@
 #include "SaveLoadSystem.h"
 #include <fstream>
+#include <filesystem>
 #include <iostream>
 #include <algorithm>
 #include <iomanip>
 #include <limits>
 #include <regex>
-#include<sstream>
-bool is_digits_save(const std::string &str)
+#include <sstream>
+
+bool SaveLoadSystem::is_digits_save(const std::string& str)
 {
     return !str.empty() && std::all_of(str.begin(), str.end(), ::isdigit);
 }
-std::string timeToString(time_t time)
+
+std::string SaveLoadSystem::timeToString(time_t time)
 {
     std::tm tm_buf;
 #ifdef _WIN32
@@ -23,7 +26,7 @@ std::string timeToString(time_t time)
     return ss.str();
 }
 
-SaveLoadSystem::SaveLoadSystem(UIManager &uiManager) : ui(uiManager)
+SaveLoadSystem::SaveLoadSystem(UIManager& uiManager) : ui(uiManager)
 {
     if (!std::filesystem::exists(SAVE_DIR))
     {
@@ -36,7 +39,7 @@ std::vector<SaveSlot> SaveLoadSystem::listSaveSlots()
     std::vector<SaveSlot> slots;
     const std::regex file_regex("save_slot_(\\d+)_(\\d{14})\\.sav");
 
-    for (const auto &entry : std::filesystem::directory_iterator(SAVE_DIR))
+    for (const auto& entry : std::filesystem::directory_iterator(SAVE_DIR))
     {
         if (entry.is_regular_file())
         {
@@ -53,16 +56,20 @@ std::vector<SaveSlot> SaveLoadSystem::listSaveSlots()
                 ss >> std::get_time(&tm, "%Y%m%d%H%M%S");
                 slot.timestamp = mktime(&tm);
 
-                std::ifstream file(entry.path());
+                std::ifstream file(entry.path().string());
                 if (file.is_open())
                 {
                     std::string line, key;
                     if (std::getline(file, line))
                     {
                         std::stringstream meta_ss(line);
-                        meta_ss >> key >> slot.playerName >> slot.playerLevel;
-                        slots.push_back(slot);
+                        std::string meta_key;
+                        meta_ss >> meta_key >> slot.playerName >> slot.playerLevel;
+                        if (meta_key == "META") {
+                            slots.push_back(slot);
+                        }
                     }
+                    file.close();
                 }
             }
         }
@@ -70,7 +77,7 @@ std::vector<SaveSlot> SaveLoadSystem::listSaveSlots()
     return slots;
 }
 
-void SaveLoadSystem::saveGame(const Player &player, const TaskSystem &taskProgress)
+void SaveLoadSystem::saveGame(const Player& player, const TaskSystem& taskProgress)
 {
     auto slots = listSaveSlots();
     int slotToUse = -1;
@@ -80,7 +87,7 @@ void SaveLoadSystem::saveGame(const Player &player, const TaskSystem &taskProgre
         for (int i = 0; i < MAX_SAVES; ++i)
         {
             bool is_used = false;
-            for (const auto &s : slots)
+            for (const auto& s : slots)
             {
                 if (s.id == i)
                 {
@@ -98,11 +105,11 @@ void SaveLoadSystem::saveGame(const Player &player, const TaskSystem &taskProgre
     else
     {
         ui.displayMessage("存档已满！请选择一个要覆盖的存档，或输入 'c' 取消。", UIManager::Color::YELLOW);
-        for (const auto &slot : slots)
+        for (const auto& slot : slots)
         {
             std::string text = "[" + std::to_string(slot.id) + "] " + slot.playerName +
-                               " - 等级 " + std::to_string(slot.playerLevel) +
-                               " (存档时间: " + timeToString(slot.timestamp) + ")";
+                " - 等级 " + std::to_string(slot.playerLevel) +
+                " (存档时间: " + timeToString(slot.timestamp) + ")";
             ui.displayMessage(text, UIManager::Color::WHITE);
         }
 
@@ -131,7 +138,7 @@ void SaveLoadSystem::saveGame(const Player &player, const TaskSystem &taskProgre
         }
     }
 
-    for (const auto &slot : slots)
+    for (const auto& slot : slots)
     {
         if (slot.id == slotToUse)
         {
@@ -151,7 +158,7 @@ void SaveLoadSystem::saveGame(const Player &player, const TaskSystem &taskProgre
     filename_ss << "save_slot_" << slotToUse << "_" << std::put_time(&tm_buf, "%Y%m%d%H%M%S") << ".sav";
     std::string filename = filename_ss.str();
 
-    std::ofstream saveFile(std::filesystem::path(SAVE_DIR) / filename);
+    std::ofstream saveFile((std::filesystem::path(SAVE_DIR) / filename).string());
     if (!saveFile)
     {
         ui.displayMessage("错误: 无法创建存档文件 " + filename, UIManager::Color::RED);
@@ -169,17 +176,17 @@ void SaveLoadSystem::saveGame(const Player &player, const TaskSystem &taskProgre
     saveFile << "Gold " << player.getGold() << std::endl;
     saveFile << "CritRate " << player.getCritRate() << std::endl;
 
-    for (const auto &pair : player.taskProgress)
+    for (const auto& pair : player.taskProgress)
     {
-        const Task &task = pair.second;
-        saveFile << "Task " << task.getID() << " " << static_cast<int>(task.getStatus()) << std::endl;
+        const Task& task = pair.second;
+        saveFile << "Task " << task.getId() << " " << static_cast<int>(task.getStatus()) << std::endl;
     }
 
     saveFile.close();
     ui.displayMessage("游戏已成功保存到槽位 " + std::to_string(slotToUse), UIManager::Color::GREEN);
 }
 
-bool SaveLoadSystem::loadGame(Player &player, TaskSystem &taskProgress)
+bool SaveLoadSystem::loadGame(Player& player, TaskSystem& taskProgress)
 {
     auto slots = listSaveSlots();
     if (slots.empty())
@@ -189,11 +196,11 @@ bool SaveLoadSystem::loadGame(Player &player, TaskSystem &taskProgress)
     }
 
     ui.displayMessage("请选择要加载的存档:", UIManager::Color::CYAN);
-    for (const auto &slot : slots)
+    for (const auto& slot : slots)
     {
         std::string text = "[" + std::to_string(slot.id) + "] " + slot.playerName +
-                           " - 等级 " + std::to_string(slot.playerLevel) +
-                           " (存档时间: " + timeToString(slot.timestamp) + ")";
+            " - 等级 " + std::to_string(slot.playerLevel) +
+            " (存档时间: " + timeToString(slot.timestamp) + ")";
         ui.displayMessage(text, UIManager::Color::WHITE);
     }
 
@@ -217,7 +224,7 @@ bool SaveLoadSystem::loadGame(Player &player, TaskSystem &taskProgress)
         {
             choice_id = std::stoi(choice_str);
             bool valid = false;
-            for (const auto &slot : slots)
+            for (const auto& slot : slots)
             {
                 if (slot.id == choice_id)
                 {
@@ -232,7 +239,7 @@ bool SaveLoadSystem::loadGame(Player &player, TaskSystem &taskProgress)
         std::cout << "无效输入, 请重新输入。" << std::endl;
     }
 
-    std::ifstream loadFile(std::filesystem::path(SAVE_DIR) / filename_to_load);
+    std::ifstream loadFile((std::filesystem::path(SAVE_DIR) / filename_to_load).string());
     if (!loadFile.is_open())
     {
         ui.displayMessage("错误：无法打开存档文件。", UIManager::Color::RED);
@@ -245,8 +252,11 @@ bool SaveLoadSystem::loadGame(Player &player, TaskSystem &taskProgress)
     std::getline(loadFile, dummy);
     std::stringstream meta_ss(dummy);
     std::string meta_key;
-    meta_ss >> meta_key >> player.name;
-
+    std::string player_name;
+    meta_ss >> meta_key >> player_name;
+    if (meta_key == "META") {
+        player.setName(player_name);
+    }
     std::string key;
     while (loadFile >> key)
     {
@@ -283,7 +293,7 @@ bool SaveLoadSystem::loadGame(Player &player, TaskSystem &taskProgress)
         else if (key == "Experience") {
             int exp;
             loadFile >> exp;
-            player.setExp(exp); 
+            player.setExp(exp);
         }
         else if (key == "Gold") {
             int gold;
@@ -297,15 +307,15 @@ bool SaveLoadSystem::loadGame(Player &player, TaskSystem &taskProgress)
         }
         else if (key == "Task")
         {
-            int task_id;
+            std::string task_id;
             int status_int;
             loadFile >> task_id >> status_int;
 
-            auto task_template_opt = taskProgress.getTaskById(task_id);
-            if (task_template_opt)
+            auto task_template = taskProgress.findTask(task_id);
+            if (task_template)
             {
-                Task player_task = *task_template_opt;
-                player_task.status = static_cast<TaskStatus>(status_int);
+                Task player_task = *task_template;
+                player_task.setStatus(static_cast<TaskStatus>(status_int));
                 player.taskProgress[task_id] = player_task;
             }
         }

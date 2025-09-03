@@ -7,6 +7,8 @@ std::string Item::getName() const { return name; }
 ItemType Item::getType() const { return type; }
 std::string Item::getDescription() const { return description; }
 int Item::getPrice() const { return price; }
+int Item::getId() const { return id; }
+
 // 具体物品子类实现
 HealthPotion::HealthPotion() :Item(1,"生命药水", ItemType::HEALTH_POTION, "回复50点生命值", 50) {}
 std::string HealthPotion::use() { return "回复50点生命值"; }

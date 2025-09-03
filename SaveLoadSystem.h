@@ -3,11 +3,11 @@
 
 #include "Player.h"
 #include "UIManager.h"
-#include "TaskSystem.h" // 需要包含TaskSystem
+#include "TaskSystem.h"
 #include <string>
 #include <vector>
 #include <ctime>
-#include <filesystem> // 需要 C++17 支持
+#include <filesystem>
 
 // 存档槽元数据结构
 struct SaveSlot {
@@ -28,9 +28,11 @@ public:
 private:
     UIManager& ui;
     const int MAX_SAVES = 10;
-    const std::string SAVE_DIR = "save"; // 定义存档目录
+    const std::string SAVE_DIR = "save/";
 
     std::vector<SaveSlot> listSaveSlots();
+    std::string timeToString(time_t time);
+    bool is_digits_save(const std::string& str);
 };
 
 #endif // SAVELOADSYSTEM_H

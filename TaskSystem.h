@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 #include <functional> // Task类使用了std::function，需要此头文件
-#include "Player.h"
 #include "Item.h"   // Task类使用了Item*，需要此头文件
-
+#include <optional> // TaskSystem类使用了std::optional，需要此头文件
+class Player; // 前向声明Player类，避免循环依赖
 // 任务状态
 enum class TaskStatus {
     UNACCEPTED, ACCEPTED, COMPLETED, REWARDED
@@ -43,13 +43,16 @@ public:
     // 新增Getter，方便TaskSystem获取奖励信息用于显示
     int getExpReward() const;
     int getGoldReward() const;
+    std::string getId() const { return id; }
+    TaskStatus getStatus() const { return status; }
+    void setStatus(TaskStatus newStatus);
+
 };
 
 
 // 向前声明UIManager类，避免在头文件中引入整个UIManager.h
 class UIManager;
 
-// --- TaskSystem 类的声明已修正 ---
 class TaskSystem {
 private:
     std::vector<Task*> allTasks;
@@ -71,5 +74,8 @@ public:
 
     Task* findTask(std::string id) const;
     void showTaskList(Player* player) const;
+    void updateTaskProgress(Player* player, const std::string& taskId);
+    void showPlayerTasks(const Player& player) const;
+
 };
 #endif // TASKSYSTEM_H

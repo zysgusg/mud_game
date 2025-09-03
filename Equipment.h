@@ -23,7 +23,7 @@ private:
     std::string specialEffect;  // 特殊效果（如抵抗精神控制）
 
 public:
-    Equipment(int id,std::string name, EquipmentPart part, OathType oath,
+    Equipment(std::string name, EquipmentPart part, OathType oath,
         std::string desc, int atk = 0, int def = 0, std::string effect = "");
 
     EquipmentPart getPart() const;
@@ -34,7 +34,6 @@ public:
 
     // 装备使用（穿戴时触发效果描述）
     std::string use() override;
-    Equipment* clone() const override;
 };
 
 #endif // EQUIPMENT_H

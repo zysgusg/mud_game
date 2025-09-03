@@ -4,6 +4,7 @@
 #include "Equipment.h"
 #include "DivineWeapon.h"
 #include "Skills.h"
+#include "TaskSystem.h"
 #include <vector>
 #include <map>
 
@@ -28,13 +29,10 @@ public:
     Skill* getSkill(SkillType type) const;
 
     // 任务管理
-    std::map<std::string, bool> taskProgress;   // 任务进度（任务ID->是否完成）
-    void updateTaskProgress(std::string taskID, bool completed);
+    std::map<std::string, Task> taskProgress;   // 任务进度（任务ID->是否完成）
+    void updateTaskProgress(std::string taskID, TaskStatus status);
     bool isTaskCompleted(std::string taskID) const;
 
-    // 存档封装（将玩家状态转换为可存储格式）
-    std::string serialize() const;
-    void deserialize(const std::string& data);  // 从存档恢复状态
     //物品管理
     std::map<std::string, int> inventory;
     void addItem(const Item& item, int quantity = 1);

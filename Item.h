@@ -2,6 +2,7 @@
 #ifndef ITEM_H
 #define ITEM_H
 #include <string>
+#include <vector>
 
 // 物品类型
 enum class ItemType {
@@ -17,7 +18,9 @@ protected:
     std::string name;
     ItemType type;
     std::string description;
+    std::vector<Item*> drops;
     int price;       // 价格（-1表示不可交易）
+
 
 public:
     Item(int id,std::string name, ItemType type, std::string desc, int price = -1);

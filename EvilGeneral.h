@@ -15,6 +15,12 @@ private:
 public:
     // 声明构造函数，参数列表与实现匹配
     EvilGeneral(std::string name, EvilType type, std::string territory, int level);
+	void addDropItem(const Item& item);
+	EvilType getEvilType() const { return evilType; }
+	std::string getTerritory() const { return territory; }
+	const std::vector<Item*>& getDropItems() const { return drops; }
+	// 战斗AI：随机选择攻击或技能
+	void performAction();
 };
 
 

@@ -10,7 +10,8 @@ enum class EnemyType {
     SLIME,          // 史莱姆
     MINOTAUR,       // 牛头人
     ZOMBIE,         // 僵尸
-    SKELETON        // 骷髅
+    SKELETON,       // 骷髅
+	BOSS            // 巨龙（最终BOSS）
 };
 
 class CommonEnemy : public Attribute {
@@ -21,10 +22,11 @@ private:
 
 public:
     CommonEnemy(EnemyType type, int level);
-
+    static std::string getEnemyName(EnemyType type);
     EnemyType getType() const;
     int getExpReward() const;
     int getGoldReward() const;
+    
 };
 
 #endif // COMMONENEMY_H

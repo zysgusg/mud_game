@@ -78,14 +78,21 @@ Skill* Player::getSkill(SkillType type) const {
 }
 
 // 更新任务进度
-void Player::updateTaskProgress(std::string taskID, bool completed) {
-    taskProgress[taskID] = completed;
+void Player::updateTaskProgress(std::string taskID, TaskStatus status) {
+    auto it = taskProgress.find(taskID);
+    if (it != taskProgress.end()) {
+        it->second.setStatus(status); // 调用 Task 的 setStatus 方法更新状态
+    }
 }
 
 // 检查任务是否完成
 bool Player::isTaskCompleted(std::string taskID) const {
     auto it = taskProgress.find(taskID);
-    return (it != taskProgress.end()) && it->second;
+    if (it != taskProgress.end()) {
+        // 调用 Task 的 getStatus 方法，判断是否为“已完成”状态
+        return it->second.getStatus() == TaskStatus::COMPLETED;
+    }
+    return false; // 任务不存在，视为“未完成”
 }
 
 void Player::addItem(const Item& item, int quantity) {

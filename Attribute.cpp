@@ -34,6 +34,7 @@ void Attribute::setMaxHP(int value) {
         maxHp = 0;
     }
 }
+void Attribute::setName(const std::string& Name) { name = Name; }
 void Attribute::setHP(int value) { hp = std::max(0, std::min(value, maxHp)); }
 void Attribute::setATK(int value) { atk = std::max(1, value); }
 void Attribute::setDEF(int value) { def = std::max(0, value); }

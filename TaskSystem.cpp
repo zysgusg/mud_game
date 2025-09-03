@@ -133,6 +133,10 @@ void TaskSystem::update(Player* player) {
     }
 }
 
+void Task::setStatus(TaskStatus newStatus) {
+    status = newStatus; // 正确赋值逻辑
+}
+
 // --- 修正：submitTask 现在负责处理UI显示 ---
 void TaskSystem::submitTask(Player* player, std::string taskId) {
     Task* task = findTask(taskId);
@@ -229,4 +233,46 @@ std::vector<Task*> TaskSystem::getCompletedTasks() const {
         }
     }
     return result;
+}
+
+void TaskSystem::updateTaskProgress(Player* player, const std::string& taskId) {
+    // 查找任务是否存在
+    Task* task = findTask(taskId);
+    if (task && player) {
+        // 例如：将任务状态更新为“已完成”
+        player->updateTaskProgress(taskId, TaskStatus::COMPLETED);
+        ui.displayMessage("任务进度更新：" + task->getName(), UIManager::Color::GREEN);
+    }
+}
+
+void TaskSystem::showPlayerTasks(const Player& player) const {
+    // 获取玩家的任务进度（假设Player的taskProgress是std::map<std::string, Task>）
+    const auto& playerTasks = player.taskProgress;
+
+    if (playerTasks.empty()) {
+        ui.displayMessage("你当前没有任务。", UIManager::Color::YELLOW);
+        return;
+    }
+
+    ui.displayMessage("===== 你的任务列表 =====", UIManager::Color::CYAN);
+    for (const auto& pair : playerTasks) {
+        const Task& task = pair.second;
+        std::string statusStr;
+
+        // 根据任务状态转换为文字描述
+        switch (task.getStatus()) {
+        case TaskStatus::UNACCEPTED: statusStr = "未接取"; break;
+        case TaskStatus::ACCEPTED: statusStr = "进行中"; break;
+        case TaskStatus::COMPLETED: statusStr = "已完成"; break;
+        case TaskStatus::REWARDED: statusStr = "已领奖"; break;
+        }
+
+        // 显示任务信息（名称、状态、描述等）
+        ui.displayMessage(
+            "[" + statusStr + "] " + task.getName() + "\n" +
+            "   " + task.getDescription(),
+            UIManager::Color::WHITE
+        );
+    }
+    ui.displayMessage("=======================", UIManager::Color::CYAN);
 }

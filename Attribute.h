@@ -35,6 +35,7 @@ public:
     float getCritRate() const;
 
     // 属性修改
+    void setName(const std::string& Name);
     void setMaxHP(int value);
     void setHP(int value);
     void setATK(int value);
