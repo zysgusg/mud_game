@@ -24,8 +24,7 @@ protected:
 
 public:
     Item(int id,std::string name, ItemType type, std::string desc, int price = -1);
-    virtual ~Item() = default;
-    int getId()const { return id; }
+    int getId()const;
     std::string getName() const;
     ItemType getType() const;
     std::string getDescription() const;
@@ -34,6 +33,7 @@ public:
     // 物品使用效果（纯虚函数，子类实现）
     virtual std::string use() = 0;
     virtual Item* clone() const = 0;
+    virtual ~Item() = default; // 虚析构函数
 };
 
 class HealthPotion : public Item {

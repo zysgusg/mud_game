@@ -20,6 +20,7 @@ enum class EvilType {
 
 // 装备部位（对应六誓圣辉救赎套装）
 enum class EquipmentPart {
+    SWORD,      // 圣剑（六圣裁恶神剑，唯一神器）
     HELMET,     // 头盔（自由誓约・破枷之冠）
     CHESTPLATE, // 胸甲（忠诚誓约・铁誓胸甲）
     RING,       // 戒指（真理誓约・明识之戒）

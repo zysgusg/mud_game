@@ -1,11 +1,13 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <iostream>
 #include <map>
 #include <string>
 #include <vector>
 #include <functional>
 #include <optional>
+#include <memory> // 添加头文件支持智能指针
 
 // 包含所有依赖的自定义类的头文件
 #include "UIManager.h"
@@ -46,7 +48,7 @@ private:
     GameState currentState;
     
     // 游戏内所有物品的数据库
-    std::map<int, Item> itemDb; 
+    std::map<int, std::unique_ptr<Item>> itemDb;
     
     // 命令处理相关
     using CommandHandler = std::function<void(const std::vector<std::string>&)>;

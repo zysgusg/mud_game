@@ -1,5 +1,7 @@
 #ifndef COMBATSYSTEM_H
 #define COMBATSYSTEM_H
+#include <map>
+#include <memory>
 #include"BossWanEshuji.h"
 #include"Player.h"
 #include "UIManager.h"
@@ -15,12 +17,12 @@ enum class CombatResult {
 class CombatSystem {
 public:
     CombatSystem(UIManager& uiManager);
-    CombatResult startCombat(Player& player, CommonEnemy& enemy, const std::map<int, Item>& itemDb);
+    CombatResult startCombat(Player& player, CommonEnemy& enemy, const std::map<int, std::unique_ptr<Item>>& itemDb);
     
 private:
     UIManager& ui;
     
-    void playerTurn(Player& player, CommonEnemy& enemy, const std::map<int, Item>& itemDb);
+    void playerTurn(Player& player, CommonEnemy& enemy, const std::map<int, std::unique_ptr<Item>>& itemDb);
     void enemyTurn(CommonEnemy& enemy, Player& player);
 
     bool attemptEscape(const Player& player, const CommonEnemy& enemy);

@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <memory>
 #include <iostream>
 #include <algorithm>
 bool is_digits_game(const std::string& str) {
@@ -15,8 +16,8 @@ Game::Game() :
     currentState(GameState::Exploring)
 {
     // 初始化物品数据库
-    itemDb[1] = HealthPotion();
-    itemDb[2] = EnergyPotion();
+    itemDb[1] = std::make_unique<HealthPotion>();
+    itemDb[2] = std::make_unique<EnergyPotion>();
 
     tasks.initializeTasks();
     shop.initializeShop();

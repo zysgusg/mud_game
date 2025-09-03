@@ -27,6 +27,10 @@ private:
     int goldReward;
 
 public:
+    // 默认构造函数
+    Task() : id(""), name(""), description(""), requiredLevel(1), 
+             completionCondition(nullptr), rewards(), goldReward(0), expReward(0) {}
+    
     Task(std::string id, std::string name, std::string desc, int level,
         std::function<bool(Player*)> condition, std::vector<Item*> rewards,
         int exp, int gold);
@@ -38,13 +42,11 @@ public:
     std::string getID() const;
     std::string getName() const;
     std::string getDescription() const;
-    TaskStatus getStatus() const;
     int getRequiredLevel() const;
-    // 新增Getter，方便TaskSystem获取奖励信息用于显示
     int getExpReward() const;
     int getGoldReward() const;
-    std::string getId() const { return id; }
-    TaskStatus getStatus() const { return status; }
+    std::string getId() const;
+    TaskStatus getStatus() const;
     void setStatus(TaskStatus newStatus);
 
 };

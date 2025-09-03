@@ -3,13 +3,6 @@
 
 ShopSystem::ShopSystem(UIManager& uiManager) : ui(uiManager) {}
 
-ShopSystem::~ShopSystem() {
-    for (Item* item : shopInventory) {
-        delete item;
-    }
-    shopInventory.clear();
-}
-
 void ShopSystem::initializeShop() {
     shopInventory.push_back(new HealthPotion());
     shopInventory.push_back(new EnergyPotion());

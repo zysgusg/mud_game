@@ -69,28 +69,6 @@ std::string CommonEnemy::getEnemyName(EnemyType type) {
     }
 }
 
-// Getter 方法实现
-EnemyType CommonEnemy::getType() const {
-    return type;
-}
-
-int CommonEnemy::getExpReward() const {
-    return expReward;
-}
-
-int CommonEnemy::getGoldReward() const {
-    return goldReward;
-}
-
 EnemyType CommonEnemy::getType() const { return type; }
 int CommonEnemy::getExpReward() const { return expReward; }
 int CommonEnemy::getGoldReward() const { return goldReward; }
-std::string CommonEnemy::getEnemyName(EnemyType type) {
-    switch (type) {
-    case EnemyType::CORRUPT_WOLF: return "蚀骨恶狼";
-    case EnemyType::GOBLIN: return "哥布林";
-    case EnemyType::SLIME: return "史莱姆";
-        // 补充其他敌人类型的名称...
-    default: return "未知敌人";
-    }
-}

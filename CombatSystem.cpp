@@ -38,7 +38,7 @@ bool CombatSystem::attemptEscape(const Player &player, const CommonEnemy &enemy)
 }
 
 // playerTurn 函数现在代表玩家的“单次行动”
-void CombatSystem::playerTurn(Player &player, CommonEnemy &enemy, const std::map<int, Item> &itemDb)
+void CombatSystem::playerTurn(Player &player, CommonEnemy &enemy, const std::map<int, std::unique_ptr<Item>> &itemDb)
 {
     // 函数前半部分的菜单和输入逻辑保持不变
     ui.displayMessage("选择行动: [1]攻击 [2]技能 [3]道具 [4]逃跑", UIManager::Color::WHITE);
@@ -189,7 +189,7 @@ void CombatSystem::enemyTurn(CommonEnemy &enemy, Player &player)
     ui.displayMessage(enemy.getName() + " 对你造成了 " + std::to_string(damage) + " 点伤害!", UIManager::Color::RED);
 }
 
-CombatResult CombatSystem::startCombat(Player &player, CommonEnemy &enemy, const std::map<int, Item> &itemDb)
+CombatResult CombatSystem::startCombat(Player &player, CommonEnemy &enemy, const std::map<int, std::unique_ptr<Item>> &itemDb)
 {
     ui.displayMessage("战斗开始! " + player.getName() + " vs " + enemy.getName(), UIManager::Color::MAGENTA);
     player.extraActionTurns = 0;
@@ -299,3 +299,11 @@ CombatResult CombatSystem::startCombat(Player &player, CommonEnemy &enemy, const
         }
     }
 }
+
+// 在CombatSystem.cpp中，当需要访问itemDb中的Item时，需要使用.get()或->
+// 例如：
+// auto itemIt = itemDb.find(itemId);
+// if (itemIt != itemDb.end() && itemIt->second) {
+//     Item* item = itemIt->second.get(); // 获取裸指针
+//     // 或者直接使用 itemIt->second->someMethod()
+// }

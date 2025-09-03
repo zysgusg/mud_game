@@ -2,7 +2,7 @@
 #include <iostream>
 #include <functional>
 #include "UIManager.h"
-
+#include "Player.h"
 // --------------------------------------------------------------------
 // Task 类实现
 // --------------------------------------------------------------------
@@ -51,6 +51,7 @@ TaskStatus Task::getStatus() const { return status; }
 int Task::getRequiredLevel() const { return requiredLevel; }
 int Task::getExpReward() const { return expReward; }
 int Task::getGoldReward() const { return goldReward; }
+std::string Task::getId() const { return id; } // 新增的getId方法实现
 
 // --------------------------------------------------------------------
 // TaskSystem 类实现
