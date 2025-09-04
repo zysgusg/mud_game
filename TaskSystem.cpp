@@ -3,6 +3,7 @@
 #include <functional>
 #include "UIManager.h"
 #include "Player.h"
+
 // --------------------------------------------------------------------
 // Task 类实现
 // --------------------------------------------------------------------
@@ -27,18 +28,15 @@ bool Task::checkCompletion(Player* player) {
     return false;
 }
 
-// --- 修正：complete方法现在只负责发放奖励，不再处理UI显示 ---
 void Task::complete(Player* player) {
     if (status != TaskStatus::COMPLETED) return;
 
-    // 发放经验和金币奖励 (假设Player类有这些方法)
-    // player->addExp(expReward);
-    // player->addGold(goldReward);
+    player->addExp(expReward);
+    player->addGold(goldReward);
 
-    // 发放物品奖励 (假设Player有addItem方法)
-    // for (Item* item : rewards) {
-    //     player->addItem(item);
-    // }
+    for (Item* item : rewards) {
+        player->addItem(*item);
+    }
 
     status = TaskStatus::REWARDED; // 标记为奖励已发放
 }
@@ -51,7 +49,11 @@ TaskStatus Task::getStatus() const { return status; }
 int Task::getRequiredLevel() const { return requiredLevel; }
 int Task::getExpReward() const { return expReward; }
 int Task::getGoldReward() const { return goldReward; }
-std::string Task::getId() const { return id; } // 新增的getId方法实现
+std::string Task::getId() const { return id; }
+
+void Task::setStatus(TaskStatus newStatus) {
+    status = newStatus;
+}
 
 // --------------------------------------------------------------------
 // TaskSystem 类实现
@@ -68,7 +70,7 @@ TaskSystem::~TaskSystem() {
 void TaskSystem::initializeTasks() {
     // 任务1: 寻黑曜晶尘
     addTask(new Task(
-        "1", "【寻黑曜晶尘】", "前往裂隙废墟，击败守卫的“蚀骨恶狼”，收集 3 份黑曜晶尘。", 1,
+        "1", "【寻黑曜晶尘】", "前往裂隙废墟，击败守卫的蚀骨恶狼，收集 3 份黑曜晶尘。", 1,
         [](Player* player) -> bool {
             // 示例逻辑: return player->getItemCount("黑曜晶尘") >= 3; 
             return false;
@@ -88,7 +90,6 @@ void TaskSystem::initializeTasks() {
 
     ui.displayMessage("任务系统已初始化。", UIManager::Color::GRAY);
 }
-
 
 void TaskSystem::addTask(Task* task) {
     if (task) {
@@ -136,11 +137,6 @@ void TaskSystem::update(Player* player) {
     }
 }
 
-void Task::setStatus(TaskStatus newStatus) {
-    status = newStatus; // 正确赋值逻辑
-}
-
-// --- 修正：submitTask 现在负责处理UI显示 ---
 void TaskSystem::submitTask(Player* player, std::string taskId) {
     Task* task = findTask(taskId);
     if (!task) {
@@ -206,7 +202,6 @@ void TaskSystem::showTaskList(Player* player) const {
     ui.displayMessage("--------------------", UIManager::Color::WHITE);
 }
 
-// --- getAvailableTasks, getAcceptedTasks, getCompletedTasks 的实现 (可选，但保持完整性) ---
 std::vector<Task*> TaskSystem::getAvailableTasks(Player* player) const {
     std::vector<Task*> result;
     for (auto task : allTasks) {
@@ -242,9 +237,21 @@ void TaskSystem::updateTaskProgress(Player* player, const std::string& taskId) {
     // 查找任务是否存在
     Task* task = findTask(taskId);
     if (task && player) {
-        // 例如：将任务状态更新为“已完成”
+        // 例如：将任务状态更新为"已完成"
         player->updateTaskProgress(taskId, TaskStatus::COMPLETED);
         ui.displayMessage("任务进度更新：" + task->getName(), UIManager::Color::GREEN);
+    }
+    
+    // 同时处理基于行动的任务更新（比如"击败XX"）
+    for (auto task : allTasks) {
+        if (task->getStatus() == TaskStatus::ACCEPTED) {
+            // 简单的字符串匹配来检查任务是否完成
+            if (task->getDescription().find(taskId) != std::string::npos) {
+                if (task->checkCompletion(player)) {
+                    ui.displayMessage("任务进度更新: " + task->getName() + " 已完成！", UIManager::Color::GREEN);
+                }
+            }
+        }
     }
 }
 
@@ -288,3 +295,4 @@ void TaskSystem::showPlayerTasks(const Player& player) const {
     }
     ui.displayMessage("=======================", UIManager::Color::CYAN);
 }
+

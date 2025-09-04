@@ -37,7 +37,7 @@ int BossWanEshuji::getPhase() const { return phase; }
 std::vector<EvilGeneral*> BossWanEshuji::summonIllusions() const {
     std::vector<EvilGeneral*> result;
     int count = phase * 2; // 阶段1=2个，阶段2=4个，阶段3=6个
-    for (int i = 0; i < count && i < illusions.size(); i++) {
+    for (size_t i = 0; i < count && i < illusions.size(); i++) {
         result.push_back(illusions[i]);
     }
     return result;

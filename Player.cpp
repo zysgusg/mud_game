@@ -9,13 +9,19 @@ Player::Player(std::string name) : Attribute(name) {
 }
 
 Player::~Player() {
-    delete divineSword;
+
+    if (divineSword != nullptr) {
+        delete divineSword;
+        divineSword = nullptr;
+    }
     for (auto& pair : setParts) {
         delete pair.second;
     }
+    setParts.clear();
     for (auto skill : skills) {
         delete skill;
     }
+    skills.clear();
 }
 
 // 装备套装部件

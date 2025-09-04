@@ -11,19 +11,23 @@ enum class CombatResult {
     Defeat_Restart,   // 战败 - 选择重试
     Defeat_Load,      // 战败 - 选择读档
     Defeat_Exit,      // 战败 - 选择退出
-    Escaped           // 成功逃跑
+    Escaped,          // 成功逃跑
+    Continue           // 继续游戏
 };
 
 class CombatSystem {
 public:
     CombatSystem(UIManager& uiManager);
     CombatResult startCombat(Player& player, CommonEnemy& enemy, const std::map<int, std::unique_ptr<Item>>& itemDb);
+    CombatResult startCombat(Player& player, EvilGeneral& boss, const std::map<int, std::unique_ptr<Item>>& itemDb);
     
 private:
     UIManager& ui;
     
-    void playerTurn(Player& player, CommonEnemy& enemy, const std::map<int, std::unique_ptr<Item>>& itemDb);
+    CombatResult playerTurn(Player& player, CommonEnemy& enemy, const std::map<int, std::unique_ptr<Item>>& itemDb);
+    CombatResult playerTurn(Player& player, EvilGeneral& boss, const std::map<int, std::unique_ptr<Item>>& itemDb);
     void enemyTurn(CommonEnemy& enemy, Player& player);
+    void enemyTurn(EvilGeneral& boss, Player& player);
 
     bool attemptEscape(const Player& player, const CommonEnemy& enemy);
     int calculateDamage(const Attribute& attacker, const Attribute& defender, int power = 0);

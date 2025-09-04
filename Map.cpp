@@ -252,7 +252,7 @@ void Map::drawGlobalMap() const {
     std::cout << "   亡念堡垒[18]" << std::endl;
     std::cout << "         |" << std::endl;
     std::cout << "   旧图书馆[17]──虚无之城[16]──塔顶[15]" << std::endl;
-    std::cout << "                           |" << std::endl;
+    std::cout << "                         |" << std::endl;
     std::cout << "                    静默尖塔[13]" << std::endl;
     std::cout << "                     |      |" << std::endl;
     std::cout << "                 迷宫[14]  漠心城[12]" << std::endl;
@@ -263,11 +263,11 @@ void Map::drawGlobalMap() const {
     std::cout << "                                     |" << std::endl;
     std::cout << "                              断柱[7]──凋誓崖[6]" << std::endl;
     std::cout << "                                     |" << std::endl;
-    std::cout << "黑曜权枢殿[4]──背契坛[5]" << std::endl;
-    std::cout << "   |              |" << std::endl;
-    std::cout << "铁匠铺[2]──裂隙废墟[3]" << std::endl;
-    std::cout << "   |" << std::endl;
-    std::cout << "迷雾森林[1] ← 当前位置" << std::endl;
+    std::cout << "                          黑曜权枢殿[4]──背契坛[5]" << std::endl;
+    std::cout << "                            |     |" << std::endl;
+    std::cout << "                      铁匠铺[2]──裂隙废墟[3]" << std::endl;
+    std::cout << "                         |" << std::endl;
+    std::cout << "                      迷雾森林[1]" << std::endl;
     std::cout << std::endl;
 }
 

@@ -153,7 +153,12 @@ void Game::registerCommands() {
         if (boss) {
             ui.displayMessage("你挑战了强敌 " + boss->getName() + "！", UIManager::Color::MAGENTA);
             
-            Player player_backup = player;
+            // 备份玩家关键状态而不是整个对象
+            int backup_hp = player.getHP();
+            int backup_exp = player.getExp();
+            int backup_gold = player.getGold();
+            std::map<std::string, int> backup_inventory = player.inventory;
+            
             EvilGeneral original_boss = *boss;
             EvilGeneral current_boss = original_boss;
 
@@ -166,19 +171,27 @@ void Game::registerCommands() {
                     tasks.updateTaskProgress(&player, "击败" + boss->getName());
                     ui.displayMessage("战斗胜利！继续你的冒险吧。", UIManager::Color::GREEN);
                     currentState = GameState::Exploring;  // 恢复探索状态
-                    break; // 改为break而不是return，继续执行后续逻辑
+                    return; // 结束当前命令处理
                     
                 case CombatResult::Escaped:
-                    player = player_backup;
+                    // 恢复玩家状态
+                    player.setHP(backup_hp);
+                    player.setExp(backup_exp);
+                    player.setGold(backup_gold);
+                    player.inventory = backup_inventory;
                     ui.displayMessage("你回到了战前的位置。", UIManager::Color::GRAY);
                     currentState = GameState::Exploring;  // 恢复探索状态
-                    break; // 改为break而不是return
+                    return; // 结束当前命令处理
                     
                 case CombatResult::Defeat_Restart:
                     ui.displayMessage("准备重新挑战...", UIManager::Color::YELLOW);
-                    player = player_backup;
+                    // 恢复玩家状态
+                    player.setHP(backup_hp);
+                    player.setExp(backup_exp);
+                    player.setGold(backup_gold);
+                    player.inventory = backup_inventory;
                     current_boss = original_boss;
-                    break;
+                    continue; // 继续循环，重新开始战斗
                     
                 case CombatResult::Defeat_Load:
                     if (saveLoad.loadGame(player, tasks)) {
@@ -190,14 +203,13 @@ void Game::registerCommands() {
                 case CombatResult::Defeat_Exit:
                     isRunning = false;
                     return;
-                }
-                
-                // 如果是胜利或逃跑，跳出循环
-                if (result == CombatResult::Victory || result == CombatResult::Escaped) {
-                    break;
+                    
+                default:
+                    // 处理其他情况，包括Continue
+                    continue;
                 }
             }
-            return;
+            return; // 结束当前命令处理，避免继续检查普通敌人
         }
 
         // 检查是否有普通敌人
@@ -205,7 +217,12 @@ void Game::registerCommands() {
         if (enemy) {
             ui.displayMessage("一只 " + enemy->getName() + " 跳了出来!", UIManager::Color::MAGENTA);
             
-            Player player_backup = player;
+            // 备份玩家关键状态而不是整个对象
+            int backup_hp = player.getHP();
+            int backup_exp = player.getExp();
+            int backup_gold = player.getGold();
+            std::map<std::string, int> backup_inventory = player.inventory;
+            
             CommonEnemy original_enemy = *enemy;
             CommonEnemy current_enemy = original_enemy;
 
@@ -214,21 +231,30 @@ void Game::registerCommands() {
 
                 switch (result) {
                 case CombatResult::Victory:
-                    gameMap.removeDefeatedEnemy(enemy);
                     tasks.updateTaskProgress(&player, "击败" + enemy->getName());
+                    gameMap.removeDefeatedEnemy(enemy);
+                    
                     ui.displayMessage("战斗胜利！", UIManager::Color::GREEN);
                     currentState = GameState::Exploring;  // 恢复探索状态
                     break; // 改为break而不是return
 
                 case CombatResult::Escaped:
-                    player = player_backup;
+                    // 恢复玩家状态
+                    player.setHP(backup_hp);
+                    player.setExp(backup_exp);
+                    player.setGold(backup_gold);
+                    player.inventory = backup_inventory;
                     ui.displayMessage("你回到了战前的位置。", UIManager::Color::GRAY);
                     currentState = GameState::Exploring;  // 恢复探索状态
                     break; // 改为break而不是return
 
                 case CombatResult::Defeat_Restart:
                     ui.displayMessage("准备重新挑战...", UIManager::Color::YELLOW);
-                    player = player_backup;
+                    // 恢复玩家状态
+                    player.setHP(backup_hp);
+                    player.setExp(backup_exp);
+                    player.setGold(backup_gold);
+                    player.inventory = backup_inventory;
                     current_enemy = original_enemy;
                     break;
 

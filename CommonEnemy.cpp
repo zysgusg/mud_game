@@ -1,7 +1,4 @@
 #include "CommonEnemy.h"
-
-#include "CommonEnemy.h"
-
 // 构造函数：根据敌人类型和等级初始化属性
 CommonEnemy::CommonEnemy(EnemyType type, int level)
     : Attribute(getEnemyName(type), level),  // 调用基类构造函数（传入名称和等级）
