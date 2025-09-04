@@ -29,7 +29,8 @@ private:
 public:
     // 默认构造函数
     Task() : id(""), name(""), description(""), requiredLevel(1), 
-             completionCondition(nullptr), rewards(), goldReward(0), expReward(0) {}
+             completionCondition(nullptr), rewards(), expReward(0), goldReward(0),
+             status(TaskStatus::UNACCEPTED) {}
     
     Task(std::string id, std::string name, std::string desc, int level,
         std::function<bool(Player*)> condition, std::vector<Item*> rewards,

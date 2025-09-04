@@ -1,9 +1,14 @@
 #include "Map.h"
+#include "BossWanEshuji.h"
 #include <iostream>
+#include <random>
 
 // 构造函数
 Map::Map() {
     initRooms();
+    initNPCs();
+    initBosses();
+    initEnemies();
     currentRoomId = 1; // 初始位置：迷雾森林
 }
 
@@ -150,248 +155,144 @@ void Map::initRooms() {
     rooms.insert({ 19, chaos });
 }
 
-// 分散式全局地图
+// 初始化NPC
+void Map::initNPCs() {
+    // 铁匠铺的NPC - 杨思睿
+    roomNPCs[2] = std::make_unique<NPC>(
+        "杨思睿", NPCType::BLACKSMITH,
+        std::vector<std::string>{"欢迎来到铁砧铁匠铺！", "我可以为你修复装备。", "需要什么服务吗？"},
+        "1"  // 发布任务ID为1的任务
+    );
+
+    // 背契之坛的NPC - 晋津津
+    roomNPCs[5] = std::make_unique<NPC>(
+        "晋津津", NPCType::PRIEST,
+        std::vector<std::string>{"神明保佑你，勇者。", "背契之坛见证着古老的誓言。", "愿圣光指引你前行。"},
+        "2"
+    );
+
+    // 残垣断柱的NPC - 张焜杰
+    roomNPCs[7] = std::make_unique<NPC>(
+        "张焜杰", NPCType::GUARDIAN,
+        std::vector<std::string>{"我是这里的守护者。", "明识之戒就在这里。", "愿你能看清真相。"},
+        ""
+    );
+
+    // 怜悯之城的NPC - 钟志炜
+    roomNPCs[9] = std::make_unique<NPC>(
+        "钟志炜", NPCType::MAYOR,
+        std::vector<std::string>{"欢迎来到怜悯之城。", "这里曾经是繁华之地。", "怜悯之链藏在山脚下。"},
+        ""
+    );
+
+    // 塔底迷宫的NPC - 王浠珃
+    roomNPCs[14] = std::make_unique<NPC>(
+        "王浠珃", NPCType::GENERAL,
+        std::vector<std::string>{"我被困在这迷宫中。", "晨曦披风是我的珍藏。", "帮助我脱困吧。"},
+        ""
+    );
+
+    // 图书馆的NPC - 周洋迅
+    roomNPCs[17] = std::make_unique<NPC>(
+        "周洋迅", NPCType::SCAVENGER,
+        std::vector<std::string>{"我在这里研究古代文献。", "创世战靴的线索就在这些书中。", "知识就是力量。"},
+        ""
+    );
+}
+
+// 初始化BOSS
+void Map::initBosses() {
+    // 黑曜权枢殿 - 厄休拉
+    roomBosses[4] = std::make_unique<EvilGeneral>("厄休拉", EvilType::POWER_HUNGRY, "黑曜权枢殿", 10);
+    
+    // 凋誓之崖 - 卡莱恩  
+    roomBosses[6] = std::make_unique<EvilGeneral>("卡莱恩", EvilType::BETRAYAL, "凋誓之崖", 12);
+    
+    // 残垣布道台 - 玛尔索
+    roomBosses[8] = std::make_unique<EvilGeneral>("玛尔索", EvilType::LIE, "残垣布道台", 14);
+    
+    // 棘刑斗技场 - 克鲁尔萨
+    roomBosses[11] = std::make_unique<EvilGeneral>("克鲁尔萨", EvilType::CRUELTY, "棘刑斗技场", 16);
+    
+    // 塔顶 - 灭欲
+    roomBosses[15] = std::make_unique<EvilGeneral>("灭欲", EvilType::DESIRELESS, "塔顶", 18);
+    
+    // 亡念堡垒 - 尼赫尔
+    roomBosses[18] = std::make_unique<EvilGeneral>("尼赫尔", EvilType::DESTRUCTION, "亡念堡垒", 20);
+    
+    // 混沌之心 - 万恶枢机 (最终BOSS)
+    roomBosses[19] = std::make_unique<BossWanEshuji>();
+}
+
+// 初始化普通敌人
+void Map::initEnemies() {
+    // 迷雾森林
+    roomEnemies[1].push_back(std::make_unique<CommonEnemy>(EnemyType::GOBLIN, 1));
+    roomEnemies[1].push_back(std::make_unique<CommonEnemy>(EnemyType::SLIME, 1));
+    
+    // 裂隙废墟 - 蚀骨恶狼守卫
+    roomEnemies[3].push_back(std::make_unique<CommonEnemy>(EnemyType::CORRUPT_WOLF, 2));
+    roomEnemies[3].push_back(std::make_unique<CommonEnemy>(EnemyType::CORRUPT_WOLF, 2));
+    
+    // 漠心城
+    roomEnemies[12].push_back(std::make_unique<CommonEnemy>(EnemyType::ZOMBIE, 8));
+    roomEnemies[12].push_back(std::make_unique<CommonEnemy>(EnemyType::SKELETON, 8));
+    
+    // 虚无之城
+    roomEnemies[16].push_back(std::make_unique<CommonEnemy>(EnemyType::MINOTAUR, 10));
+    roomEnemies[16].push_back(std::make_unique<CommonEnemy>(EnemyType::ZOMBIE, 10));
+}
+
+// 绘制全局地图
 void Map::drawGlobalMap() const {
-    std::cout << "\n\033[35m======================================= 安特大陆全局地图 =======================================\033[0m" << std::endl;
-
-    // 顶层：混沌之隙(19)
-    std::cout << "                                         ┌─────┐ " << std::endl;
-    std::cout << "                                         │     │ " << std::endl;
-    std::cout << "                                         └─────┘ " << std::endl;
-    std::cout << "                                     " << (currentRoomId == 19 ? "\033[31m●\033[0m " : "○ ") << "混沌之隙(19) " << std::endl;
-    std::cout << "                                          │ " << std::endl;
-    std::cout << "                                          ▼ " << std::endl;
-
-    // 上层：遗忘堡垒(18) - 星图图书馆(17)
-    std::cout << "                 ┌─────────────┐                        ┌─────────────┐ " << std::endl;
-    std::cout << "                /               \\                      /               \\ " << std::endl;
-    std::cout << "               /                 \\                    /                 \\ " << std::endl;
-    std::cout << "              /                   \\                  /                   \\ " << std::endl;
-    std::cout << "              \\                   /                  \\                   / " << std::endl;
-    std::cout << "               \\                 /                    \\                 / " << std::endl;
-    std::cout << "                \\               /                      \\               / " << std::endl;
-    std::cout << "                 └─────────────┘                        └─────────────┘ " << std::endl;
-    std::cout << "               " << (currentRoomId == 18 ? "\033[31m●\033[0m " : "○ ") << "遗忘堡垒(18)                        " << (currentRoomId == 17 ? "\033[31m●\033[0m " : "○ ") << "星图图书馆(17) " << std::endl;
-    std::cout << "                         │                                 │ " << std::endl;
-    std::cout << "                         └─────────────────────────────────┘ " << std::endl;
-    std::cout << "                                          │ " << std::endl;
-    std::cout << "                                          ▼ " << std::endl;
-    std::cout << "                                         ┌─────────────┐ " << std::endl;
-    std::cout << "                                        /               \\ " << std::endl;
-    std::cout << "                                       /                 \\ " << std::endl;
-    std::cout << "                                      /                   \\ " << std::endl;
-    std::cout << "                                      \\                   / " << std::endl;
-    std::cout << "                                       \\                 / " << std::endl;
-    std::cout << "                                        \\               / " << std::endl;
-    std::cout << "                                         └─────────────┘ " << std::endl;
-    std::cout << "                                     " << (currentRoomId == 16 ? "\033[31m●\033[0m " : "○ ") << "虚空之城(16) " << std::endl;
-    std::cout << "                                          │ " << std::endl;
-    std::cout << "                                          ▼ " << std::endl;
-
-    // 中层右上：顶端(15) - 漠然尖塔(13) - 迷宫(14) - 冷漠殿(12)
-    std::cout << "                                         O " << std::endl;
-    std::cout << "                                        /|\\ " << std::endl;
-    std::cout << "                                       / | \\ " << std::endl;
-    std::cout << "                                      /  |  \\ " << std::endl;
-    std::cout << "                                     ┌────┴────┐ " << std::endl;
-    std::cout << "                                     │         │ " << std::endl;
-    std::cout << "                                     └────┬────┘ " << std::endl;
-    std::cout << "                                       " << (currentRoomId == 15 ? "\033[31m●\033[0m " : "○ ") << "顶端(15) " << std::endl;
-    std::cout << "                                         │ " << std::endl;
-    std::cout << "                                         ▼ " << std::endl;
-    std::cout << "                 O                           O " << std::endl;
-    std::cout << "                /|\\                         /|\\ " << std::endl;
-    std::cout << "               / | \\                       / | \\ " << std::endl;
-    std::cout << "              /  |  \\                     /  |  \\ " << std::endl;
-    std::cout << "             ┌────┴────┐                 ┌────┴────┐ " << std::endl;
-    std::cout << "             │         │                 │         │ " << std::endl;
-    std::cout << "             └────┬────┘                 └────┬────┘ " << std::endl;
-    std::cout << "             " << (currentRoomId == 13 ? "\033[31m●\033[0m " : "○ ") << "漠然尖塔(13)                 " << (currentRoomId == 14 ? "\033[31m●\033[0m " : "○ ") << "迷宫(14) " << std::endl;
-    std::cout << "                 │                             │ " << std::endl;
-    std::cout << "                 └─────────────────────────────┘ " << std::endl;
-    std::cout << "                                          │ " << std::endl;
-    std::cout << "                                          ▼ " << std::endl;
-    std::cout << "                                         ┌─────────────┐ " << std::endl;
-    std::cout << "                                        /               \\ " << std::endl;
-    std::cout << "                                       /                 \\ " << std::endl;
-    std::cout << "                                      /                   \\ " << std::endl;
-    std::cout << "                                      \\                   / " << std::endl;
-    std::cout << "                                       \\                 / " << std::endl;
-    std::cout << "                                        \\               / " << std::endl;
-    std::cout << "                                         └─────────────┘ " << std::endl;
-    std::cout << "                                     " << (currentRoomId == 12 ? "\033[31m●\033[0m " : "○ ") << "冷漠殿(12) " << std::endl;
-
-    // 中层左下：竞技场(11) - 怜悯之厅(9) - 山脚(10)
-    std::cout << "\n\n";
-    std::cout << "                                         ┌─────┐ " << std::endl;
-    std::cout << "                                        /       \\ " << std::endl;
-    std::cout << "                                       /         \\ " << std::endl;
-    std::cout << "                                      /           \\ " << std::endl;
-    std::cout << "                                     /             \\ " << std::endl;
-    std::cout << "                                    /               \\ " << std::endl;
-    std::cout << "                                   /                 \\ " << std::endl;
-    std::cout << "                                  └───────────────────┘ " << std::endl;
-    std::cout << "                                     " << (currentRoomId == 11 ? "\033[31m●\033[0m " : "○ ") << "竞技场(11) " << std::endl;
-    std::cout << "                                          │ " << std::endl;
-    std::cout << "                                          ▼ " << std::endl;
-    std::cout << "                                         ┌─────┐ " << std::endl;
-    std::cout << "                                        /       \\ " << std::endl;
-    std::cout << "                                       /         \\ " << std::endl;
-    std::cout << "                                      /           \\ " << std::endl;
-    std::cout << "                                     /             \\ " << std::endl;
-    std::cout << "                                      \\           / " << std::endl;
-    std::cout << "                                       \\         / " << std::endl;
-    std::cout << "                                        \\       / " << std::endl;
-    std::cout << "                                         └─────┘ " << std::endl;
-    std::cout << "                                     " << (currentRoomId == 9 ? "\033[31m●\033[0m " : "○ ") << "怜悯之厅(9) " << std::endl;
-    std::cout << "                                          │ " << std::endl;
-    std::cout << "                                          ▼ " << std::endl;
-    std::cout << "                                           ┌─────┐ " << std::endl;
-    std::cout << "                                          /       \\ " << std::endl;
-    std::cout << "                                         /         \\ " << std::endl;
-    std::cout << "                                        /           \\ " << std::endl;
-    std::cout << "                                       /             \\ " << std::endl;
-    std::cout << "                                      /               \\ " << std::endl;
-    std::cout << "                                     └────────────────┘ " << std::endl;
-    std::cout << "                                       " << (currentRoomId == 10 ? "\033[31m●\033[0m " : "○ ") << "山脚(10) " << std::endl;
-
-    // 中下层：双子平台(8) - 双子石柱(7) - 悬崖之边(6)
-    std::cout << "\n\n";
-    std::cout << "                                      ┌─────────────┐ " << std::endl;
-    std::cout << "                                     /               \\ " << std::endl;
-    std::cout << "                                    /                 \\ " << std::endl;
-    std::cout << "                                   /                   \\ " << std::endl;
-    std::cout << "                                  /                     \\ " << std::endl;
-    std::cout << "                                   \\                   / " << std::endl;
-    std::cout << "                                    \\                 / " << std::endl;
-    std::cout << "                                     \\               / " << std::endl;
-    std::cout << "                                      └─────────────┘ " << std::endl;
-    std::cout << "                                       " << (currentRoomId == 8 ? "\033[31m●\033[0m " : "○ ") << "双子平台(8) " << std::endl;
-    std::cout << "                                              │ " << std::endl;
-    std::cout << "                                              ▼ " << std::endl;
-    std::cout << "                             ┌─────────────┐ " << std::endl;
-    std::cout << "                            /               \\ " << std::endl;
-    std::cout << "                           /                 \\ " << std::endl;
-    std::cout << "                          /                   \\ " << std::endl;
-    std::cout << "                         /                     \\ " << std::endl;
-    std::cout << "                          \\                   / " << std::endl;
-    std::cout << "                           \\                 / " << std::endl;
-    std::cout << "                            \\               / " << std::endl;
-    std::cout << "                             └─────────────┘ " << std::endl;
-    std::cout << "                               " << (currentRoomId == 7 ? "\033[31m●\033[0m " : "○ ") << "双子石柱(7) " << std::endl;
-    std::cout << "                                              │ " << std::endl;
-    std::cout << "                                              ▼ " << std::endl;
-    std::cout << "                    ┌─────────────┐ " << std::endl;
-    std::cout << "                   /               \\ " << std::endl;
-    std::cout << "                  /                 \\ " << std::endl;
-    std::cout << "                 /                   \\ " << std::endl;
-    std::cout << "                /                     \\ " << std::endl;
-    std::cout << "                 \\                   / " << std::endl;
-    std::cout << "                  \\                 / " << std::endl;
-    std::cout << "                   \\               / " << std::endl;
-    std::cout << "                    └─────────────┘ " << std::endl;
-    std::cout << "                     " << (currentRoomId == 6 ? "\033[31m●\033[0m " : "○ ") << "悬崖之边(6) " << std::endl;
-
-    // 底层：背契之坛(5) - 黑曜石圣殿(4) - 裂隙(3) - 铁匠铺(2) - 迷雾森林(1)
-    std::cout << "                                              │ " << std::endl;
-    std::cout << "                                              ▼ " << std::endl;
-    std::cout << "    ┌─────────────┐                        ┌───────────────┐ " << std::endl;
-    std::cout << "   /               \\                       |               | " << std::endl;
-    std::cout << "  /                 \\                      |               | " << std::endl;
-    std::cout << " /                   \\                     |               | " << std::endl;
-    std::cout << "|                     |                    |               | " << std::endl;
-    std::cout << " \\                   /                     |               | " << std::endl;
-    std::cout << "  \\                 /                      |               | " << std::endl;
-    std::cout << "   \\               /                       └───────────────┘ " << std::endl;
-    std::cout << "    └─────────────┘                                   /|\\ " << std::endl;
-    std::cout << "    " << (currentRoomId == 5 ? "\033[31m●\033[0m " : "○ ") << "背契之坛(5)                          " << (currentRoomId == 4 ? "\033[31m●\033[0m " : "○ ") << "黑曜石圣殿(4)        " << std::endl;
-    std::cout << "                                                       /   \\ " << std::endl;
-    std::cout << "         ┌───────────────┐             ┌───────────────┐ " << std::endl;
-    std::cout << "         |               |             |               | " << std::endl;
-    std::cout << "         |               |             |               | " << std::endl;
-    std::cout << "         |               |             |               | " << std::endl;
-    std::cout << "         |               |             |               | " << std::endl;
-    std::cout << "         |               |             |               | " << std::endl;
-    std::cout << "         |               |             |               | " << std::endl;
-    std::cout << "         └───────────────┘             └───────────────┘ " << std::endl;
-    std::cout << "             " << (currentRoomId == 3 ? "\033[31m●\033[0m " : "○ ") << "裂隙(3)                       " << (currentRoomId == 2 ? "\033[31m●\033[0m " : "○ ") << "铁匠铺(2) " << std::endl;
-    std::cout << "                                              │ " << std::endl;
-    std::cout << "                                              ▼ " << std::endl;
-    std::cout << "                                     ┌───────────────┐ " << std::endl;
-    std::cout << "                                     |               | " << std::endl;
-    std::cout << "                                     |               | " << std::endl;
-    std::cout << "                                     |               | " << std::endl;
-    std::cout << "                                     |               | " << std::endl;
-    std::cout << "                                     |               | " << std::endl;
-    std::cout << "                                     |               | " << std::endl;
-    std::cout << "                                     └───────────────┘ " << std::endl;
-    std::cout << "                                      " << (currentRoomId == 1 ? "\033[31m●\033[0m " : "○ ") << "迷雾森林(1) " << std::endl;
-
-    // 地图图例
-    std::cout << "\n\033[35m========================================= 地图图例 =========================================\033[0m" << std::endl;
-    std::cout << "  \033[31m●\033[0m - 当前位置   ○ - 可到达房间   │ - 垂直路径   ─ - 水平路径   ▼ - 下行指示 " << std::endl;
-    std::cout << "  形状说明：" << std::endl;
-    std::cout << "  ┌─┐ 方框=初始区域   O/|\\ 人形=中层右上   /\\ 斜角框=上层区域" << std::endl;
-    std::cout << "  方向键对应：1=北 2=东北 3=东 4=东南 5=南 6=西南 7=西 8=西北 9=上 0=下 " << std::endl;
-    std::cout << "\033[35m============================================================================================\033[0m" << std::endl;
-}
-
-// 绘制定位地图（保持相同规范）
-void Map::drawLocationMap() const {
-    std::cout << "\n\033[35m======================================= 实时定位地图 =======================================\033[0m" << std::endl;
-
-    std::cout << "                                  区域缩略图 " << std::endl;
-    std::cout << "                               高亮显示当前位置 " << std::endl;
-    std::cout << "  ---------------------------------------------------------------------------------------- " << std::endl;
-
-    if (currentRoomId >= 1 && currentRoomId <= 4) { // 初始区域
-        std::cout << "                            ┌───────────────┐ " << std::endl;
-        std::cout << "                            |               | " << std::endl;
-        std::cout << "                            |               | " << std::endl;
-        std::cout << "                            |               | " << std::endl;
-        std::cout << "                            |               | " << std::endl;
-        std::cout << "                            |               | " << std::endl;
-        std::cout << "                            |               | " << std::endl;
-        std::cout << "                            └───────────────┘ " << std::endl;
-        std::cout << "                           " << (currentRoomId == 4 ? "\033[31m●\033[0m " : "○ ") << "黑曜石圣殿(4) " << std::endl;
-        std::cout << "                           /|              |\\ " << std::endl;
-        std::cout << "                          / |              | \\ " << std::endl;
-        std::cout << "                         /  |              |  \\ " << std::endl;
-        std::cout << "         ┌───────────────+  |              |  +───────────────┐ " << std::endl;
-        std::cout << "         |               |  |              |  |               | " << std::endl;
-        std::cout << "         |               |  |              |  |               | " << std::endl;
-        std::cout << "         |               |  |              |  |               | " << std::endl;
-        std::cout << "         |               |  |              |  |               | " << std::endl;
-        std::cout << "         |               |  |              |  |               | " << std::endl;
-        std::cout << "         |               |  |              |  |               | " << std::endl;
-        std::cout << "         └───────────────┘  |              |  └───────────────┘ " << std::endl;
-        std::cout << "             " << (currentRoomId == 3 ? "\033[31m●\033[0m " : "○ ") << "裂隙(3)                       " << (currentRoomId == 2 ? "\033[31m●\033[0m " : "○ ") << "铁匠铺(2) " << std::endl;
-        std::cout << "                                              │ " << std::endl;
-        std::cout << "                                              ▼ " << std::endl;
-        std::cout << "                                     ┌───────────────┐ " << std::endl;
-        std::cout << "                                     |               | " << std::endl;
-        std::cout << "                                     |               | " << std::endl;
-        std::cout << "                                     |               | " << std::endl;
-        std::cout << "                                     |               | " << std::endl;
-        std::cout << "                                     |               | " << std::endl;
-        std::cout << "                                     |               | " << std::endl;
-        std::cout << "                                     └───────────────┘ " << std::endl;
-        std::cout << "                                      " << (currentRoomId == 1 ? "\033[31m●\033[0m " : "○ ") << "迷雾森林(1) " << std::endl;
-    }
-    // 其他区域定位地图按相同规范实现
-
-    std::cout << "  ---------------------------------------------------------------------------------------- " << std::endl;
-    std::cout << "  当前位置：" << rooms.at(currentRoomId).getRoomName() << "(ID:" << currentRoomId << ")" << std::endl;
-    std::cout << "  可移动方向：";
-    const auto& exits = rooms.at(currentRoomId).getExits();
-    for (const auto& exit : exits) {
-        std::cout << exit.first << "(" << Room::dirToNumber(exit.first) << ") ";
-    }
+    std::cout << "\033[32m==== 恶念之界地图 ====\033[0m" << std::endl;
     std::cout << std::endl;
-    std::cout << "  区域提示：" << rooms.at(currentRoomId).getHint() << std::endl;
-    std::cout << "\033[35m============================================================================================\033[0m" << std::endl;
+    std::cout << "     混沌之心[19]" << std::endl;
+    std::cout << "         |" << std::endl;
+    std::cout << "   亡念堡垒[18]" << std::endl;
+    std::cout << "         |" << std::endl;
+    std::cout << "   旧图书馆[17]──虚无之城[16]──塔顶[15]" << std::endl;
+    std::cout << "                           |" << std::endl;
+    std::cout << "                    静默尖塔[13]" << std::endl;
+    std::cout << "                     |      |" << std::endl;
+    std::cout << "                 迷宫[14]  漠心城[12]" << std::endl;
+    std::cout << "                           |" << std::endl;
+    std::cout << "                   棘刑斗技场[11]──怜悯之城[9]" << std::endl;
+    std::cout << "                              |  \\     " << std::endl;
+    std::cout << "                          山脚[10] 布道台[8]" << std::endl;
+    std::cout << "                                     |" << std::endl;
+    std::cout << "                              断柱[7]──凋誓崖[6]" << std::endl;
+    std::cout << "                                     |" << std::endl;
+    std::cout << "黑曜权枢殿[4]──背契坛[5]" << std::endl;
+    std::cout << "   |              |" << std::endl;
+    std::cout << "铁匠铺[2]──裂隙废墟[3]" << std::endl;
+    std::cout << "   |" << std::endl;
+    std::cout << "迷雾森林[1] ← 当前位置" << std::endl;
+    std::cout << std::endl;
 }
 
+// 绘制定位地图
+void Map::drawLocationMap() const {
+    std::cout << "\033[36m当前区域地图:\033[0m" << std::endl;
+    auto it = rooms.find(currentRoomId);
+    if (it != rooms.end()) {
+        const Room& currentRoom = it->second;
+        std::cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━" << std::endl;
+        std::cout << "当前位置: " << currentRoom.getRoomName() << " [" << currentRoomId << "]" << std::endl;
+        std::cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━" << std::endl;
+        
+        // 显示相邻房间
+        const auto& exits = currentRoom.getExits();
+        if (!exits.empty()) {
+            std::cout << "可前往区域:" << std::endl;
+            for (const auto& exit : exits) {
+                std::cout << "  " << exit.first << "(" << Room::dirToNumber(exit.first) 
+                         << ") -> " << exit.second.second << " [" << exit.second.first << "]" << std::endl;
+            }
+        }
+        std::cout << "━━━━━━━━━━━━━━━━━━━━━━━━━━━" << std::endl;
+    }
+}
 
 // 显示全局地图
 void Map::showGlobalMap() {
@@ -405,51 +306,123 @@ void Map::showLocationMap() {
 
 // 移动房间（支持方向文字或数字）
 bool Map::switchRoom(const std::string& input) {
-    std::string dir;
-
-    if (input.length() == 1 && isdigit(input[0])) {
-        dir = Room::numberToDir(input);
-        if (dir.empty()) {
-            std::cout << "\033[33m[提示] 无效数字，请使用1-0对应方向\033[0m" << std::endl;
-            return false;
+    auto it = rooms.find(currentRoomId);
+    if (it == rooms.end()) return false;
+    
+    const Room& currentRoom = it->second;
+    const auto& exits = currentRoom.getExits();
+    
+    // 检查输入是数字还是方向
+    std::string direction = input;
+    if (input.length() == 1 && std::isdigit(input[0])) {
+        direction = Room::numberToDir(input);
+    }
+    
+    // 查找对应出口
+    auto exitIt = exits.find(direction);
+    if (exitIt != exits.end()) {
+        int targetRoomId = exitIt->second.first;
+        if (rooms.find(targetRoomId) != rooms.end()) {
+            currentRoomId = targetRoomId;
+            showCurrentRoom();
+            return true;
         }
     }
-    else {
-        dir = input;
-    }
+    
+    std::cout << "无法前往 \"" << input << "\" 方向！" << std::endl;
+    return false;
+}
 
-    auto currIt = rooms.find(currentRoomId);
-    if (currIt == rooms.end()) {
-        std::cerr << "\033[31m[错误] 当前房间不存在\033[0m" << std::endl;
-        return false;
+// 显示当前房间信息
+void Map::showCurrentRoom() const {
+    auto it = rooms.find(currentRoomId);
+    if (it != rooms.end()) {
+        it->second.showRoomInfo();
+        
+        // 显示NPC
+        if (roomNPCs.find(currentRoomId) != roomNPCs.end()) {
+            std::cout << "这里有NPC: " << roomNPCs.at(currentRoomId)->getName() << std::endl;
+        }
+        
+        // 显示BOSS
+        if (roomBosses.find(currentRoomId) != roomBosses.end()) {
+            std::cout << "警告！这里有强敌: " << roomBosses.at(currentRoomId)->getName() << std::endl;
+        }
+        
+        // 显示普通敌人
+        if (roomEnemies.find(currentRoomId) != roomEnemies.end() && 
+            !roomEnemies.at(currentRoomId).empty()) {
+            std::cout << "附近有" << roomEnemies.at(currentRoomId).size() << "只敌人在游荡..." << std::endl;
+        }
     }
-
-    const auto& exits = currIt->second.getExits();
-    auto exitIt = exits.find(dir);
-    if (exitIt == exits.end()) {
-        std::cout << "\033[33m[提示] 无法向" << dir << "方向移动，没有通路\033[0m" << std::endl;
-        return false;
-    }
-
-    currentRoomId = exitIt->second.first;
-    std::cout << "\n\033[32m[移动成功] 通过" << dir << "方向到达：" << rooms.at(currentRoomId).getRoomName() << "(ID:" << currentRoomId << ")\033[0m" << std::endl;
-    rooms.at(currentRoomId).showRoomInfo();
-    return true;
 }
 
 // 显示初始房间信息
 void Map::showInitialRoom() const {
-    rooms.at(1).showRoomInfo();
+    showCurrentRoom();
 }
 
 // 快速跳转房间
 void Map::jumpToRoom(int roomId) {
     if (rooms.find(roomId) != rooms.end()) {
         currentRoomId = roomId;
-        std::cout << "\033[32m[跳转成功] 已到达：" << rooms.at(roomId).getRoomName() << "(ID:" << roomId << ")\033[0m" << std::endl;
-        rooms.at(roomId).showRoomInfo();
+        showCurrentRoom();
+    } else {
+        std::cout << "房间 " << roomId << " 不存在！" << std::endl;
     }
-    else {
-        std::cerr << "\033[31m[错误] " << roomId << "号房间不存在\033[0m" << std::endl;
+}
+
+// 获取当前房间ID
+int Map::getCurrentRoomId() const {
+    return currentRoomId;
+}
+
+// 设置当前房间ID
+void Map::setCurrentRoomId(int roomId) {
+    if (rooms.find(roomId) != rooms.end()) {
+        currentRoomId = roomId;
     }
+}
+
+// 获取当前房间的NPC
+NPC* Map::getCurrentRoomNPC() const {
+    auto it = roomNPCs.find(currentRoomId);
+    return (it != roomNPCs.end()) ? it->second.get() : nullptr;
+}
+
+// 获取当前房间的BOSS
+EvilGeneral* Map::getCurrentRoomBoss() const {
+    auto it = roomBosses.find(currentRoomId);
+    return (it != roomBosses.end()) ? it->second.get() : nullptr;
+}
+
+// 获取当前房间的随机敌人
+CommonEnemy* Map::getRandomEnemy() const {
+    auto it = roomEnemies.find(currentRoomId);
+    if (it != roomEnemies.end() && !it->second.empty()) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(0, it->second.size() - 1);
+        return it->second[dis(gen)].get();
+    }
+    return nullptr;
+}
+
+// 移除已击败的敌人
+void Map::removeDefeatedEnemy(CommonEnemy* enemy) {
+    auto it = roomEnemies.find(currentRoomId);
+    if (it != roomEnemies.end()) {
+        auto& enemies = it->second;
+        for (auto enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
+            if (enemyIt->get() == enemy) {
+                enemies.erase(enemyIt);
+                break;
+            }
+        }
+    }
+}
+
+// 移除已击败的BOSS
+void Map::removeDefeatedBoss() {
+    roomBosses.erase(currentRoomId);
 }

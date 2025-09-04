@@ -121,6 +121,8 @@ void TaskSystem::acceptTask(Player* player, std::string taskId) {
     }
 
     task->accept();
+    // 将任务添加到玩家的任务进度中
+    player->taskProgress[taskId] = *task;
     ui.displayMessage("接取了新任务: " + task->getName(), UIManager::Color::GREEN);
 }
 
@@ -251,7 +253,8 @@ void TaskSystem::showPlayerTasks(const Player& player) const {
     const auto& playerTasks = player.taskProgress;
 
     if (playerTasks.empty()) {
-        ui.displayMessage("你当前没有任务。", UIManager::Color::YELLOW);
+        ui.displayMessage("你当前没有接取任何任务。", UIManager::Color::YELLOW);
+        ui.displayMessage("输入 'task list' 查看可接取的任务。", UIManager::Color::GRAY);
         return;
     }
 
@@ -270,10 +273,18 @@ void TaskSystem::showPlayerTasks(const Player& player) const {
 
         // 显示任务信息（名称、状态、描述等）
         ui.displayMessage(
-            "[" + statusStr + "] " + task.getName() + "\n" +
-            "   " + task.getDescription(),
+            "[" + statusStr + "] " + task.getName() + " (ID: " + task.getId() + ")",
             UIManager::Color::WHITE
         );
+        ui.displayMessage(
+            "   描述: " + task.getDescription(),
+            UIManager::Color::GRAY
+        );
+        
+        // 如果是已完成状态，提示可以提交
+        if (task.getStatus() == TaskStatus::COMPLETED) {
+            ui.displayMessage("   → 输入 'task submit " + task.getId() + "' 提交任务", UIManager::Color::GREEN);
+        }
     }
     ui.displayMessage("=======================", UIManager::Color::CYAN);
 }

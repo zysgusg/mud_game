@@ -5,6 +5,7 @@ Player::Player(std::string name) : Attribute(name) {
     // 初始化神剑（开场自带）
     divineSword = new DivineWeapon();
     this->extraActionTurns = 0;
+    this->currentRoomId = 1; // 初始位置：迷雾森林
 }
 
 Player::~Player() {

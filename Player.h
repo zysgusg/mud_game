@@ -13,10 +13,15 @@ private:
     DivineWeapon* divineSword;                  // 六圣裁恶神剑（唯一神器）
     std::map<EquipmentPart, Equipment*> setParts; // 六誓圣辉救赎套装部件
     std::vector<Skill*> skills;                 // 已解锁技能
+    int currentRoomId;                          // 当前所在房间ID
 public:
     Player(std::string name = "安特王子");
     ~Player();
     int extraActionTurns;
+    
+    // 位置管理
+    int getCurrentRoomId() const { return currentRoomId; }
+    void setCurrentRoomId(int roomId) { currentRoomId = roomId; }
     // 神器与装备管理
     void equipSetPart(Equipment* part);         // 装备套装部件
     DivineWeapon* getDivineSword() const;

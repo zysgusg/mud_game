@@ -39,6 +39,7 @@ private:
     // 成员变量
     UIManager ui;
     Player player;
+    Map gameMap;                // 游戏地图
     CombatSystem combat;
     TaskSystem tasks;
     ShopSystem shop;

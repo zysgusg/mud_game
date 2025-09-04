@@ -175,6 +175,7 @@ void SaveLoadSystem::saveGame(const Player& player, const TaskSystem& taskProgre
     saveFile << "Experience " << player.getExp() << std::endl;
     saveFile << "Gold " << player.getGold() << std::endl;
     saveFile << "CritRate " << player.getCritRate() << std::endl;
+    saveFile << "CurrentRoom " << player.getCurrentRoomId() << std::endl;
 
     for (const auto& pair : player.taskProgress)
     {
@@ -301,22 +302,25 @@ bool SaveLoadSystem::loadGame(Player& player, TaskSystem& taskProgress)
             player.setGold(gold);
         }
         else if (key == "CritRate") {
-            float rate;
-            loadFile >> rate;
-            player.setCritRate(rate);
+            float critRate;
+            loadFile >> critRate;
+            player.setCritRate(critRate);
         }
-        else if (key == "Task")
-        {
-            std::string task_id;
-            int status_int;
-            loadFile >> task_id >> status_int;
-
-            auto task_template = taskProgress.findTask(task_id);
-            if (task_template)
-            {
-                Task player_task = *task_template;
-                player_task.setStatus(static_cast<TaskStatus>(status_int));
-                player.taskProgress[task_id] = player_task;
+        else if (key == "CurrentRoom") {
+            int roomId;
+            loadFile >> roomId;
+            player.setCurrentRoomId(roomId);
+        }
+        else if (key == "Task") {
+            std::string taskId;
+            int statusInt;
+            loadFile >> taskId >> statusInt;
+            
+            // 找到对应任务并更新状态
+            Task* task = taskProgress.findTask(taskId);
+            if (task) {
+                task->setStatus(static_cast<TaskStatus>(statusInt));
+                player.taskProgress[taskId] = *task;
             }
         }
     }
