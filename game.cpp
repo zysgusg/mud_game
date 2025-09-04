@@ -167,8 +167,8 @@ void Game::registerCommands() {
                 
                 switch (result) {
                 case CombatResult::Victory:
-                    gameMap.removeDefeatedBoss();
                     tasks.updateTaskProgress(&player, "击败" + boss->getName());
+                    gameMap.removeDefeatedBoss();
                     ui.displayMessage("战斗胜利！继续你的冒险吧。", UIManager::Color::GREEN);
                     currentState = GameState::Exploring;  // 恢复探索状态
                     return; // 结束当前命令处理
