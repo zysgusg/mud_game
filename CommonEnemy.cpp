@@ -28,8 +28,7 @@ CommonEnemy::CommonEnemy(EnemyType type, int level)
         goldReward = 10 * level;
         break;
 
-        // 其他敌人类型的属性初始化（参考上述格式）
-    case EnemyType::SLIME:
+    case EnemyType::SLIME:// 史莱姆
         setMaxHP(40 * level);
         setHP(getMaxHP());
         setATK(5 * level);
@@ -40,9 +39,40 @@ CommonEnemy::CommonEnemy(EnemyType type, int level)
         goldReward = 5 * level;
         break;
 
-        // ... 补充其他敌人类型（MINOTAUR、ZOMBIE 等）
+    case EnemyType::MINOTAUR:// 牛头人
+        setMaxHP(100 * level);
+        setHP(getMaxHP());
+        setATK(20 * level);
+        setDEF(10 * level);
+        setSpeed(8 * level);
+        setCritRate(0.12f);
+        expReward = 100 * level;
+        goldReward = 50 * level;
+        break;
 
-    default:  // 未知敌人
+    case EnemyType::ZOMBIE:// 僵尸
+        setMaxHP(60 * level);
+        setHP(getMaxHP());
+        setATK(15 * level);
+        setDEF(5 * level);
+        setSpeed(4 * level);
+        setCritRate(0.07f);
+        expReward = 70 * level;
+        goldReward = 30 * level;
+        break;
+
+    case EnemyType::SKELETON:// 骷髅
+        setMaxHP(80 * level);
+        setHP(getMaxHP());
+        setATK(18 * level);
+        setDEF(8 * level);
+        setSpeed(6 * level);
+        setCritRate(0.09f);
+        expReward = 80 * level;
+        goldReward = 40 * level;
+        break;
+
+    default:  // 神秘敌人
         setMaxHP(10 * level);
         setHP(getMaxHP());
         setATK(1 * level);
@@ -61,8 +91,10 @@ std::string CommonEnemy::getEnemyName(EnemyType type) {
     case EnemyType::CORRUPT_WOLF: return "蚀骨恶狼";
     case EnemyType::GOBLIN: return "哥布林";
     case EnemyType::SLIME: return "史莱姆";
-        // ... 其他敌人名称
-    default: return "未知敌人";
+    case EnemyType::MINOTAUR: return "牛头人";
+    case EnemyType::ZOMBIE: return "僵尸";
+    case EnemyType::SKELETON: return "骷髅";
+    default: return "神秘敌人";
     }
 }
 

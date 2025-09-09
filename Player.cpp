@@ -61,14 +61,25 @@ void Player::unlockSkill(SkillType type) {
     // 根据技能类型创建技能（示例：圣界裂隙斩在1级解锁）
     switch (type) {
     case SkillType::HOLY_RIFT_SLASH:
-        skills.push_back(new Skill(type, "圣界裂隙斩", "物理伤害技能", 1,
-            SkillTarget::ENEMY, DamageType::PHYSICAL, 20));
+        skills.push_back(new Skill(type, "圣界裂隙斩", "物理伤害技能", 1,SkillTarget::ENEMY, DamageType::PHYSICAL, 20));
         break;
     case SkillType::GOLDEN_TREE_VOW:
-        skills.push_back(new Skill(type, "黄金树之誓", "加血加攻增益", 5,
-            SkillTarget::SELF, DamageType::BUFF, 10));
+        skills.push_back(new Skill(type, "黄金树之誓", "加血加攻增益", 5,SkillTarget::SELF, DamageType::BUFF, 10));
         break;
-        // 其他技能类似，按等级解锁
+    case SkillType::HOLY_PRISON_JUDGMENT:
+        skills.push_back(new Skill(type, "圣狱裁决", "魔法伤害技能", 10,SkillTarget::ENEMY, DamageType::MAGICAL, 30));
+        break;
+    case SkillType::STAR_ARMOR:
+        skills.push_back(new Skill(type, "星辰圣铠", "提升防御", 15,SkillTarget::SELF, DamageType::BUFF, 15));
+        break;
+    case SkillType::HOLY_MARK_SPEED:
+        skills.push_back(new Skill(type, "圣痕疾影步", "提升速度", 20,SkillTarget::SELF, DamageType::BUFF, 20));
+        break;
+    case SkillType::ULTIMATE_SLAY:
+        if (hasAllSetParts()) { // 仅在集齐神器时解锁
+            skills.push_back(new Skill(type, "星闪流河圣龙飞升·神界湮灭斩·最终式", "终极技能，毁灭一切", 50,SkillTarget::ENEMY, DamageType::MAGICAL, 100));
+        }
+        break;
     default: break;
     }
 }

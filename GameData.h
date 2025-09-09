@@ -15,7 +15,8 @@ enum class EvilType {
     LIE,            // 诳言（玛尔索）
     CRUELTY,        // 残虐（克鲁尔萨）
     DESIRELESS,     // 灭欲（灭欲）
-    DESTRUCTION     // 亡念（尼赫尔）
+    DESTRUCTION,    // 亡念（尼赫尔）
+    BOSS            // BOSS
 };
 
 // 装备部位（对应六誓圣辉救赎套装）

@@ -19,12 +19,12 @@ private:
     std::string id;
     std::string name;
     std::string description;
-    TaskStatus status;
     int requiredLevel;
     std::function<bool(Player*)> completionCondition;
     std::vector<Item*> rewards;
     int expReward;
     int goldReward;
+    TaskStatus status;
 
 public:
     // 默认构造函数

@@ -1,84 +1,67 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <unordered_map>
-#include <string>
-#include <vector>
-#include <memory>
 #include "Room.h"
 #include "NPC.h"
 #include "EvilGeneral.h"
 #include "CommonEnemy.h"
+#include <map>
+#include <memory>
+#include <vector>
 
 // 前向声明
-class UIManager;
+class BossWanEshuji;
 
 class Map {
 private:
-    std::unordered_map<int, Room> rooms;
-    std::unordered_map<int, std::unique_ptr<NPC>> roomNPCs;        // 房间ID -> NPC
-    std::unordered_map<int, std::unique_ptr<EvilGeneral>> roomBosses; // 房间ID -> BOSS
-    std::unordered_map<int, std::vector<std::unique_ptr<CommonEnemy>>> roomEnemies; // 房间ID -> 普通敌人列表
+    std::map<int, Room> rooms;
+    std::map<int, std::unique_ptr<NPC>> roomNPCs;
+    std::map<int, std::unique_ptr<EvilGeneral>> roomBosses;
+    std::map<int, std::vector<std::unique_ptr<CommonEnemy>>> roomEnemies;
     int currentRoomId;
 
-    // 初始化所有房间
+    // 初始化方法
     void initRooms();
-    
-    // 初始化NPC
     void initNPCs();
-    
-    // 初始化BOSS
     void initBosses();
-    
-    // 初始化普通敌人
     void initEnemies();
 
-    // 绘制全局地图
+    // 内部绘制方法
     void drawGlobalMap() const;
-
-    // 绘制定位地图
     void drawLocationMap() const;
 
 public:
+    // 构造函数
     Map();
 
-    // 显示全局地图
+    // 地图显示功能
     void showGlobalMap();
-
-    // 显示定位地图
     void showLocationMap();
-
-    // 移动房间
-    bool switchRoom(const std::string& input);
-
-    // 显示当前房间信息
     void showCurrentRoom() const;
-    
-    // 显示初始房间信息
     void showInitialRoom() const;
 
-    // 快速跳转房间
+    // 房间移动功能
+    bool switchRoom(const std::string& input);
     void jumpToRoom(int roomId);
-    
-    // 获取当前房间ID
+
+    // 获取器和设置器
     int getCurrentRoomId() const;
-    
-    // 设置当前房间ID
     void setCurrentRoomId(int roomId);
-    
-    // 获取当前房间的NPC
+
+    // 获取当前房间的内容
     NPC* getCurrentRoomNPC() const;
     
     // 获取当前房间的BOSS
     EvilGeneral* getCurrentRoomBoss() const;
     
+    // 获取当前房间的万恶枢机
+    BossWanEshuji* getCurrentRoomFinalBoss() const;
+    
     // 获取当前房间的随机敌人
     CommonEnemy* getRandomEnemy() const;
-    
-    // 移除已击败的敌人
+
+    // 移除已击败的敌人和BOSS
     void removeDefeatedEnemy(CommonEnemy* enemy);
-    
-    // 移除已击败的BOSS
     void removeDefeatedBoss();
 };
 

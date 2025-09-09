@@ -11,7 +11,7 @@ enum class EnemyType {
     MINOTAUR,       // 牛头人
     ZOMBIE,         // 僵尸
     SKELETON,       // 骷髅
-	BOSS            // 巨龙（最终BOSS）
+	BOSS            // BOSS
 };
 
 class CommonEnemy : public Attribute {

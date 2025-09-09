@@ -150,7 +150,63 @@ void Game::registerCommands() {
 
         // 检查是否有BOSS
         EvilGeneral* boss = gameMap.getCurrentRoomBoss();
-        if (boss) {
+        BossWanEshuji* finalBoss = gameMap.getCurrentRoomFinalBoss();
+        
+        if (finalBoss) {
+            // 处理万恶枢机战斗
+            ui.displayMessage("你面对的是万恶枢机！", UIManager::Color::MAGENTA);
+            
+            // 备份玩家关键状态
+            int backup_hp = player.getHP();
+            int backup_exp = player.getExp();
+            int backup_gold = player.getGold();
+            std::map<std::string, int> backup_inventory = player.inventory;
+            
+            BossWanEshuji original_boss = *finalBoss;
+            BossWanEshuji current_boss = original_boss;
+
+            while (true) {
+                CombatResult result = combat.startCombat(player, current_boss, itemDb);
+                
+                switch (result) {
+                case CombatResult::Victory:
+                    tasks.updateTaskProgress(&player, "击败" + finalBoss->getName());
+                    gameMap.removeDefeatedBoss();
+                    ui.displayMessage("恭喜！你拯救了世界！", UIManager::Color::GREEN);
+                    currentState = GameState::Exploring;
+                    return;
+                    
+                case CombatResult::Escaped:
+                    // 万恶枢机不允许逃跑，不应该到达这里
+                    break;
+                    
+                case CombatResult::Defeat_Restart:
+                    ui.displayMessage("准备重新挑战万恶枢机...", UIManager::Color::YELLOW);
+                    player.setHP(backup_hp);
+                    player.setExp(backup_exp);
+                    player.setGold(backup_gold);
+                    player.inventory = backup_inventory;
+                    current_boss = original_boss;
+                    continue;
+                    
+                case CombatResult::Defeat_Load:
+                    if (saveLoad.loadGame(player, tasks)) {
+                        gameMap.setCurrentRoomId(player.getCurrentRoomId());
+                        ui.displayMessage("游戏加载成功！", UIManager::Color::GREEN);
+                    }
+                    currentState = GameState::Exploring;
+                    return;
+                    
+                case CombatResult::Defeat_Exit:
+                    isRunning = false;
+                    return;
+                    
+                default:
+                    continue;
+                }
+            }
+        }
+        else if (boss) {
             ui.displayMessage("你挑战了强敌 " + boss->getName() + "！", UIManager::Color::MAGENTA);
             
             // 备份玩家关键状态而不是整个对象

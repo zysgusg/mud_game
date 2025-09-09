@@ -13,14 +13,27 @@ private:
     std::vector<Item*> drops;  // 掉落物品
 
 public:
-    // 声明构造函数，参数列表与实现匹配
     EvilGeneral(std::string name, EvilType type, std::string territory, int level);
-	void addDropItem(const Item& item);
 	EvilType getEvilType() const { return evilType; }
 	std::string getTerritory() const { return territory; }
+	static std::string getEnemyName(EvilType type) {
+		switch (type) {
+		case EvilType::POWER_HUNGRY: return "厄休拉";
+		case EvilType::BETRAYAL: return "卡莱恩";
+		case EvilType::LIE: return "玛尔索";
+		case EvilType::CRUELTY: return "克鲁尔萨";
+		case EvilType::DESIRELESS: return "灭欲";
+		case EvilType::DESTRUCTION: return "尼赫尔";
+		default: return "神秘将军";
+		}
+	}
 	const std::vector<Item*>& getDropItems() const { return drops; }
-	// 战斗AI：随机选择攻击或技能
-	void performAction();
+
+	// 对话系统
+	virtual std::string getPreBattleDialogue() const;
+	virtual std::string getDefeatDialogue() const;
+	virtual std::string getVictoryDialogue() const;
+
 };
 
 

@@ -41,7 +41,6 @@ void Map::initRooms() {
     obsidian.addExit("南", 2, "铁砧铁匠铺");
     obsidian.addExit("西南", 3, "裂隙废墟");
     obsidian.addExit("东", 5, "背契之坛");
-    obsidian.addNPC("厄休拉（嗜权将军）");
     rooms.insert({ 4, obsidian });
 
     // 背契区域
@@ -57,7 +56,6 @@ void Map::initRooms() {
         "东边断柱后隐藏着通往布道台的路径");
     cliff.addExit("西南", 5, "背契之坛");
     cliff.addExit("东", 7, "残垣断柱");
-    cliff.addNPC("卡莱恩（背信将军）");
     rooms.insert({ 6, cliff });
 
     Room pillar(7, "残垣断柱", "刻有古老经文的巨大断柱，部分掩埋在沙土中",
@@ -72,7 +70,6 @@ void Map::initRooms() {
         "玛尔索的幻象在这里作祟，用明识之戒可破除");
     platform.addExit("西北", 7, "残垣断柱");
     platform.addExit("南", 9, "怜悯之城");
-    platform.addNPC("玛尔索（诳言将军）");
     rooms.insert({ 8, platform });
 
     // 怜悯区域
@@ -94,7 +91,6 @@ void Map::initRooms() {
         "克鲁尔萨在这里进行残酷的角斗表演");
     arena.addExit("西", 9, "怜悯之城");
     arena.addExit("北", 12, "漠心城");
-    arena.addNPC("克鲁尔萨（残虐将军）");
     rooms.insert({ 11, arena });
 
     // 漠心区域
@@ -122,7 +118,6 @@ void Map::initRooms() {
         "灭欲将军在这里吸收着人们的情感");
     top.addExit("下", 13, "静默尖塔");
     top.addExit("东", 16, "虚无之城");
-    top.addNPC("灭欲（灭欲将军）");
     rooms.insert({ 15, top });
 
     // 虚无区域
@@ -144,14 +139,12 @@ void Map::initRooms() {
         "尼赫尔将军的黑暗力量笼罩着这里");
     fortress.addExit("南", 17, "旧图书馆废墟");
     fortress.addExit("北", 19, "混沌之心");
-    fortress.addNPC("尼赫尔（亡念将军）");
     rooms.insert({ 18, fortress });
 
     // 最终区域
     Room chaos(19, "混沌之心", "虚空之地，漂浮着时空碎片，中央是能量核心",
         "万恶枢机就在核心处，准备最终决战吧");
     chaos.addExit("南", 18, "亡念堡垒");
-    chaos.addNPC("万恶枢机（最终BOSS）");
     rooms.insert({ 19, chaos });
 }
 
@@ -393,7 +386,25 @@ NPC* Map::getCurrentRoomNPC() const {
 // 获取当前房间的BOSS
 EvilGeneral* Map::getCurrentRoomBoss() const {
     auto it = roomBosses.find(currentRoomId);
-    return (it != roomBosses.end()) ? it->second.get() : nullptr;
+    if (it != roomBosses.end()) {
+        // 检查是否是万恶枢机（BossWanEshuji）
+        if (currentRoomId == 19) {
+            return nullptr; // 万恶枢机用专门的函数获取
+        }
+        return it->second.get();
+    }
+    return nullptr;
+}
+
+// 获取当前房间的万恶枢机
+BossWanEshuji* Map::getCurrentRoomFinalBoss() const {
+    if (currentRoomId == 19) {
+        auto it = roomBosses.find(currentRoomId);
+        if (it != roomBosses.end()) {
+            return dynamic_cast<BossWanEshuji*>(it->second.get());
+        }
+    }
+    return nullptr;
 }
 
 // 获取当前房间的随机敌人
