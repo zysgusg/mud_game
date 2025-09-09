@@ -41,307 +41,14 @@ bool CombatSystem::attemptEscape(const Player &player, const CommonEnemy &enemy)
     return dis(gen) < escapeChance;
 }
 
-// playerTurn 函数现在代表玩家的"单次行动"，返回战斗结果
 CombatResult CombatSystem::playerTurn(Player &player, CommonEnemy &enemy, const std::map<int, std::unique_ptr<Item>> &itemDb)
 {
-    // 显示简化的战斗状态
-    ui.displaySimpleCombatStatus(player, enemy);
-    
-    // 函数前半部分的菜单和输入逻辑保持不变
-    ui.displayMessage("选择行动: [1]攻击 [2]技能 [3]道具 [4]逃跑 [5]查看状态", UIManager::Color::WHITE);
-    int choice = 0;
-    while (!(std::cin >> choice) || choice < 1 || choice > 5)
-    {
-        std::cout << "无效输入, 请输入 1-5 之间的数字: ";
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    switch (choice)
-    {
-    case 1: // 攻击
-    case 2: // 技能
-        if (choice == 1)
-        {
-            int damage = calculateDamage(player, enemy);
-            enemy.takeDamage(damage);
-            ui.displayMessage("你对 " + enemy.getName() + " 造成了 " + std::to_string(damage) + " 点伤害!", UIManager::Color::RED);
-        }
-        else
-        {
-            if (player.getSkills().empty())
-            {
-                ui.displayMessage("你还没有学会任何技能！", UIManager::Color::YELLOW);
-                return playerTurn(player, enemy, itemDb); // 重新选择
-            }
-            ui.displayMessage("选择技能:", UIManager::Color::CYAN);
-            for (size_t i = 0; i < player.getSkills().size(); ++i)
-            {
-                ui.displayMessage("[" + std::to_string(i + 1) + "] " + player.getSkills()[i]->getName() + " (威力: " + std::to_string(player.getSkills()[i]->getPower()) + ")", UIManager::Color::WHITE);
-            }
-            ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
-            int skillChoice = 0;
-            std::cin >> skillChoice;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            if (skillChoice == 0)
-            {
-                return playerTurn(player, enemy, itemDb); // 取消，重新选择行动
-            }
-            else if (skillChoice > 0 && skillChoice <= player.getSkills().size())
-            {
-                Skill* skill = player.getSkills()[skillChoice - 1];
-                switch (skill->getDamageType())
-                {
-                case DamageType::PHYSICAL:
-                {
-                    int damage = calculateDamage(player, enemy, skill->getPower());
-                    enemy.takeDamage(damage);
-                    ui.displayMessage("你使用 " + skill->getName() + " 对 " + enemy.getName() + " 造成了 " + std::to_string(damage) + " 点物理伤害!", UIManager::Color::RED);
-                    break;
-                }                
-                case DamageType::MAGICAL:
-                {
-                    int damage = calculateDamage(player, enemy, skill->getPower());
-                    enemy.takeDamage(damage);
-                    ui.displayMessage("你使用 " + skill->getName() + " 对 " + enemy.getName() + " 造成了 " + std::to_string(damage) + " 点魔法伤害!", UIManager::Color::BLUE);
-                    break;
-                }
-                case DamageType::BUFF:
-                {
-                    player.heal(skill->getPower());
-                    ui.displayMessage("你使用 " + skill->getName() + " 恢复了 " + std::to_string(skill->getPower()) + " 点生命值!", UIManager::Color::GREEN);
-                    break;
-                }
-                }
-            }
-            else
-            {
-                ui.displayMessage("无效选择。", UIManager::Color::RED);
-                return playerTurn(player, enemy, itemDb); // 重新选择
-            }
-        }
-        break;
-    case 3:
-    { // 道具
-        if (player.inventory.empty())
-        {
-            ui.displayMessage("你的背包是空的!", UIManager::Color::YELLOW);
-            return playerTurn(player, enemy, itemDb); // 重新选择
-        }
-        ui.displayMessage("选择道具:", UIManager::Color::WHITE);
-        std::vector<std::string> itemNames;
-        int itemIdx = 1;
-        for (const auto& pair : player.inventory)
-        {
-            ui.displayMessage("[" + std::to_string(itemIdx) + "] " + pair.first + " x" + std::to_string(pair.second), UIManager::Color::WHITE);
-            itemNames.push_back(pair.first);
-            itemIdx++;
-        }
-        ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
-        int itemChoice = 0;
-        std::cin >> itemChoice;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        if (itemChoice == 0)
-        {
-            return playerTurn(player, enemy, itemDb); // 取消，重新选择行动
-        }
-        else if (itemChoice > 0 && itemChoice <= itemNames.size())
-        {
-            std::string chosenItemName = itemNames[itemChoice - 1];
-
-            if (chosenItemName == "生命药水")
-            {
-                int healAmount = (player.getMaxHP() * 50) / 100; // 回复50%最大生命值
-                player.heal(healAmount);
-                player.useItem(chosenItemName);
-                ui.displayMessage("你使用了生命药水，恢复了" + std::to_string(healAmount) + "点生命值（50%最大生命值）！", UIManager::Color::GREEN);
-            }
-            else if (chosenItemName == "能量药水")
-            {
-                player.extraActionTurns += 1; // 下回合额外行动次数+1
-                player.useItem(chosenItemName);
-                ui.displayMessage("你使用了能量药水，下回合行动次数+1！", UIManager::Color::CYAN);
-            }
-            else
-            {
-                ui.displayMessage("这个道具暂时无法使用。", UIManager::Color::YELLOW);
-                return playerTurn(player, enemy, itemDb); // 重新选择
-            }
-        }
-        else
-        {
-            ui.displayMessage("无效选择。", UIManager::Color::RED);
-            return playerTurn(player, enemy, itemDb);
-        }
-        break;
-    }
-    case 4:
-    { // 逃跑
-        if (attemptEscape(player, enemy))
-        {
-            ui.displayMessage("你成功逃离了战斗!", UIManager::Color::GREEN);
-            return CombatResult::Escaped;  // 逃跑成功直接返回
-        }
-        else
-        {
-            ui.displayMessage("逃跑失败了!", UIManager::Color::RED);
-            // 逃跑失败会消耗一次行动，继续战斗
-        }
-        break;
-    }
-    case 5:
-    { // 查看详细状态（不消耗回合）
-        ui.displayPlayerStatus(player);
-        return playerTurn(player, enemy, itemDb); // 重新选择行动
-    }
-    }
-    return CombatResult::Continue; // 继续战斗
+    return handlePlayerAction(player, enemy, itemDb);
 }
 
 CombatResult CombatSystem::playerTurn(Player &player, EvilGeneral &boss, const std::map<int, std::unique_ptr<Item>> &itemDb)
 {
-    ui.displaySimpleCombatStatus(player, boss);
-    
-    ui.displayMessage("选择行动: [1]攻击 [2]技能 [3]道具 [4]逃跑 [5]查看状态", UIManager::Color::WHITE);
-    int choice = 0;
-    while (!(std::cin >> choice) || choice < 1 || choice > 5)
-    {
-        std::cout << "无效输入, 请输入 1-5 之间的数字: ";
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    switch (choice)
-    {
-    case 1: // 攻击
-    case 2: // 技能
-        if (choice == 1)
-        {
-            int damage = calculateDamage(player, boss);
-            boss.takeDamage(damage);
-            ui.displayMessage("你对 " + boss.getName() + " 造成了 " + std::to_string(damage) + " 点伤害!", UIManager::Color::RED);
-        }
-        else
-        {
-            if (player.getSkills().empty())
-            {
-                ui.displayMessage("你还没有学会任何技能！", UIManager::Color::YELLOW);
-                return playerTurn(player, boss, itemDb); // 重新选择
-            }
-            ui.displayMessage("选择技能:", UIManager::Color::CYAN);
-            for (size_t i = 0; i < player.getSkills().size(); ++i)
-            {
-                ui.displayMessage("[" + std::to_string(i + 1) + "] " + player.getSkills()[i]->getName() + " (威力: " + std::to_string(player.getSkills()[i]->getPower()) + ")", UIManager::Color::WHITE);
-            }
-            ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
-            int skillChoice = 0;
-            std::cin >> skillChoice;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            if (skillChoice == 0)
-            {
-                return playerTurn(player, boss, itemDb); // 取消，重新选择行动
-            }
-            else if (skillChoice > 0 && skillChoice <= player.getSkills().size())
-            {
-                Skill* skill = player.getSkills()[skillChoice - 1];
-                switch (skill->getDamageType())
-                {
-                case DamageType::PHYSICAL:
-                {
-                    int damage = calculateDamage(player, boss, skill->getPower());
-                    boss.takeDamage(damage);
-                    ui.displayMessage("你使用 " + skill->getName() + " 对 " + boss.getName() + " 造成了 " + std::to_string(damage) + " 点物理伤害!", UIManager::Color::RED);
-                    break;
-                }
-                case DamageType::MAGICAL:
-                {
-                    int damage = calculateDamage(player, boss, skill->getPower());
-                    boss.takeDamage(damage);
-                    ui.displayMessage("你使用 " + skill->getName() + " 对 " + boss.getName() + " 造成了 " + std::to_string(damage) + " 点魔法伤害!", UIManager::Color::BLUE);
-                    break;
-                }
-                case DamageType::BUFF:
-                {
-                    player.heal(skill->getPower());
-                    ui.displayMessage("你使用 " + skill->getName() + " 恢复了 " + std::to_string(skill->getPower()) + " 点生命值!", UIManager::Color::GREEN);
-                    break;
-                }
-                }
-            }
-            else
-            {
-                ui.displayMessage("无效选择。", UIManager::Color::RED);
-                return playerTurn(player, boss, itemDb); // 重新选择
-            }
-        }
-        break;
-    case 3: // 道具
-    {
-        if (player.inventory.empty())
-        {
-            ui.displayMessage("你的背包是空的!", UIManager::Color::YELLOW);
-            return playerTurn(player, boss, itemDb);
-        }
-        ui.displayMessage("选择道具:", UIManager::Color::WHITE);
-        std::vector<std::string> itemNames;
-        int itemIdx = 1;
-        for (const auto& pair : player.inventory)
-        {
-            ui.displayMessage("[" + std::to_string(itemIdx) + "] " + pair.first + " x" + std::to_string(pair.second), UIManager::Color::WHITE);
-            itemNames.push_back(pair.first);
-            itemIdx++;
-        }
-        ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
-        int itemChoice = 0;
-        std::cin >> itemChoice;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        if (itemChoice == 0)
-        {
-            return playerTurn(player, boss, itemDb); // 取消，重新选择行动
-        }
-        else if (itemChoice > 0 && itemChoice <= itemNames.size())
-        {
-            std::string chosenItemName = itemNames[itemChoice - 1];
-            if (chosenItemName == "生命药水")
-            {
-                int healAmount = (player.getMaxHP() * 50) / 100; // 回复50%最大生命值
-                player.heal(healAmount);
-                player.useItem(chosenItemName);
-                ui.displayMessage("你使用了生命药水，恢复了" + std::to_string(healAmount) + "点生命值（50%最大生命值）！", UIManager::Color::GREEN);
-            }
-            else if (chosenItemName == "能量药水")
-            {
-                player.extraActionTurns += 1; // 下回合额外行动次数+1
-                player.useItem(chosenItemName);
-                ui.displayMessage("你使用了能量药水，下回合行动次数+1！", UIManager::Color::CYAN);
-            }
-            else
-            {
-                ui.displayMessage("这个道具暂时无法使用。", UIManager::Color::YELLOW);
-                return playerTurn(player, boss, itemDb); // 重新选择
-            }
-        }
-        else
-        {
-            ui.displayMessage("无效选择。", UIManager::Color::RED);
-            return playerTurn(player, boss, itemDb);
-        }
-        break;
-    }
-    case 4:
-    { // 逃跑（BOSS战斗可能不允许逃跑）
-        ui.displayMessage("面对强大的BOSS，你无法逃跑！", UIManager::Color::RED);
-        return playerTurn(player, boss, itemDb); // 重新选择
-    }
-    case 5:
-    { // 查看详细状态（不消耗回合）
-        ui.displayPlayerStatus(player);
-        return playerTurn(player, boss, itemDb); // 重新选择行动
-    }
-    }
-    return CombatResult::Continue;
+    return handlePlayerAction(player, boss, itemDb);
 }
 
 void CombatSystem::enemyTurn(CommonEnemy &enemy, Player &player)
@@ -382,16 +89,21 @@ CombatResult CombatSystem::startCombat(Player &player, CommonEnemy &enemy, const
         // 定义一个lambda函数来处理玩家的完整回合，包括额外行动
         auto execute_player_turn_phase = [&]() -> CombatResult
         {
-            CombatResult result = playerTurn(player, enemy, itemDb);
-            if (result != CombatResult::Continue) return result;
-
-            while (player.extraActionTurns > 0 && player.isAlive() && enemy.isAlive())
+            // 在回合开始时应用能量药水的效果
+            int totalActions = 1 + player.extraActionTurns;
+            player.extraActionTurns = 0; // 重置额外行动次数
+            
+            for (int actionCount = 0; actionCount < totalActions && player.isAlive() && enemy.isAlive(); actionCount++)
             {
-                player.extraActionTurns--;
-                ui.displayMessage("额外行动回合！", UIManager::Color::CYAN);
-                result = playerTurn(player, enemy, itemDb);
+                if (actionCount > 0)
+                {
+                    ui.displayMessage("额外行动回合！", UIManager::Color::CYAN);
+                }
+                
+                CombatResult result = playerTurn(player, enemy, itemDb);
                 if (result != CombatResult::Continue) return result;
             }
+            
             return CombatResult::Continue;
         };
 
@@ -467,16 +179,21 @@ CombatResult CombatSystem::startCombat(Player &player, EvilGeneral &boss, const 
     {
         auto execute_player_turn_phase = [&]() -> CombatResult
         {
-            CombatResult result = playerTurn(player, boss, itemDb);
-            if (result != CombatResult::Continue) return result;
-
-            while (player.extraActionTurns > 0 && player.isAlive() && boss.isAlive())
+            // 在回合开始时应用能量药水的效果
+            int totalActions = 1 + player.extraActionTurns;
+            player.extraActionTurns = 0; // 重置额外行动次数
+            
+            for (int actionCount = 0; actionCount < totalActions && player.isAlive() && boss.isAlive(); actionCount++)
             {
-                player.extraActionTurns--;
-                ui.displayMessage("额外行动回合！", UIManager::Color::CYAN);
-                result = playerTurn(player, boss, itemDb);
+                if (actionCount > 0)
+                {
+                    ui.displayMessage("额外行动回合！", UIManager::Color::CYAN);
+                }
+                
+                CombatResult result = playerTurn(player, boss, itemDb);
                 if (result != CombatResult::Continue) return result;
             }
+            
             return CombatResult::Continue;
         };
 
@@ -633,147 +350,7 @@ CombatResult CombatSystem::startCombat(Player &player, BossWanEshuji &boss, cons
 
 CombatResult CombatSystem::playerTurn(Player &player, BossWanEshuji &boss, const std::map<int, std::unique_ptr<Item>> &itemDb)
 {
-    ui.displaySimpleCombatStatus(player, boss);
-    
-    ui.displayMessage("选择行动: [1]攻击 [2]技能 [3]道具 [4]逃跑 [5]查看状态", UIManager::Color::WHITE);
-    int choice = 0;
-    while (!(std::cin >> choice) || choice < 1 || choice > 5)
-    {
-        std::cout << "无效输入, 请输入 1-5 之间的数字: ";
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    switch (choice)
-    {
-    case 1: // 攻击
-    case 2: // 技能
-        if (choice == 1)
-        {
-            int damage = calculateDamage(player, boss);
-            boss.takeDamage(damage);
-            ui.displayMessage("你对 " + boss.getName() + " 造成了 " + std::to_string(damage) + " 点伤害!", UIManager::Color::RED);
-        }
-        else
-        {
-            if (player.getSkills().empty())
-            {
-                ui.displayMessage("你还没有学会任何技能！", UIManager::Color::YELLOW);
-                return playerTurn(player, boss, itemDb); // 重新选择
-            }
-            ui.displayMessage("选择技能:", UIManager::Color::CYAN);
-            for (size_t i = 0; i < player.getSkills().size(); ++i)
-            {
-                ui.displayMessage("[" + std::to_string(i + 1) + "] " + player.getSkills()[i]->getName() + " (威力: " + std::to_string(player.getSkills()[i]->getPower()) + ")", UIManager::Color::WHITE);
-            }
-            ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
-            int skillChoice = 0;
-            std::cin >> skillChoice;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            if (skillChoice == 0)
-            {
-                return playerTurn(player, boss, itemDb); // 取消，重新选择行动
-            }
-            else if (skillChoice > 0 && skillChoice <= player.getSkills().size())
-            {
-                Skill* skill = player.getSkills()[skillChoice - 1];
-                switch (skill->getDamageType())
-                {
-                case DamageType::PHYSICAL:
-                {
-                    int damage = calculateDamage(player, boss, skill->getPower());
-                    boss.takeDamage(damage);
-                    ui.displayMessage("你使用 " + skill->getName() + " 对 " + boss.getName() + " 造成了 " + std::to_string(damage) + " 点物理伤害!", UIManager::Color::RED);
-                    break;
-                }
-                case DamageType::MAGICAL:
-                {
-                    int damage = calculateDamage(player, boss, skill->getPower());
-                    boss.takeDamage(damage);
-                    ui.displayMessage("你使用 " + skill->getName() + " 对 " + boss.getName() + " 造成了 " + std::to_string(damage) + " 点魔法伤害!", UIManager::Color::BLUE);
-                    break;
-                }
-                case DamageType::BUFF:
-                {
-                    player.heal(skill->getPower());
-                    ui.displayMessage("你使用 " + skill->getName() + " 恢复了 " + std::to_string(skill->getPower()) + " 点生命值!", UIManager::Color::GREEN);
-                    break;
-                }
-                }
-            }
-            else
-            {
-                ui.displayMessage("无效选择。", UIManager::Color::RED);
-                return playerTurn(player, boss, itemDb); // 重新选择
-            }
-        }
-        break;
-    case 3: // 道具
-    {
-        if (player.inventory.empty())
-        {
-            ui.displayMessage("你的背包是空的!", UIManager::Color::YELLOW);
-            return playerTurn(player, boss, itemDb); // 重新选择
-        }
-        ui.displayMessage("选择道具:", UIManager::Color::WHITE);
-        std::vector<std::string> itemNames;
-        int itemIdx = 1;
-        for (const auto& pair : player.inventory)
-        {
-            ui.displayMessage("[" + std::to_string(itemIdx) + "] " + pair.first + " x" + std::to_string(pair.second), UIManager::Color::WHITE);
-            itemNames.push_back(pair.first);
-            itemIdx++;
-        }
-        ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
-        int itemChoice = 0;
-        std::cin >> itemChoice;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        if (itemChoice == 0)
-        {
-            return playerTurn(player, boss, itemDb); // 取消，重新选择行动
-        }
-        else if (itemChoice > 0 && itemChoice <= itemNames.size())
-        {
-            std::string chosenItemName = itemNames[itemChoice - 1];
-            if (chosenItemName == "生命药水")
-            {
-                int healAmount = (player.getMaxHP() * 50) / 100; // 回复50%最大生命值
-                player.heal(healAmount);
-                player.useItem(chosenItemName);
-                ui.displayMessage("你使用了生命药水，恢复了" + std::to_string(healAmount) + "点生命值（50%最大生命值）！", UIManager::Color::GREEN);
-            }
-            else if (chosenItemName == "能量药水")
-            {
-                player.extraActionTurns += 1; // 下回合额外行动次数+1
-                player.useItem(chosenItemName);
-                ui.displayMessage("你使用了能量药水，下回合行动次数+1！", UIManager::Color::CYAN);
-            }
-            else
-            {
-                ui.displayMessage("这个道具暂时无法使用。", UIManager::Color::YELLOW);
-                return playerTurn(player, boss, itemDb); // 重新选择
-            }
-        }
-        else
-        {
-            ui.displayMessage("无效选择。", UIManager::Color::RED);
-            return playerTurn(player, boss, itemDb); // 重新选择
-        }
-        break;
-    }
-    case 4:
-    { // 逃跑（万恶枢机战斗不允许逃跑）
-        ui.displayMessage("面对万恶枢机这样的终极BOSS，你无法逃跑！世界的命运就在你手中！", UIManager::Color::RED);
-        return playerTurn(player, boss, itemDb); // 重新选择
-    }
-    case 5:
-    { // 查看详细状态（不消耗回合）
-        ui.displayPlayerStatus(player);
-        return playerTurn(player, boss, itemDb); // 重新选择行动
-    }
-    }
-    return CombatResult::Continue;
+    return handlePlayerAction(player, boss, itemDb);
 }
 
 void CombatSystem::enemyTurn(BossWanEshuji &boss, Player &player)
@@ -833,4 +410,207 @@ void CombatSystem::enemyTurn(BossWanEshuji &boss, Player &player)
         }
         break;
     }
+}
+
+// 通用函数实现
+CombatResult CombatSystem::handleSkillSelection(Player& player, Attribute& target)
+{
+    if (player.getSkills().empty())
+    {
+        ui.displayMessage("你还没有学会任何技能！", UIManager::Color::YELLOW);
+        return CombatResult::Continue; // 返回Continue表示需要重新选择
+    }
+    
+    ui.displayMessage("选择技能:", UIManager::Color::CYAN);
+    for (size_t i = 0; i < player.getSkills().size(); ++i)
+    {
+        ui.displayMessage("[" + std::to_string(i + 1) + "] " + player.getSkills()[i]->getName() + " (威力: " + std::to_string(player.getSkills()[i]->getPower()) + ")", UIManager::Color::WHITE);
+    }
+    ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
+    
+    int skillChoice = 0;
+    std::cin >> skillChoice;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    
+    if (skillChoice == 0)
+    {
+        return CombatResult::Continue; // 取消，重新选择行动
+    }
+    else if (skillChoice > 0 && skillChoice <= player.getSkills().size())
+    {
+        Skill* skill = player.getSkills()[skillChoice - 1];
+        switch (skill->getDamageType())
+        {
+        case DamageType::PHYSICAL:
+        {
+            int damage = calculateDamage(player, target, skill->getPower());
+            target.takeDamage(damage);
+            ui.displayMessage("你使用 " + skill->getName() + " 对 " + target.getName() + " 造成了 " + std::to_string(damage) + " 点物理伤害!", UIManager::Color::RED);
+            break;
+        }
+        case DamageType::MAGICAL:
+        {
+            int damage = calculateDamage(player, target, skill->getPower());
+            target.takeDamage(damage);
+            ui.displayMessage("你使用 " + skill->getName() + " 对 " + target.getName() + " 造成了 " + std::to_string(damage) + " 点魔法伤害!", UIManager::Color::BLUE);
+            break;
+        }
+        case DamageType::BUFF:
+        {
+            player.heal(skill->getPower());
+            ui.displayMessage("你使用 " + skill->getName() + " 恢复了 " + std::to_string(skill->getPower()) + " 点生命值!", UIManager::Color::GREEN);
+            break;
+        }
+        }
+        return CombatResult::Escaped; // 使用Escaped表示行动完成（临时解决方案）
+    }
+    else
+    {
+        ui.displayMessage("无效选择。", UIManager::Color::RED);
+        return CombatResult::Continue; // 重新选择
+    }
+}
+
+CombatResult CombatSystem::handleItemUsage(Player& player, const std::map<int, std::unique_ptr<Item>>& itemDb)
+{
+    if (player.inventory.empty())
+    {
+        ui.displayMessage("你的背包是空的!", UIManager::Color::YELLOW);
+        return CombatResult::Continue; // 重新选择
+    }
+    
+    ui.displayMessage("选择道具:", UIManager::Color::WHITE);
+    std::vector<std::string> itemNames;
+    int itemIdx = 1;
+    for (const auto& pair : player.inventory)
+    {
+        ui.displayMessage("[" + std::to_string(itemIdx) + "] " + pair.first + " x" + std::to_string(pair.second), UIManager::Color::WHITE);
+        itemNames.push_back(pair.first);
+        itemIdx++;
+    }
+    ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
+    
+    int itemChoice = 0;
+    std::cin >> itemChoice;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    
+    if (itemChoice == 0)
+    {
+        return CombatResult::Continue; // 取消，重新选择行动
+    }
+    else if (itemChoice > 0 && itemChoice <= itemNames.size())
+    {
+        std::string chosenItemName = itemNames[itemChoice - 1];
+        
+        if (chosenItemName == "生命药水")
+        {
+            int healAmount = (player.getMaxHP() * 50) / 100; // 回复50%最大生命值
+            player.heal(healAmount);
+            player.useItem(chosenItemName);
+            ui.displayMessage("你使用了生命药水，恢复了" + std::to_string(healAmount) + "点生命值（50%最大生命值）！", UIManager::Color::GREEN);
+        }
+        else if (chosenItemName == "能量药水")
+        {
+            player.extraActionTurns += 1; // 在下一回合开始时生效
+            player.useItem(chosenItemName);
+            ui.displayMessage("你使用了能量药水，下一回合开始时获得额外行动机会！", UIManager::Color::CYAN);
+        }
+        else
+        {
+            ui.displayMessage("这个道具暂时无法使用。", UIManager::Color::YELLOW);
+            return CombatResult::Continue; // 重新选择
+        }
+        return CombatResult::Escaped; // 使用Escaped表示行动完成（临时解决方案）
+    }
+    else
+    {
+        ui.displayMessage("无效选择。", UIManager::Color::RED);
+        return CombatResult::Continue;
+    }
+}
+
+template<typename Enemy>
+CombatResult CombatSystem::handleEscapeAttempt(Player& player, Enemy& enemy)
+{
+    // 检查是否是BOSS战斗，不同BOSS有不同的逃跑规则
+    if constexpr (std::is_same_v<Enemy, EvilGeneral>)
+    {
+        ui.displayMessage("面对强大的BOSS，你无法逃跑！", UIManager::Color::RED);
+        return CombatResult::Continue; // 重新选择
+    }
+    else if constexpr (std::is_same_v<Enemy, BossWanEshuji>)
+    {
+        ui.displayMessage("面对万恶枢机这样的终极BOSS，你无法逃跑！世界的命运就在你手中！", UIManager::Color::RED);
+        return CombatResult::Continue; // 重新选择
+    }
+    else // CommonEnemy
+    {
+        if (attemptEscape(player, enemy))
+        {
+            ui.displayMessage("你成功逃离了战斗!", UIManager::Color::GREEN);
+            return CombatResult::Escaped;  // 逃跑成功直接返回
+        }
+        else
+        {
+            ui.displayMessage("逃跑失败了!", UIManager::Color::RED);
+            return CombatResult::Continue; // 逃跑失败会消耗一次行动，继续战斗
+        }
+    }
+}
+
+template<typename Enemy>
+CombatResult CombatSystem::handlePlayerAction(Player& player, Enemy& enemy, const std::map<int, std::unique_ptr<Item>>& itemDb)
+{
+    ui.displaySimpleCombatStatus(player, enemy);
+    
+    ui.displayMessage("选择行动: [1]攻击 [2]技能 [3]道具 [4]逃跑 [5]查看状态", UIManager::Color::WHITE);
+    int choice = 0;
+    while (!(std::cin >> choice) || choice < 1 || choice > 5)
+    {
+        std::cout << "无效输入, 请输入 1-5 之间的数字: ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    switch (choice)
+    {
+    case 1: // 攻击
+    {
+        int damage = calculateDamage(player, enemy);
+        enemy.takeDamage(damage);
+        ui.displayMessage("你对 " + enemy.getName() + " 造成了 " + std::to_string(damage) + " 点伤害!", UIManager::Color::RED);
+        break;
+    }
+    case 2: // 技能
+    {
+        CombatResult result = handleSkillSelection(player, enemy);
+        if (result == CombatResult::Continue)
+        {
+            return handlePlayerAction(player, enemy, itemDb); // 重新选择
+        }
+        // 如果是Escaped，表示技能使用成功，结束当前回合
+        break;
+    }
+    case 3: // 道具
+    {
+        CombatResult result = handleItemUsage(player, itemDb);
+        if (result == CombatResult::Continue)
+        {
+            return handlePlayerAction(player, enemy, itemDb); // 重新选择
+        }
+        // 如果是Escaped，表示道具使用成功，结束当前回合
+        break;
+    }
+    case 4: // 逃跑
+    {
+        return handleEscapeAttempt(player, enemy);
+    }
+    case 5: // 查看详细状态（不消耗回合）
+    {
+        ui.displayPlayerStatus(player);
+        return handlePlayerAction(player, enemy, itemDb); // 重新选择行动
+    }
+    }
+    return CombatResult::Continue; // 继续战斗
 }

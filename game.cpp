@@ -68,7 +68,7 @@ void Game::run() {
 
 // 设置命令别名
 void Game::setupCommandAliases() {
-    commandAliases["h"] = "help"; commandAliases["帮助"] = "help";
+    commandAliases["h"] = "help"; commandAliases["帮助"] = "help";commandAliases["?"] = "help";commandAliases["？"] = "help";
     commandAliases["st"] = "status"; commandAliases["状态"] = "status";
     commandAliases["l"] = "look"; commandAliases["观察"] = "look";
     commandAliases["f"] = "fight"; commandAliases["战斗"] = "fight";

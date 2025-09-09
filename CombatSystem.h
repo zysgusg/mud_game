@@ -31,6 +31,14 @@ private:
     void enemyTurn(EvilGeneral& boss, Player& player);
     void enemyTurn(BossWanEshuji& boss, Player& player);
 
+    // 通用辅助函数
+    template<typename Enemy>
+    CombatResult handlePlayerAction(Player& player, Enemy& enemy, const std::map<int, std::unique_ptr<Item>>& itemDb);
+    CombatResult handleSkillSelection(Player& player, Attribute& target);
+    CombatResult handleItemUsage(Player& player, const std::map<int, std::unique_ptr<Item>>& itemDb);
+    template<typename Enemy>
+    CombatResult handleEscapeAttempt(Player& player, Enemy& enemy);
+    
     bool attemptEscape(const Player& player, const CommonEnemy& enemy);
     int calculateDamage(const Attribute& attacker, const Attribute& defender, int power = 0);
 };
