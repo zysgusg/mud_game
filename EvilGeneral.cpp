@@ -14,6 +14,11 @@ EvilGeneral::EvilGeneral(std::string name, EvilType type, std::string territory,
     setCritRate(0.1f + level * 0.01f);
 }
 
+// 虚析构函数实现
+EvilGeneral::~EvilGeneral() {
+    // 清理资源
+}
+
 // 对话系统实现
 std::string EvilGeneral::getPreBattleDialogue() const {
     switch (evilType) {

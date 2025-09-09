@@ -22,6 +22,12 @@ public:
 
     // 获取单个部件的特殊效果
     std::string getPartEffect(EquipmentPart part) const;
+    
+    // 获取装备指针
+    Equipment* getEquipment(EquipmentPart part) const;
+    
+    // 获取所有装备
+    const std::map<EquipmentPart, Equipment*>& getAllParts() const;
 };
 
 #endif // DIVINESET_H

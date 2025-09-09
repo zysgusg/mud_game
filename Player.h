@@ -5,13 +5,15 @@
 #include "DivineWeapon.h"
 #include "Skills.h"
 #include "TaskSystem.h"
+#include "DivineSet.h"
 #include <vector>
 #include <map>
+#include <iostream>
 
 class Player : public Attribute {
 private:
     DivineWeapon* divineSword;                  // 六圣裁恶神剑（唯一神器）
-    std::map<EquipmentPart, Equipment*> setParts; // 六誓圣辉救赎套装部件
+    DivineSet divineSet;                        // 六誓圣辉救赎套装
     std::vector<Skill*> skills;                 // 已解锁技能
     int currentRoomId;                          // 当前所在房间ID
 public:
@@ -28,8 +30,12 @@ public:
     bool hasAllSetParts() const;                // 检查是否集齐套装
     std::map<EquipmentPart, Equipment*> getAllEquippedItems() const;
 
+    // 重写升级方法，包含技能解锁逻辑
+    bool levelUp() override;
+
     // 技能管理
     void unlockSkill(SkillType type);           // 解锁技能
+    void checkAndUnlockSkills();                // 检查并解锁符合等级要求的技能
     std::vector<Skill*> getSkills() const;
     Skill* getSkill(SkillType type) const;
 

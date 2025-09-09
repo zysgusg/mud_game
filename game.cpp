@@ -153,7 +153,19 @@ void Game::registerCommands() {
             // 检查是否有任务
             std::string taskId = npc->getTaskID();
             if (!taskId.empty()) {
-                ui.displayMessage("输入 'task accept " + taskId + "' 接受任务", UIManager::Color::YELLOW);
+                Task* task = tasks.findTask(taskId);
+                if (task && task->getStatus() == TaskStatus::UNACCEPTED) {
+                    ui.displayMessage("", UIManager::Color::WHITE);
+                    ui.displayMessage("【" + npc->getName() + " 向你发出委托】", UIManager::Color::YELLOW);
+                    ui.displayMessage("任务名：" + task->getName(), UIManager::Color::WHITE);
+                    ui.displayMessage("任务描述：" + task->getDescription(), UIManager::Color::GRAY);
+                    ui.displayMessage("经验奖励：" + std::to_string(task->getExpReward()), UIManager::Color::YELLOW);
+                    ui.displayMessage("金币奖励：" + std::to_string(task->getGoldReward()), UIManager::Color::YELLOW);
+                    ui.displayMessage("", UIManager::Color::WHITE);
+                    ui.displayMessage("是否接受此任务？输入 'task accept " + taskId + "' 来接受任务", UIManager::Color::CYAN);
+                } else if (task && task->getStatus() == TaskStatus::COMPLETED) {
+                    ui.displayMessage("你已完成了 " + npc->getName() + " 的委托，可输入 'task submit " + taskId + "' 提交任务获得奖励", UIManager::Color::GREEN);
+                }
             }
         } else {
             ui.displayMessage("这里没有可以对话的NPC。", UIManager::Color::RED);
@@ -362,17 +374,14 @@ void Game::registerCommands() {
     commandHandlers["task"] = [this](const auto& args) {
         if (args.empty()) {
             tasks.showPlayerTasks(player);
-            return;
-        }
-        
-        if (args[0] == "accept" && args.size() > 1) {
+        } else if (args[0] == "list") {
+            tasks.showTaskList(&player);
+        } else if (args[0] == "accept" && args.size() > 1) {
             tasks.acceptTask(&player, args[1]);
         } else if (args[0] == "submit" && args.size() > 1) {
             tasks.submitTask(&player, args[1]);
-        } else if (args[0] == "list") {
-            tasks.showTaskList(&player);
         } else {
-            ui.displayMessage("任务命令: task (查看已接任务), task list (可接任务), task accept <ID> (接任务), task submit <ID> (提交任务)", UIManager::Color::YELLOW);
+            ui.displayMessage("用法: task [list/accept <ID>/submit <ID>]", UIManager::Color::YELLOW);
         }
     };
 

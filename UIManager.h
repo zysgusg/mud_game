@@ -2,10 +2,13 @@
 #define UIMANAGER_H
 
 #include <string>
+#include <map>
+#include "GameData.h"
 
 // 前向声明
 class Player;
 class Attribute;
+class Equipment;
 
 // 使用ANSI转义码实现跨平台颜色显示。
 class UIManager {
@@ -26,7 +29,6 @@ public:
 
     // 暂停，等待用户输入
     void pause() const;
-    void displayPlayerEquipment(const Player& player) const;
     void displaySimpleCombatStatus(const Attribute& player, const Attribute& enemy) const;  // 简化战斗状态显示
 private:
     // 设置控制台文本颜色

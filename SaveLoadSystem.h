@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "UIManager.h"
 #include "TaskSystem.h"
+#include "Equipment.h"
 #include <string>
 #include <vector>
 #include <ctime>
@@ -25,6 +26,9 @@ public:
     void saveGame(const Player& player, const TaskSystem& tasks);
     void autoSaveGame(const Player& player, const TaskSystem& tasks);
     bool loadGame(Player& player, TaskSystem& tasks);
+    
+    // 读档后技能检测
+    void postLoadSkillCheck(Player& player);
 
 private:
     UIManager& ui;
@@ -34,6 +38,7 @@ private:
     std::vector<SaveSlot> listSaveSlots();
     std::string timeToString(time_t time);
     bool is_digits_save(const std::string& str);
+    Equipment* createEquipmentByName(const std::string& equipmentName);
 };
 
 #endif // SAVELOADSYSTEM_H

@@ -18,9 +18,14 @@ public:
     int getAtkBonus() const;
     int getDefBonus() const;
     std::string getSpecialEffect() const;
+    
+    // 属性修改方法（用于神器成长）
+    void setAtkBonus(int atk);
+    void setDefBonus(int def);
 
     // 装备使用（穿戴时触发效果描述）
     std::string use() override;
+    Equipment* clone() const override;
 };
 
 #endif // EQUIPMENT_H

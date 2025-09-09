@@ -9,6 +9,11 @@ Attribute::Attribute(std::string name, int level)
     srand(time(0));
 }
 
+// 虚析构函数实现
+Attribute::~Attribute() {
+    // 基类析构函数，子类可以重写
+}
+
 // 属性获取
 std::string Attribute::getName() const { return name; }
 int Attribute::getLevel() const { return level; }

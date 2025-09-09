@@ -5,15 +5,20 @@ TARGET = mud
 SRCDIR = .
 SOURCES = $(wildcard $(SRCDIR)/*.cpp)
 OBJECTS = $(SOURCES:.cpp=.o)
+HEADERS = $(wildcard $(SRCDIR)/*.h)
 
 $(TARGET): $(OBJECTS)
 	$(CXX) $(OBJECTS) -o $(TARGET)
 
-%.o: %.cpp
+%.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+rebuild: clean $(TARGET)
+	@echo "Rebuild completed"
 
 clean:
 	rm -f $(OBJECTS) $(TARGET).exe $(TARGET)
+	@echo "Cleaned all object files and executables"
 
 .PHONY: clean
 

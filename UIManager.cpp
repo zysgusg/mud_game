@@ -1,6 +1,7 @@
 #include "UIManager.h"
 #include "Player.h"
 #include "Attribute.h"
+#include "Equipment.h"
 #include <iostream>
 #include <iomanip>
 #include <windows.h>
@@ -53,43 +54,97 @@ std::string equipmentPartToString(EquipmentPart part) {
     }
 }
 
-void UIManager::displayPlayerEquipment(const Player& player) const{
-    displayMessage("--- 装备 ---", Color::YELLOW);
-    std::cout << "武器:六圣裁恶神剑" << std::endl;
-    std::vector<EquipmentPart> slotOrder = {
-        EquipmentPart::HELMET,
-        EquipmentPart::CHESTPLATE,
-        EquipmentPart::CAPE,
-        EquipmentPart::BOOTS,
-        EquipmentPart::NECKLACE,
-        EquipmentPart::RING
-    };
-
-    std::map<EquipmentPart, Equipment*> equippedItems = player.getAllEquippedItems();
-
-    for (EquipmentPart part : slotOrder) {
-        std::cout << equipmentPartToString(part) << ": ";
-        // 检查玩家是否在该槽位装备了物品
-        if (equippedItems.count(part)) {
-            std::cout << equippedItems[part]->getName() << std::endl;
-        }
-        else {
-            std::cout << "[空]" << std::endl;
-        }
-    }
-}
 void UIManager::displayPlayerStatus(const Player& player) const {
     displayMessage("===== 角色状态 =====", Color::CYAN);
-    displayMessage("姓名: " + player.getName(), Color::WHITE);
-    displayMessage("等级: " + std::to_string(player.getLevel()), Color::WHITE);
-    displayMessage("生命值: " + std::to_string(player.getHP()) + "/" + std::to_string(player.getMaxHP()), Color::GREEN);
-    displayMessage("攻击力: " + std::to_string(player.getATK()), Color::RED);
-    displayMessage("防御力: " + std::to_string(player.getDEF()), Color::BLUE);
-    displayMessage("速度: " + std::to_string(player.getSpeed()), Color::YELLOW);
-    displayMessage("经验值: " + std::to_string(player.getExp()) + "/" + std::to_string(player.getExpToNextLevel()), Color::CYAN);
-    displayMessage("金币: " + std::to_string(player.getGold()), Color::YELLOW);
-    displayMessage("暴击率: " + std::to_string(static_cast<int>(player.getCritRate() * 100)) + "%", Color::MAGENTA);
+    
+    // 获取装备信息
+    std::map<EquipmentPart, Equipment*> equippedItems = player.getAllEquippedItems();
+    
+    // 左侧：基础属性，右侧：装备
+    std::cout << "\033[37m姓名: " << std::setw(12) << std::left << player.getName() << "\033[0m";
+    std::cout << " | \033[33m--- 装备 ---\033[0m" << std::endl;
+    
+    std::cout << "\033[37m等级: " << std::setw(12) << std::left << player.getLevel() << "\033[0m";
+    std::cout << " | \033[37m武器: 六圣裁恶神剑\033[0m" << std::endl;
+    
+    std::cout << "\033[32m生命值: " << std::setw(8) << std::left << (std::to_string(player.getHP()) + "/" + std::to_string(player.getMaxHP())) << "\033[0m";
+    std::cout << " | ";
+    if (equippedItems.count(EquipmentPart::HELMET)) {
+        std::cout << "\033[35m头盔: " << equippedItems[EquipmentPart::HELMET]->getName() << "\033[0m" << std::endl;
+    } else {
+        std::cout << "\033[90m头盔: [空]\033[0m" << std::endl;
+    }
+    
+    std::cout << "\033[31m攻击力: " << std::setw(8) << std::left << player.getATK() << "\033[0m";
+    std::cout << " | ";
+    if (equippedItems.count(EquipmentPart::CHESTPLATE)) {
+        std::cout << "\033[35m胸甲: " << equippedItems[EquipmentPart::CHESTPLATE]->getName() << "\033[0m" << std::endl;
+    } else {
+        std::cout << "\033[90m胸甲: [空]\033[0m" << std::endl;
+    }
+    
+    std::cout << "\033[34m防御力: " << std::setw(8) << std::left << player.getDEF() << "\033[0m";
+    std::cout << " | ";
+    if (equippedItems.count(EquipmentPart::CAPE)) {
+        std::cout << "\033[35m披风: " << equippedItems[EquipmentPart::CAPE]->getName() << "\033[0m" << std::endl;
+    } else {
+        std::cout << "\033[90m披风: [空]\033[0m" << std::endl;
+    }
+    
+    std::cout << "\033[33m速度: " << std::setw(10) << std::left << player.getSpeed() << "\033[0m";
+    std::cout << " | ";
+    if (equippedItems.count(EquipmentPart::BOOTS)) {
+        std::cout << "\033[35m靴子: " << equippedItems[EquipmentPart::BOOTS]->getName() << "\033[0m" << std::endl;
+    } else {
+        std::cout << "\033[90m靴子: [空]\033[0m" << std::endl;
+    }
+    
+    std::cout << "\033[36m经验值: " << std::setw(8) << std::left << (std::to_string(player.getExp()) + "/" + std::to_string(player.getExpToNextLevel())) << "\033[0m";
+    std::cout << " | ";
+    if (equippedItems.count(EquipmentPart::NECKLACE)) {
+        std::cout << "\033[35m项链: " << equippedItems[EquipmentPart::NECKLACE]->getName() << "\033[0m" << std::endl;
+    } else {
+        std::cout << "\033[90m项链: [空]\033[0m" << std::endl;
+    }
+    
+    std::cout << "\033[33m金币: " << std::setw(10) << std::left << player.getGold() << "\033[0m";
+    std::cout << " | ";
+    if (equippedItems.count(EquipmentPart::RING)) {
+        std::cout << "\033[35m戒指: " << equippedItems[EquipmentPart::RING]->getName() << "\033[0m" << std::endl;
+    } else {
+        std::cout << "\033[90m戒指: [空]\033[0m" << std::endl;
+    }
+    
+    std::cout << "\033[35m暴击率: " << std::setw(8) << std::left << (std::to_string(static_cast<int>(player.getCritRate() * 100)) + "%") << "\033[0m" << std::endl;
+    
     displayMessage("==================", Color::CYAN);
+    
+    // 显示已解锁技能
+    displayMessage("--- 已解锁技能 ---", Color::YELLOW);
+    const auto& skills = player.getSkills();
+    if (skills.empty()) {
+        displayMessage("暂无已解锁技能", Color::GRAY);
+    } else {
+        for (const auto& skill : skills) {
+            std::cout << "\033[33m[" << skill->getName() << "]\033[0m ";
+            std::cout << "\033[37m" << skill->getDescription() << "\033[0m" << std::endl;
+        }
+    }
+    
+    displayMessage("-------------------", Color::YELLOW);
+    
+    // 显示背包物品
+    displayMessage("--- 背包物品 ---", Color::GREEN);
+    const auto& inventory = player.getInventory();
+    if (inventory.empty()) {
+        displayMessage("背包为空", Color::GRAY);
+    } else {
+        for (const auto& item : inventory) {
+            std::cout << "\033[32m" << item.first << "\033[0m: \033[37m" << item.second << "个\033[0m" << std::endl;
+        }
+    }
+    
+    displayMessage("------------------", Color::GREEN);
 }
 
 void UIManager::displaySimpleCombatStatus(const Attribute& player, const Attribute& enemy) const {

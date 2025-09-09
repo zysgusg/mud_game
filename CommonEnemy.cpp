@@ -85,6 +85,11 @@ CommonEnemy::CommonEnemy(EnemyType type, int level)
     }
 }
 
+// 虚析构函数实现
+CommonEnemy::~CommonEnemy() {
+    // 清理资源
+}
+
 // 辅助函数：根据 EnemyType 获取敌人名称（避免构造函数初始化列表中直接写复杂逻辑）
 std::string CommonEnemy::getEnemyName(EnemyType type) {
     switch (type) {

@@ -79,6 +79,9 @@ public:
     void showTaskList(Player* player) const;
     void updateTaskProgress(Player* player, const std::string& taskId);
     void showPlayerTasks(const Player& player) const;
+    
+    // 自动装备神器的辅助函数
+    void autoEquipArtifact(Player* player, const std::string& taskId);
 
 };
 #endif // TASKSYSTEM_H

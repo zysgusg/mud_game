@@ -14,6 +14,7 @@ private:
 
 public:
     EvilGeneral(std::string name, EvilType type, std::string territory, int level);
+    virtual ~EvilGeneral(); // 虚析构函数声明
 	EvilType getEvilType() const { return evilType; }
 	std::string getTerritory() const { return territory; }
 	static std::string getEnemyName(EvilType type) {

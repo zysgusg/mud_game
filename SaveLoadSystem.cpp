@@ -177,6 +177,14 @@ void SaveLoadSystem::saveGame(const Player& player, const TaskSystem& taskProgre
     saveFile << "CritRate " << player.getCritRate() << std::endl;
     saveFile << "CurrentRoom " << player.getCurrentRoomId() << std::endl;
 
+    // 保存装备神器
+    const auto& equippedItems = player.getAllEquippedItems();
+    for (const auto& pair : equippedItems) {
+        if (pair.second && pair.first != EquipmentPart::SWORD) { // 神剑默认装备，不需要保存
+            saveFile << "Equipment " << static_cast<int>(pair.first) << " " << pair.second->getName() << std::endl;
+        }
+    }
+
     // 保存背包道具
     const auto& inventory = player.getInventory();
     for (const auto& item : inventory)
@@ -239,6 +247,14 @@ void SaveLoadSystem::autoSaveGame(const Player& player, const TaskSystem& taskPr
     saveFile << "Gold " << player.getGold() << std::endl;
     saveFile << "CritRate " << player.getCritRate() << std::endl;
     saveFile << "CurrentRoom " << player.getCurrentRoomId() << std::endl;
+
+    // 保存装备神器
+    const auto& equippedItems = player.getAllEquippedItems();
+    for (const auto& pair : equippedItems) {
+        if (pair.second && pair.first != EquipmentPart::SWORD) { // 神剑默认装备，不需要保存
+            saveFile << "Equipment " << static_cast<int>(pair.first) << " " << pair.second->getName() << std::endl;
+        }
+    }
 
     // 保存背包道具
     const auto& inventory = player.getInventory();
@@ -433,13 +449,103 @@ bool SaveLoadSystem::loadGame(Player& player, TaskSystem& taskProgress)
                 player.taskProgress[taskId] = taskCopy;
             }
         }
+        else if (key == "Equipment") {
+            int partInt;
+            std::string equipName;
+            loadFile >> partInt;
+            loadFile.ignore();
+            std::getline(loadFile, equipName);
+            
+            // 重新装备神器
+            EquipmentPart part = static_cast<EquipmentPart>(partInt);
+            Equipment* equipment = nullptr;
+            
+            // 根据装备名称重新创建神器
+            if (equipName == "自由誓约・破枷之冠") {
+                equipment = new Equipment(equipName, EquipmentPart::HELMET, "抵抗精神控制", 15, 10, "免疫魅惑");
+            }
+            else if (equipName == "忠诚誓约・铁誓胸甲") {
+                equipment = new Equipment(equipName, EquipmentPart::CHESTPLATE, "坚固的胸甲", 20, 25, "减少背叛伤害");
+            }
+            else if (equipName == "真理誓约・明识之戒") {
+                equipment = new Equipment(equipName, EquipmentPart::RING, "看清真相", 10, 5, "识破幻象");
+            }
+            else if (equipName == "怜悯誓约・抚伤之链") {
+                equipment = new Equipment(equipName, EquipmentPart::NECKLACE, "治愈之链", 5, 15, "战斗回血");
+            }
+            else if (equipName == "希望誓约・晨曦披风") {
+                equipment = new Equipment(equipName, EquipmentPart::CAPE, "带来希望", 25, 20, "提升士气");
+            }
+            else if (equipName == "秩序誓约・创世战靴") {
+                equipment = new Equipment(equipName, EquipmentPart::BOOTS, "维护秩序", 30, 15, "移动加速");
+            }
+            
+            if (equipment) {
+                player.equipSetPart(equipment);
+            }
+        }
     }
 
     loadFile.close();
+    
+    // 读档后检测并添加技能
+    postLoadSkillCheck(player);
+    
+    // 读档后检测并添加技能
+    postLoadSkillCheck(player);
+    
     if (choice_id != -1) {
         ui.displayMessage("游戏已从槽位 " + std::to_string(choice_id) + " 成功加载!", UIManager::Color::GREEN);
     } else {
         ui.displayMessage("游戏已从自动存档成功加载!", UIManager::Color::GREEN);
     }
+    
     return true;
+}
+
+// 在读档完成后，根据等级和装备状态检测并解锁技能
+// 在读档完成后，根据等级和装备状态检测并解锁技能
+void SaveLoadSystem::postLoadSkillCheck(Player& player) {
+    // 检查并解锁符合等级要求的技能
+    player.checkAndUnlockSkills();
+    
+    // 显示技能恢复状态
+    const auto& skills = player.getSkills();
+    if (!skills.empty()) {
+        ui.displayMessage("已根据等级和装备状态恢复技能:", UIManager::Color::CYAN);
+        for (const auto& skill : skills) {
+            ui.displayMessage("- " + skill->getName(), UIManager::Color::WHITE);
+        }
+    }
+    
+    // 如果集齐套装，显示特殊提示
+    if (player.hasAllSetParts()) {
+        ui.displayMessage("检测到已集齐六誓圣辉套装！", UIManager::Color::MAGENTA);
+        if (player.getLevel() >= 50 && player.getSkill(SkillType::ULTIMATE_SLAY)) {
+            ui.displayMessage("终极技能已可用！", UIManager::Color::MAGENTA);
+        }
+    }
+}
+
+// 装备重建辅助函数
+Equipment* SaveLoadSystem::createEquipmentByName(const std::string& equipmentName) {
+    if (equipmentName == "自由誓约・破枷之冠") {
+        return new Equipment(equipmentName, EquipmentPart::HELMET, "抵抗精神控制", 15, 10, "免疫魅惑");
+    }
+    else if (equipmentName == "忠诚誓约・铁誓胸甲") {
+        return new Equipment(equipmentName, EquipmentPart::CHESTPLATE, "坚固的胸甲", 20, 25, "减少背叛伤害");
+    }
+    else if (equipmentName == "真理誓约・明识之戒") {
+        return new Equipment(equipmentName, EquipmentPart::RING, "看清真相", 10, 5, "识破幻象");
+    }
+    else if (equipmentName == "怜悯誓约・抚伤之链") {
+        return new Equipment(equipmentName, EquipmentPart::NECKLACE, "治愈之链", 5, 15, "战斗回血");
+    }
+    else if (equipmentName == "希望誓约・晨曦披风") {
+        return new Equipment(equipmentName, EquipmentPart::CAPE, "带来希望", 25, 20, "提升士气");
+    }
+    else if (equipmentName == "秩序誓约・创世战靴") {
+        return new Equipment(equipmentName, EquipmentPart::BOOTS, "维护秩序", 30, 15, "移动加速");
+    }
+    return nullptr;
 }

@@ -1,4 +1,5 @@
 #include "DivineWeapon.h"
+#include <iostream>
 #include "Skills.h"
 
 // DivineWeapon构造函数实现（根据头文件中的声明）
@@ -13,31 +14,34 @@
 //     : Item(name, value, desc, id) {
 // }
 
-DivineWeapon::DivineWeapon()
-    : Equipment("六圣裁恶神剑", EquipmentPart::SWORD, 
-        "可成长的神剑，对抗恶念的核心武器", 10, 0, "随等级提升威力") {
-    growthLevel = 1;
-}
+DivineWeapon::DivineWeapon() 
+    : Equipment("六圣裁恶神剑", EquipmentPart::SWORD, "传说中的神器，随使用者成长", 20, 5, "神圣力量"),
+      growthLevel(1) {}
 
-// 神剑成长（随玩家等级提升攻击力） 待添加
-void DivineWeapon::grow(int playerLevel) {
-    // 根据玩家等级提升武器成长等级
-    if (playerLevel % 5 == 0) {
-        growthLevel++;
-    }
-}
-
-// 解锁技能（如5级解锁圣狱裁决）
-bool DivineWeapon::unlockSkill(int playerLevel, SkillType& skillType) {
-    if (playerLevel >= 5 && growthLevel >= 2) {
-        skillType = SkillType::HOLY_PRISON_JUDGMENT;
-        return true;
-    }
-    // 其他技能解锁条件...
-    return false;
-}
-
-// 实现clone方法
 DivineWeapon* DivineWeapon::clone() const {
     return new DivineWeapon(*this);
+}
+
+// 神剑成长（随玩家等级提升攻击力）
+void DivineWeapon::grow(int playerLevel) {
+    if (playerLevel > growthLevel) {
+        int oldAtk = getAtkBonus();
+        int newAtk = 20 + (playerLevel - 1) * 5; // 基础20攻击力，每级增加5点
+        
+        // 更新攻击力加成
+        setAtkBonus(newAtk);
+        
+        growthLevel = playerLevel;
+        std::cout << "六圣裁恶神剑随着你的成长而变得更加强大！攻击力从 " 
+                  << oldAtk << " 提升到 " << newAtk << std::endl;
+    }
+}
+
+// 解锁技能（根据成长等级解锁对应技能）
+bool DivineWeapon::unlockSkill(int playerLevel, SkillType& skillType) {
+    if (playerLevel >= 50) {
+        skillType = SkillType::ULTIMATE_SLAY;
+        return true;
+    }
+    return false;
 }

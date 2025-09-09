@@ -22,6 +22,7 @@ private:
 
 public:
     CommonEnemy(EnemyType type, int level);
+    virtual ~CommonEnemy(); // 虚析构函数声明
     static std::string getEnemyName(EnemyType type);
     EnemyType getType() const;
     int getExpReward() const;

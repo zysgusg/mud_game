@@ -300,106 +300,93 @@ void Map::showLocationMap() {
 
 // 移动房间（支持方向文字或数字）
 bool Map::switchRoom(const std::string& input) {
-    auto it = rooms.find(currentRoomId);
-    if (it == rooms.end())
-        return false;
-    
-    const Room& currentRoom = it->second;
-    const auto& exits = currentRoom.getExits();
-    
-    // 检查当前房间是否有未击败的BOSS
-    if (roomBosses.find(currentRoomId) != roomBosses.end()) {
-        std::cout << "你需要先击败这里的BOSS才能离开！" << std::endl;
-        return false;
-    }
-    
-    // 检查输入是数字还是方向
+    // 将输入转换为标准方向
     std::string direction = input;
-    if (input.length() == 1 && std::isdigit(input[0])) {
-        int choice = input[0] - '0';
-        // 数字与方向的固定绑定关系
-        switch (choice) {
-            case 1: direction = "北"; break;
-            case 2: direction = "东北"; break;
-            case 3: direction = "东"; break;
-            case 4: direction = "东南"; break;
-            case 5: direction = "南"; break;
-            case 6: direction = "西南"; break;
-            case 7: direction = "西"; break;
-            case 8: direction = "西北"; break;
-            case 9: direction = "上"; break;
-            case 0: direction = "下"; break;
-            default:
-                std::cout << "无效的方向编号: " << choice << " (请使用1-8,9=上,0=下)" << std::endl;
-                return false;
+    
+    // 检查是否为数字输入
+    if (input.size() == 1 && std::isdigit(input[0])) {
+        direction = Room::numberToDir(input);
+        if (direction.empty()) {
+            std::cout << "无效的方向数字。" << std::endl;
+            return false;
         }
     }
     
-    // 查找对应出口
-    auto exitIt = exits.find(direction);
-    if (exitIt != exits.end()) {
-        currentRoomId = exitIt->second.first;
-        std::cout << "你前往 " << exitIt->second.second << std::endl;
-        return true;
+    // 查找当前房间
+    auto currentRoomIt = rooms.find(currentRoomId);
+    if (currentRoomIt == rooms.end()) {
+        std::cout << "错误：当前房间不存在！" << std::endl;
+        return false;
     }
     
-    std::cout << "无法前往 \"" << input << "\" 方向！" << std::endl;
-    return false;
+    // 检查是否有这个方向的出口
+    const auto& exits = currentRoomIt->second.getExits();
+    auto exitIt = exits.find(direction);
+    if (exitIt == exits.end()) {
+        std::cout << "这个方向没有出口。" << std::endl;
+        return false;
+    }
+    
+    // 移动到新房间
+    int newRoomId = exitIt->second.first;
+    std::string newRoomName = exitIt->second.second;
+    
+    currentRoomId = newRoomId;
+    
+    // 显示新房间信息
+    auto newRoomIt = rooms.find(newRoomId);
+    if (newRoomIt != rooms.end()) {
+        std::cout << "\n你来到了：" << newRoomName << std::endl;
+        newRoomIt->second.showRoomInfo();
+    }
+    
+    return true;
 }
 
 bool Map::switchRoom(const std::string& input, Player* player, SaveLoadSystem* saveSystem, TaskSystem* taskSystem) {
-    auto it = rooms.find(currentRoomId);
-    if (it == rooms.end())
-        return false;
-    
-    const Room& currentRoom = it->second;
-    const auto& exits = currentRoom.getExits();
-    
-    // 检查当前房间是否有未击败的BOSS
-    if (roomBosses.find(currentRoomId) != roomBosses.end()) {
-        std::cout << "你需要先击败这里的BOSS才能离开！" << std::endl;
-        return false;
-    }
-    
-    // 检查输入是数字还是方向
-    std::string direction = input;
-    if (input.length() == 1 && std::isdigit(input[0])) {
-        int choice = input[0] - '0';
-        // 数字与方向的固定绑定关系
-        switch (choice) {
-            case 1: direction = "北"; break;
-            case 2: direction = "东北"; break;
-            case 3: direction = "东"; break;
-            case 4: direction = "东南"; break;
-            case 5: direction = "南"; break;
-            case 6: direction = "西南"; break;
-            case 7: direction = "西"; break;
-            case 8: direction = "西北"; break;
-            case 9: direction = "上"; break;
-            case 0: direction = "下"; break;
-            default:
-                std::cout << "无效的方向编号: " << choice << " (请使用1-8,9=上,0=下)" << std::endl;
-                return false;
+    if (switchRoom(input)) {
+        // 移动成功后，自动拾取房间物品并检查任务进度
+        if (player && taskSystem) {
+            int currentRoom = getCurrentRoomId();
+            
+            // 自动拾取特定房间的任务物品
+            switch (currentRoom) {
+                case 3: // 裂隙废墟
+                    player->addItemByName("黑曜晶尘", 3);
+                    std::cout << "你在废墟中发现了黑曜晶尘！" << std::endl;
+                    break;
+                case 5: // 迷雾森林
+                    player->addItemByName("王血印记", 1);
+                    std::cout << "晋津津将王血印记交给了你！" << std::endl;
+                    break;
+                case 7: // 残垣断柱
+                    player->addItemByName("明识之戒", 1);
+                    std::cout << "张焜杰递给你明识之戒！" << std::endl;
+                    break;
+                case 10: // 城外山脚下
+                    player->addItemByName("怜悯之链", 1);
+                    std::cout << "你在山脚下找到了怜悯之链！" << std::endl;
+                    break;
+                case 14: // 塔底迷宫
+                    player->addItemByName("晨曦披风", 1);
+                    std::cout << "王浠珃将晨曦披风交给了你！" << std::endl;
+                    break;
+                case 17: // 旧图书馆废墟
+                    player->addItemByName("创世战靴", 1);
+                    std::cout << "你在废墟深处发现了创世战靴！" << std::endl;
+                    break;
+            }
+            
+            // 更新任务状态
+            taskSystem->update(player);
         }
-    }
-    
-    // 查找对应出口
-    auto exitIt = exits.find(direction);
-    if (exitIt != exits.end()) {
-        int targetRoomId = exitIt->second.first;
         
-        // 检查目标房间是否有BOSS，如果有则自动存档
-        if (roomBosses.find(targetRoomId) != roomBosses.end() && saveSystem && taskSystem) {
-            std::cout << "检测到前方有强敌，自动保存游戏..." << std::endl;
+        // 自动保存
+        if (saveSystem && player && taskSystem) {
             saveSystem->autoSaveGame(*player, *taskSystem);
         }
-        
-        currentRoomId = targetRoomId;
-        std::cout << "你前往 " << exitIt->second.second << std::endl;
         return true;
     }
-    
-    std::cout << "无法前往 \"" << input << "\" 方向！" << std::endl;
     return false;
 }
 

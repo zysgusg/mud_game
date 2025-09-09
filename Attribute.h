@@ -20,6 +20,7 @@ protected:
 
 public:
     Attribute(std::string name, int level = 1);
+    virtual ~Attribute(); // 虚析构函数
 
     // 属性获取
     std::string getName() const;
@@ -49,7 +50,7 @@ public:
     void setExpToNextLevel(int value);
     void setLevel(int value);
     // 等级提升（基于设定：等级+1，属性*110%，经验条*120%）
-    bool levelUp();
+    virtual bool levelUp();
 
     bool isAlive() const;
     void takeDamage(int damage);

@@ -27,3 +27,17 @@ std::string DivineSet::getPartEffect(EquipmentPart part) const {
     }
     return "该部位未装备套装部件";
 }
+
+// 获取装备指针
+Equipment* DivineSet::getEquipment(EquipmentPart part) const {
+    auto it = parts.find(part);
+    if (it != parts.end()) {
+        return it->second;
+    }
+    return nullptr;
+}
+
+// 获取所有装备
+const std::map<EquipmentPart, Equipment*>& DivineSet::getAllParts() const {
+    return parts;
+}

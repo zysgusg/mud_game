@@ -14,7 +14,9 @@ enum class SkillTarget {
 enum class DamageType {
     PHYSICAL,  // 物理伤害
     MAGICAL,   // 魔法伤害
-    BUFF       // 增益效果（无伤害）
+    BUFF,       // 增益效果（无伤害）
+    HOLY_MARK_SPEED, // 圣痕疾影步（提升速度）
+    STAR_ARMOR      // 星辰圣铠（提升防御）
 };
 
 class Skill {

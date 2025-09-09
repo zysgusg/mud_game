@@ -461,6 +461,22 @@ CombatResult CombatSystem::handleSkillSelection(Player& player, Attribute& targe
             ui.displayMessage("你使用 " + skill->getName() + " 恢复了 " + std::to_string(skill->getPower()) + " 点生命值!", UIManager::Color::GREEN);
             break;
         }
+        case DamageType::HOLY_MARK_SPEED: 
+        {
+            int speedBoost = skill->getPower();
+            player.setSpeed(player.getSpeed() + speedBoost);
+            ui.displayMessage(player.getName() + " 使用了【" + skill->getName() + "】！", UIManager::Color::CYAN);
+            ui.displayMessage("圣痕疾影步发动！速度提升了 " + std::to_string(speedBoost) + " 点！", UIManager::Color::YELLOW);
+            break;
+        }
+        case DamageType::STAR_ARMOR: 
+        {
+            int defenseBoost = skill->getPower();
+            player.setDEF(player.getDEF() + defenseBoost);
+            ui.displayMessage(player.getName() + " 使用了【" + skill->getName() + "】！", UIManager::Color::CYAN);
+            ui.displayMessage("星辰圣铠发动！防御提升了 " + std::to_string(defenseBoost) + " 点！", UIManager::Color::YELLOW);
+            break;
+        }
         }
         return CombatResult::Escaped; // 使用Escaped表示行动完成（临时解决方案）
     }
@@ -533,12 +549,12 @@ template<typename Enemy>
 CombatResult CombatSystem::handleEscapeAttempt(Player& player, Enemy& enemy)
 {
     // 检查是否是BOSS战斗，不同BOSS有不同的逃跑规则
-    if constexpr (std::is_same_v<Enemy, EvilGeneral>)
+    if (std::is_same<Enemy, EvilGeneral>::value)
     {
         ui.displayMessage("面对强大的BOSS，你无法逃跑！", UIManager::Color::RED);
         return CombatResult::Continue; // 重新选择
     }
-    else if constexpr (std::is_same_v<Enemy, BossWanEshuji>)
+    else if (std::is_same<Enemy, BossWanEshuji>::value)
     {
         ui.displayMessage("面对万恶枢机这样的终极BOSS，你无法逃跑！世界的命运就在你手中！", UIManager::Color::RED);
         return CombatResult::Continue; // 重新选择
