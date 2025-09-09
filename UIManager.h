@@ -3,6 +3,10 @@
 
 #include <string>
 
+// 前向声明
+class Player;
+class Attribute;
+
 // 使用ANSI转义码实现跨平台颜色显示。
 class UIManager {
 public:
@@ -12,7 +16,7 @@ public:
     };
 
     // 显示带颜色的消息 
-    void displayMessage(const std::string& message, Color color) const;
+    void displayMessage(const std::string& message, Color color = Color::WHITE) const;
 
     // 显示玩家属性面板 
     void displayPlayerStatus(const class Player& player) const;
@@ -23,6 +27,7 @@ public:
     // 暂停，等待用户输入
     void pause() const;
     void displayPlayerEquipment(const Player& player) const;
+    void displaySimpleCombatStatus(const Attribute& player, const Attribute& enemy) const;  // 简化战斗状态显示
 private:
     // 设置控制台文本颜色
     void setColor(Color color) const;

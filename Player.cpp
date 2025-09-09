@@ -6,6 +6,9 @@ Player::Player(std::string name) : Attribute(name) {
     divineSword = new DivineWeapon();
     this->extraActionTurns = 0;
     this->currentRoomId = 1; // 初始位置：迷雾森林
+    
+    // 解锁1级可用的技能
+    unlockSkill(SkillType::HOLY_RIFT_SLASH);
 }
 
 Player::~Player() {
@@ -58,6 +61,13 @@ std::map<EquipmentPart, Equipment*> Player::getAllEquippedItems() const {
 }
 // 解锁技能
 void Player::unlockSkill(SkillType type) {
+    // 检查是否已经拥有该技能
+    for (auto skill : skills) {
+        if (skill->getType() == type) {
+            return; // 已有该技能，不重复添加
+        }
+    }
+    
     // 根据技能类型创建技能（示例：圣界裂隙斩在1级解锁）
     switch (type) {
     case SkillType::HOLY_RIFT_SLASH:

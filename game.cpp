@@ -2,9 +2,12 @@
 #include <memory>
 #include <iostream>
 #include <algorithm>
+#include <windows.h>
+
 bool is_digits_game(const std::string& str) {
     return !str.empty() && std::all_of(str.begin(), str.end(), ::isdigit);
 }
+
 // Game类的构造函数
 Game::Game() :
     player("安特王子"),
@@ -16,6 +19,9 @@ Game::Game() :
     isRunning(true),
     currentState(GameState::Exploring)
 {
+    // 设置控制台编码以支持中文显示
+    SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
     // 同步玩家和地图的位置
     player.setCurrentRoomId(gameMap.getCurrentRoomId());
     

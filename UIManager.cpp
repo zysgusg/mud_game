@@ -1,7 +1,30 @@
 #include "UIManager.h"
 #include "Player.h"
-#include"Skills.h"
+#include "Attribute.h"
 #include <iostream>
+#include <iomanip>
+#include <windows.h>
+
+void UIManager::displayMessage(const std::string& message, Color color) const {
+    // 设置控制台编码为UTF-8以支持中文显示
+    SetConsoleOutputCP(CP_UTF8);
+    
+    // 控制台颜色代码
+    const char* colorCodes[] = {
+        "\033[30m",  // BLACK
+        "\033[31m",  // RED
+        "\033[32m",  // GREEN
+        "\033[33m",  // YELLOW
+        "\033[34m",  // BLUE
+        "\033[35m",  // MAGENTA
+        "\033[36m",  // CYAN
+        "\033[37m",  // WHITE
+        "\033[90m",  // GRAY
+        "\033[0m"    // RESET
+    };
+    
+    std::cout << colorCodes[static_cast<int>(color)] << message << "\033[0m" << std::endl;
+}
 
 void UIManager::setColor(Color color) const {
     switch (color) {
@@ -29,11 +52,6 @@ std::string equipmentPartToString(EquipmentPart part) {
     default: return "未知部位";
     }
 }
-void UIManager::displayMessage(const std::string& message, Color color) const {
-    setColor(color);
-    std::cout << message << std::endl;
-    setColor(Color::RESET);
-}
 
 void UIManager::displayPlayerEquipment(const Player& player) const{
     displayMessage("--- 装备 ---", Color::YELLOW);
@@ -60,47 +78,39 @@ void UIManager::displayPlayerEquipment(const Player& player) const{
         }
     }
 }
-void UIManager::displayPlayerStatus(const Player& Player) const {
-    displayMessage("--- 角色状态 ---", Color::YELLOW);
-    std::cout << "姓名: " << Player.getName() << " | 等级: " << Player.getLevel() << std::endl;
-    std::cout << "生命: " << Player.getHP() << "/" << Player.getMaxHP() << std::endl;
-    std::cout << "攻击: " << Player.getATK() << " | 防御: " << Player.getDEF() << " | 速度: " << Player.getSpeed() << std::endl;
-    std::cout << "经验: " << Player.getExp() << " | 金币: " << Player.getGold() << std::endl;
-
-    displayMessage("--- 技能 ---", Color::CYAN);
-    if (Player.getSkills().empty()) {
-        std::cout << "无" << std::endl;
-    }
-    else {
-        std::string skill_line;
-        for (const auto& skill : Player.getSkills()) {
-            skill_line += "[" + skill->getName() + "] ";
-        }
-        std::cout << skill_line << std::endl;
-    }
-
-    displayPlayerEquipment(Player);
-    displayMessage("--- 道具 ---", Color::CYAN);
-    if (Player.inventory.empty()) {
-        std::cout << "背包是空的" << std::endl;
-    }
-    else {
-        std::string item_line;
-        for (const auto& pair : Player.inventory) {
-            // pair.first 是物品名称, pair.second 是数量
-            item_line += pair.first + " x" + std::to_string(pair.second) + " | ";
-        }
-        // 移除末尾多余的 " | "
-        if (!item_line.empty()) {
-            item_line.pop_back();
-            item_line.pop_back();
-            item_line.pop_back();
-        }
-        std::cout << item_line << std::endl;
-    }
-
-    displayMessage("------------------", Color::YELLOW);
+void UIManager::displayPlayerStatus(const Player& player) const {
+    displayMessage("===== 角色状态 =====", Color::CYAN);
+    displayMessage("姓名: " + player.getName(), Color::WHITE);
+    displayMessage("等级: " + std::to_string(player.getLevel()), Color::WHITE);
+    displayMessage("生命值: " + std::to_string(player.getHP()) + "/" + std::to_string(player.getMaxHP()), Color::GREEN);
+    displayMessage("攻击力: " + std::to_string(player.getATK()), Color::RED);
+    displayMessage("防御力: " + std::to_string(player.getDEF()), Color::BLUE);
+    displayMessage("速度: " + std::to_string(player.getSpeed()), Color::YELLOW);
+    displayMessage("经验值: " + std::to_string(player.getExp()) + "/" + std::to_string(player.getExpToNextLevel()), Color::CYAN);
+    displayMessage("金币: " + std::to_string(player.getGold()), Color::YELLOW);
+    displayMessage("暴击率: " + std::to_string(static_cast<int>(player.getCritRate() * 100)) + "%", Color::MAGENTA);
+    displayMessage("==================", Color::CYAN);
 }
+
+void UIManager::displaySimpleCombatStatus(const Attribute& player, const Attribute& enemy) const {
+    // 简化的战斗状态显示，只显示核心信息
+    std::cout << "\033[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m" << std::endl;
+    
+    // 玩家信息（左侧）
+    std::cout << "\033[32m" << std::setw(15) <<std::left<< player.getName() 
+              << " Lv." << std::setw(3) << player.getLevel()
+              << " HP: " << std::setw(4) << player.getHP() << "/" << std::setw(4) << player.getMaxHP() << "\033[0m";
+
+    std::cout << " VS ";
+
+    // 敌人信息（右侧）
+    std::cout << "\033[31m" << std::setw(15)<<std::left << enemy.getName()
+              << " Lv." << std::setw(3) << enemy.getLevel()
+              << " HP: " << std::setw(4) << enemy.getHP() << "/" << std::setw(4) << enemy.getMaxHP() << "\033[0m" << std::endl;
+    
+    std::cout << "\033[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m" << std::endl;
+}
+
 void UIManager::displayScene(const std::string& description) const {
     displayMessage("--- 当前场景 ---", Color::GREEN);
     displayMessage(description, Color::WHITE);

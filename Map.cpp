@@ -305,6 +305,12 @@ bool Map::switchRoom(const std::string& input) {
     const Room& currentRoom = it->second;
     const auto& exits = currentRoom.getExits();
     
+    // 检查当前房间是否有未击败的BOSS
+    if (roomBosses.find(currentRoomId) != roomBosses.end()) {
+        std::cout << "你必须先击败这里的BOSS才能离开！" << std::endl;
+        return false;
+    }
+    
     // 检查输入是数字还是方向
     std::string direction = input;
     if (input.length() == 1 && std::isdigit(input[0])) {
