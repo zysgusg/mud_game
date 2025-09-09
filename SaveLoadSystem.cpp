@@ -177,6 +177,13 @@ void SaveLoadSystem::saveGame(const Player& player, const TaskSystem& taskProgre
     saveFile << "CritRate " << player.getCritRate() << std::endl;
     saveFile << "CurrentRoom " << player.getCurrentRoomId() << std::endl;
 
+    // 保存背包道具
+    const auto& inventory = player.getInventory();
+    for (const auto& item : inventory)
+    {
+        saveFile << "Item " << item.first << " " << item.second << std::endl;
+    }
+
     for (const auto& pair : player.taskProgress)
     {
         const Task& task = pair.second;
@@ -187,16 +194,102 @@ void SaveLoadSystem::saveGame(const Player& player, const TaskSystem& taskProgre
     ui.displayMessage("游戏已成功保存到槽位 " + std::to_string(slotToUse), UIManager::Color::GREEN);
 }
 
+void SaveLoadSystem::autoSaveGame(const Player& player, const TaskSystem& taskProgress)
+{
+    // 删除旧的自动存档
+    for (const auto& entry : std::filesystem::directory_iterator(SAVE_DIR))
+    {
+        if (entry.is_regular_file())
+        {
+            std::string filename = entry.path().filename().string();
+            if (filename.find("auto_save_") == 0)
+            {
+                std::filesystem::remove(entry.path());
+            }
+        }
+    }
+
+    // 创建新的自动存档
+    time_t now = time(nullptr);
+    std::tm tm_buf;
+#ifdef _WIN32
+    localtime_s(&tm_buf, &now);
+#else
+    localtime_r(&now, &tm_buf);
+#endif
+    std::stringstream filename_ss;
+    filename_ss << "auto_save_" << std::put_time(&tm_buf, "%Y%m%d%H%M%S") << ".sav";
+    std::string filename = filename_ss.str();
+
+    std::ofstream saveFile((std::filesystem::path(SAVE_DIR) / filename).string());
+    if (!saveFile)
+    {
+        ui.displayMessage("错误: 无法创建自动存档文件 " + filename, UIManager::Color::RED);
+        return;
+    }
+
+    saveFile << "META " << player.getName() << " " << player.getLevel() << std::endl;
+    saveFile << "Level " << player.getLevel() << std::endl;
+    saveFile << "Hp " << player.getHP() << std::endl;
+    saveFile << "MaxHp " << player.getMaxHP() << std::endl;
+    saveFile << "Attack " << player.getATK() << std::endl;
+    saveFile << "Defense " << player.getDEF() << std::endl;
+    saveFile << "Speed " << player.getSpeed() << std::endl;
+    saveFile << "Experience " << player.getExp() << std::endl;
+    saveFile << "Gold " << player.getGold() << std::endl;
+    saveFile << "CritRate " << player.getCritRate() << std::endl;
+    saveFile << "CurrentRoom " << player.getCurrentRoomId() << std::endl;
+
+    // 保存背包道具
+    const auto& inventory = player.getInventory();
+    for (const auto& item : inventory)
+    {
+        saveFile << "Item " << item.first << " " << item.second << std::endl;
+    }
+
+    for (const auto& pair : player.taskProgress)
+    {
+        const Task& task = pair.second;
+        saveFile << "Task " << task.getId() << " " << static_cast<int>(task.getStatus()) << std::endl;
+    }
+
+    saveFile.close();
+    ui.displayMessage("游戏已自动保存", UIManager::Color::BLUE);
+}
+
 bool SaveLoadSystem::loadGame(Player& player, TaskSystem& taskProgress)
 {
     auto slots = listSaveSlots();
-    if (slots.empty())
+    
+    // 检查是否有自动存档
+    std::vector<std::string> autoSaves;
+    for (const auto& entry : std::filesystem::directory_iterator(SAVE_DIR))
+    {
+        if (entry.is_regular_file())
+        {
+            std::string filename = entry.path().filename().string();
+            if (filename.find("auto_save_") == 0)
+            {
+                autoSaves.push_back(filename);
+            }
+        }
+    }
+    
+    if (slots.empty() && autoSaves.empty())
     {
         ui.displayMessage("没有可用的存档。", UIManager::Color::YELLOW);
         return false;
     }
 
     ui.displayMessage("请选择要加载的存档:", UIManager::Color::CYAN);
+    
+    // 显示自动存档选项
+    if (!autoSaves.empty())
+    {
+        ui.displayMessage("[auto] 自动存档", UIManager::Color::BLUE);
+    }
+    
+    // 显示手动存档
     for (const auto& slot : slots)
     {
         std::string text = "[" + std::to_string(slot.id) + "] " + slot.playerName +
@@ -210,7 +303,7 @@ bool SaveLoadSystem::loadGame(Player& player, TaskSystem& taskProgress)
 
     while (true)
     {
-        std::cout << "请输入存档槽位ID (或输入 'c' 取消): ";
+        std::cout << "请输入存档槽位ID、'auto'(自动存档) 或 'c'(取消): ";
         std::string choice_str;
         std::cin >> choice_str;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -219,6 +312,13 @@ bool SaveLoadSystem::loadGame(Player& player, TaskSystem& taskProgress)
         {
             ui.displayMessage("读档已取消。", UIManager::Color::GRAY);
             return false;
+        }
+        
+        if (choice_str == "auto" && !autoSaves.empty())
+        {
+            // 选择最新的自动存档
+            filename_to_load = autoSaves[0]; // 假设第一个是最新的
+            break;
         }
 
         if (is_digits_save(choice_str))
@@ -247,7 +347,9 @@ bool SaveLoadSystem::loadGame(Player& player, TaskSystem& taskProgress)
         return false;
     }
 
+    // 清空玩家数据避免重复
     player.taskProgress.clear();
+    player.clearInventory();  // 使用clearInventory方法清空背包避免物品翻倍
 
     std::string dummy;
     std::getline(loadFile, dummy);
@@ -311,21 +413,33 @@ bool SaveLoadSystem::loadGame(Player& player, TaskSystem& taskProgress)
             loadFile >> roomId;
             player.setCurrentRoomId(roomId);
         }
+        else if (key == "Item") {
+            std::string itemName;
+            int quantity;
+            loadFile >> itemName >> quantity;
+            player.addItemByName(itemName, quantity);
+        }
         else if (key == "Task") {
             std::string taskId;
             int statusInt;
             loadFile >> taskId >> statusInt;
+            TaskStatus status = static_cast<TaskStatus>(statusInt);
             
-            // 找到对应任务并更新状态
+            // 查找对应的任务并添加到玩家任务进度中
             Task* task = taskProgress.findTask(taskId);
             if (task) {
-                task->setStatus(static_cast<TaskStatus>(statusInt));
-                player.taskProgress[taskId] = *task;
+                Task taskCopy = *task;
+                taskCopy.setStatus(status);
+                player.taskProgress[taskId] = taskCopy;
             }
         }
     }
 
     loadFile.close();
-    ui.displayMessage("游戏已从槽位 " + std::to_string(choice_id) + " 成功加载!", UIManager::Color::GREEN);
+    if (choice_id != -1) {
+        ui.displayMessage("游戏已从槽位 " + std::to_string(choice_id) + " 成功加载!", UIManager::Color::GREEN);
+    } else {
+        ui.displayMessage("游戏已从自动存档成功加载!", UIManager::Color::GREEN);
+    }
     return true;
 }

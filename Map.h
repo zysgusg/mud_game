@@ -11,6 +11,9 @@
 
 // 前向声明
 class BossWanEshuji;
+class SaveLoadSystem;
+class Player;
+class TaskSystem;
 
 class Map {
 private:
@@ -42,6 +45,7 @@ public:
 
     // 房间移动功能
     bool switchRoom(const std::string& input);
+    bool switchRoom(const std::string& input, Player* player, SaveLoadSystem* saveSystem, TaskSystem* taskSystem);
     void jumpToRoom(int roomId);
 
     // 获取器和设置器

@@ -127,6 +127,10 @@ void Player::addItem(const Item& item, int quantity) {
     inventory[item.getName()] += quantity;
 }
 
+void Player::addItemByName(const std::string& itemName, int quantity) {
+    inventory[itemName] += quantity;
+}
+
 bool Player::useItem(const std::string& itemName) {
     if (inventory.count(itemName) && inventory[itemName] > 0) {
         inventory[itemName]--;
@@ -136,4 +140,12 @@ bool Player::useItem(const std::string& itemName) {
         return true;
     }
     return false;
+}
+
+const std::map<std::string, int>& Player::getInventory() const {
+    return inventory;
+}
+
+void Player::clearInventory() {
+    inventory.clear();
 }

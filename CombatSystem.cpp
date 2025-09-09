@@ -80,10 +80,15 @@ CombatResult CombatSystem::playerTurn(Player &player, CommonEnemy &enemy, const 
             {
                 ui.displayMessage("[" + std::to_string(i + 1) + "] " + player.getSkills()[i]->getName() + " (威力: " + std::to_string(player.getSkills()[i]->getPower()) + ")", UIManager::Color::WHITE);
             }
+            ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
             int skillChoice = 0;
             std::cin >> skillChoice;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            if (skillChoice > 0 && skillChoice <= player.getSkills().size())
+            if (skillChoice == 0)
+            {
+                return playerTurn(player, enemy, itemDb); // 取消，重新选择行动
+            }
+            else if (skillChoice > 0 && skillChoice <= player.getSkills().size())
             {
                 Skill* skill = player.getSkills()[skillChoice - 1];
                 switch (skill->getDamageType())
@@ -133,18 +138,30 @@ CombatResult CombatSystem::playerTurn(Player &player, CommonEnemy &enemy, const 
             itemNames.push_back(pair.first);
             itemIdx++;
         }
+        ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
         int itemChoice = 0;
         std::cin >> itemChoice;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        if (itemChoice > 0 && itemChoice <= itemNames.size())
+        if (itemChoice == 0)
+        {
+            return playerTurn(player, enemy, itemDb); // 取消，重新选择行动
+        }
+        else if (itemChoice > 0 && itemChoice <= itemNames.size())
         {
             std::string chosenItemName = itemNames[itemChoice - 1];
 
-            if (chosenItemName == "能量药水")
+            if (chosenItemName == "生命药水")
             {
-                player.heal(50);
+                int healAmount = (player.getMaxHP() * 50) / 100; // 回复50%最大生命值
+                player.heal(healAmount);
                 player.useItem(chosenItemName);
-                ui.displayMessage("你使用了能量药水，恢复了50点生命值！", UIManager::Color::GREEN);
+                ui.displayMessage("你使用了生命药水，恢复了" + std::to_string(healAmount) + "点生命值（50%最大生命值）！", UIManager::Color::GREEN);
+            }
+            else if (chosenItemName == "能量药水")
+            {
+                player.extraActionTurns += 1; // 下回合额外行动次数+1
+                player.useItem(chosenItemName);
+                ui.displayMessage("你使用了能量药水，下回合行动次数+1！", UIManager::Color::CYAN);
             }
             else
             {
@@ -218,10 +235,15 @@ CombatResult CombatSystem::playerTurn(Player &player, EvilGeneral &boss, const s
             {
                 ui.displayMessage("[" + std::to_string(i + 1) + "] " + player.getSkills()[i]->getName() + " (威力: " + std::to_string(player.getSkills()[i]->getPower()) + ")", UIManager::Color::WHITE);
             }
+            ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
             int skillChoice = 0;
             std::cin >> skillChoice;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            if (skillChoice > 0 && skillChoice <= player.getSkills().size())
+            if (skillChoice == 0)
+            {
+                return playerTurn(player, boss, itemDb); // 取消，重新选择行动
+            }
+            else if (skillChoice > 0 && skillChoice <= player.getSkills().size())
             {
                 Skill* skill = player.getSkills()[skillChoice - 1];
                 switch (skill->getDamageType())
@@ -271,17 +293,29 @@ CombatResult CombatSystem::playerTurn(Player &player, EvilGeneral &boss, const s
             itemNames.push_back(pair.first);
             itemIdx++;
         }
+        ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
         int itemChoice = 0;
         std::cin >> itemChoice;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        if (itemChoice > 0 && itemChoice <= itemNames.size())
+        if (itemChoice == 0)
+        {
+            return playerTurn(player, boss, itemDb); // 取消，重新选择行动
+        }
+        else if (itemChoice > 0 && itemChoice <= itemNames.size())
         {
             std::string chosenItemName = itemNames[itemChoice - 1];
-            if (chosenItemName == "能量药水")
+            if (chosenItemName == "生命药水")
             {
-                player.heal(50);
+                int healAmount = (player.getMaxHP() * 50) / 100; // 回复50%最大生命值
+                player.heal(healAmount);
                 player.useItem(chosenItemName);
-                ui.displayMessage("你使用了能量药水，恢复了50点生命值！", UIManager::Color::GREEN);
+                ui.displayMessage("你使用了生命药水，恢复了" + std::to_string(healAmount) + "点生命值（50%最大生命值）！", UIManager::Color::GREEN);
+            }
+            else if (chosenItemName == "能量药水")
+            {
+                player.extraActionTurns += 1; // 下回合额外行动次数+1
+                player.useItem(chosenItemName);
+                ui.displayMessage("你使用了能量药水，下回合行动次数+1！", UIManager::Color::CYAN);
             }
             else
             {
@@ -633,10 +667,15 @@ CombatResult CombatSystem::playerTurn(Player &player, BossWanEshuji &boss, const
             {
                 ui.displayMessage("[" + std::to_string(i + 1) + "] " + player.getSkills()[i]->getName() + " (威力: " + std::to_string(player.getSkills()[i]->getPower()) + ")", UIManager::Color::WHITE);
             }
+            ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
             int skillChoice = 0;
             std::cin >> skillChoice;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            if (skillChoice > 0 && skillChoice <= player.getSkills().size())
+            if (skillChoice == 0)
+            {
+                return playerTurn(player, boss, itemDb); // 取消，重新选择行动
+            }
+            else if (skillChoice > 0 && skillChoice <= player.getSkills().size())
             {
                 Skill* skill = player.getSkills()[skillChoice - 1];
                 switch (skill->getDamageType())
@@ -686,17 +725,29 @@ CombatResult CombatSystem::playerTurn(Player &player, BossWanEshuji &boss, const
             itemNames.push_back(pair.first);
             itemIdx++;
         }
+        ui.displayMessage("[0] 取消", UIManager::Color::GRAY);
         int itemChoice = 0;
         std::cin >> itemChoice;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        if (itemChoice > 0 && itemChoice <= itemNames.size())
+        if (itemChoice == 0)
+        {
+            return playerTurn(player, boss, itemDb); // 取消，重新选择行动
+        }
+        else if (itemChoice > 0 && itemChoice <= itemNames.size())
         {
             std::string chosenItemName = itemNames[itemChoice - 1];
-            if (chosenItemName == "能量药水")
+            if (chosenItemName == "生命药水")
             {
-                player.heal(50);
+                int healAmount = (player.getMaxHP() * 50) / 100; // 回复50%最大生命值
+                player.heal(healAmount);
                 player.useItem(chosenItemName);
-                ui.displayMessage("你使用了能量药水，恢复了50点生命值！", UIManager::Color::GREEN);
+                ui.displayMessage("你使用了生命药水，恢复了" + std::to_string(healAmount) + "点生命值（50%最大生命值）！", UIManager::Color::GREEN);
+            }
+            else if (chosenItemName == "能量药水")
+            {
+                player.extraActionTurns += 1; // 下回合额外行动次数+1
+                player.useItem(chosenItemName);
+                ui.displayMessage("你使用了能量药水，下回合行动次数+1！", UIManager::Color::CYAN);
             }
             else
             {

@@ -23,11 +23,12 @@ public:
     SaveLoadSystem(UIManager& uiManager);
 
     void saveGame(const Player& player, const TaskSystem& tasks);
+    void autoSaveGame(const Player& player, const TaskSystem& tasks);
     bool loadGame(Player& player, TaskSystem& tasks);
 
 private:
     UIManager& ui;
-    const int MAX_SAVES = 10;
+    static const int MAX_SAVES = 10;
     const std::string SAVE_DIR = "save/";
 
     std::vector<SaveSlot> listSaveSlots();

@@ -48,8 +48,16 @@ void Game::run() {
         if (cmd.command.empty()) continue;
 
         std::string canonicalCmd = getCanonicalCommand(cmd.command);
-
-        if (commandHandlers.count(canonicalCmd)) {
+        
+        // 特殊处理中文方向命令
+        if (cmd.command == "北" || cmd.command == "南" || cmd.command == "东" || cmd.command == "西" ||
+            cmd.command == "东北" || cmd.command == "西南" || cmd.command == "东南" || cmd.command == "西北" ||
+            cmd.command == "上" || cmd.command == "下") {
+            // 将方向作为参数传递给go命令
+            std::vector<std::string> args = {cmd.command};
+            commandHandlers["go"](args);
+        }
+        else if (commandHandlers.count(canonicalCmd)) {
             commandHandlers[canonicalCmd](cmd.args);
         }
         else {
@@ -74,7 +82,12 @@ void Game::setupCommandAliases() {
     commandAliases["m"] = "map"; commandAliases["地图"] = "map";
     commandAliases["g"] = "go"; commandAliases["前往"] = "go";
     commandAliases["n"] = "npc"; commandAliases["对话"] = "npc";
-    commandAliases["北"] = "go"; commandAliases["南"] = "go"; commandAliases["东"] = "go"; commandAliases["西"] = "go";
+    // 方向别名 - 这些将被转换为go命令的参数
+    commandAliases["北"] = "go"; commandAliases["南"] = "go"; 
+    commandAliases["东"] = "go"; commandAliases["西"] = "go";
+    commandAliases["东北"] = "go"; commandAliases["西南"] = "go";
+    commandAliases["东南"] = "go"; commandAliases["西北"] = "go";
+    commandAliases["上"] = "go"; commandAliases["下"] = "go";
 }
 
 // 将别名或大小写命令转换为标准命令
@@ -91,7 +104,8 @@ void Game::registerCommands() {
     commandHandlers["help"] = [this](const auto& args) {
         ui.displayMessage("基础命令: help(h,帮助), status(st,状态), look(l,观察), quit(q,退出)", UIManager::Color::WHITE);
         ui.displayMessage("地图命令: map(m,地图) [all] - 查看当前区域或全局地图", UIManager::Color::CYAN);
-        ui.displayMessage("移动命令: go <方向>(g,前往) - 如: go 北, go 1", UIManager::Color::CYAN);
+        ui.displayMessage("移动命令: go <方向>(g,前往) - 如: go 东北, go 2(2=东北)", UIManager::Color::CYAN);
+        ui.displayMessage("  方向编号: 1=北 2=东北 3=东 4=东南 5=南 6=西南 7=西 8=西北 9=上 0=下", UIManager::Color::GRAY);
         ui.displayMessage("交互命令: npc(n,对话) - 与当前区域NPC对话", UIManager::Color::CYAN);
         ui.displayMessage("战斗命令: fight(f,战斗) - 挑战当前区域的敌人", UIManager::Color::RED);
         ui.displayMessage("任务命令: task(t,任务) [list/accept <ID>/submit <ID>]", UIManager::Color::YELLOW);
@@ -118,11 +132,12 @@ void Game::registerCommands() {
 
     commandHandlers["go"] = [this](const auto& args) {
         if (args.empty()) {
-            ui.displayMessage("用法: go <方向> (如：go 北 或 go 1)", UIManager::Color::YELLOW);
+            ui.displayMessage("用法: go <方向> (如：go 东北, go 2)", UIManager::Color::YELLOW);
+            ui.displayMessage("方向编号: 1=北 2=东北 3=东 4=东南 5=南 6=西南 7=西 8=西北 9=上 0=下", UIManager::Color::GRAY);
             return;
         }
         
-        if (gameMap.switchRoom(args[0])) {
+        if (gameMap.switchRoom(args[0], &player, &saveLoad, &tasks)) {
             // 同步玩家位置
             player.setCurrentRoomId(gameMap.getCurrentRoomId());
             ui.displayMessage("你移动到了新的区域。", UIManager::Color::GREEN);

@@ -41,7 +41,10 @@ public:
     //物品管理
     std::map<std::string, int> inventory;
     void addItem(const Item& item, int quantity = 1);
+    void addItemByName(const std::string& itemName, int quantity = 1);
     bool useItem(const std::string& itemName);
+    const std::map<std::string, int>& getInventory() const;
+    void clearInventory(); // 添加清空背包方法
 
 };
 

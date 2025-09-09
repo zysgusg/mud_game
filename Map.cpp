@@ -1,5 +1,6 @@
 #include "Map.h"
 #include "BossWanEshuji.h"
+#include "SaveLoadSystem.h"
 #include <iostream>
 #include <random>
 
@@ -300,32 +301,102 @@ void Map::showLocationMap() {
 // 移动房间（支持方向文字或数字）
 bool Map::switchRoom(const std::string& input) {
     auto it = rooms.find(currentRoomId);
-    if (it == rooms.end()) return false;
+    if (it == rooms.end())
+        return false;
     
     const Room& currentRoom = it->second;
     const auto& exits = currentRoom.getExits();
     
     // 检查当前房间是否有未击败的BOSS
     if (roomBosses.find(currentRoomId) != roomBosses.end()) {
-        std::cout << "你必须先击败这里的BOSS才能离开！" << std::endl;
+        std::cout << "你需要先击败这里的BOSS才能离开！" << std::endl;
         return false;
     }
     
     // 检查输入是数字还是方向
     std::string direction = input;
     if (input.length() == 1 && std::isdigit(input[0])) {
-        direction = Room::numberToDir(input);
+        int choice = input[0] - '0';
+        // 数字与方向的固定绑定关系
+        switch (choice) {
+            case 1: direction = "北"; break;
+            case 2: direction = "东北"; break;
+            case 3: direction = "东"; break;
+            case 4: direction = "东南"; break;
+            case 5: direction = "南"; break;
+            case 6: direction = "西南"; break;
+            case 7: direction = "西"; break;
+            case 8: direction = "西北"; break;
+            case 9: direction = "上"; break;
+            case 0: direction = "下"; break;
+            default:
+                std::cout << "无效的方向编号: " << choice << " (请使用1-8,9=上,0=下)" << std::endl;
+                return false;
+        }
+    }
+    
+    // 查找对应出口
+    auto exitIt = exits.find(direction);
+    if (exitIt != exits.end()) {
+        currentRoomId = exitIt->second.first;
+        std::cout << "你前往 " << exitIt->second.second << std::endl;
+        return true;
+    }
+    
+    std::cout << "无法前往 \"" << input << "\" 方向！" << std::endl;
+    return false;
+}
+
+bool Map::switchRoom(const std::string& input, Player* player, SaveLoadSystem* saveSystem, TaskSystem* taskSystem) {
+    auto it = rooms.find(currentRoomId);
+    if (it == rooms.end())
+        return false;
+    
+    const Room& currentRoom = it->second;
+    const auto& exits = currentRoom.getExits();
+    
+    // 检查当前房间是否有未击败的BOSS
+    if (roomBosses.find(currentRoomId) != roomBosses.end()) {
+        std::cout << "你需要先击败这里的BOSS才能离开！" << std::endl;
+        return false;
+    }
+    
+    // 检查输入是数字还是方向
+    std::string direction = input;
+    if (input.length() == 1 && std::isdigit(input[0])) {
+        int choice = input[0] - '0';
+        // 数字与方向的固定绑定关系
+        switch (choice) {
+            case 1: direction = "北"; break;
+            case 2: direction = "东北"; break;
+            case 3: direction = "东"; break;
+            case 4: direction = "东南"; break;
+            case 5: direction = "南"; break;
+            case 6: direction = "西南"; break;
+            case 7: direction = "西"; break;
+            case 8: direction = "西北"; break;
+            case 9: direction = "上"; break;
+            case 0: direction = "下"; break;
+            default:
+                std::cout << "无效的方向编号: " << choice << " (请使用1-8,9=上,0=下)" << std::endl;
+                return false;
+        }
     }
     
     // 查找对应出口
     auto exitIt = exits.find(direction);
     if (exitIt != exits.end()) {
         int targetRoomId = exitIt->second.first;
-        if (rooms.find(targetRoomId) != rooms.end()) {
-            currentRoomId = targetRoomId;
-            showCurrentRoom();
-            return true;
+        
+        // 检查目标房间是否有BOSS，如果有则自动存档
+        if (roomBosses.find(targetRoomId) != roomBosses.end() && saveSystem && taskSystem) {
+            std::cout << "检测到前方有强敌，自动保存游戏..." << std::endl;
+            saveSystem->autoSaveGame(*player, *taskSystem);
         }
+        
+        currentRoomId = targetRoomId;
+        std::cout << "你前往 " << exitIt->second.second << std::endl;
+        return true;
     }
     
     std::cout << "无法前往 \"" << input << "\" 方向！" << std::endl;
